@@ -1,0 +1,2295 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>指標平台 | 醫療品質指標管理系統</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#16262E;
+  --paper:#F3F6F5;
+  --surface:#FFFFFF;
+  --teal:#1F6F6B;
+  --teal-deep:#123C39;
+  --teal-soft:#E4EFEE;
+  --slate:#5B6B70;
+  --slate-light:#8FA0A3;
+  --line:#DCE4E2;
+  --green:#2E9E5B;
+  --green-soft:#E4F5EA;
+  --amber:#D99A2B;
+  --amber-soft:#FBF1DE;
+  --red:#C1443C;
+  --red-soft:#FBE7E5;
+  --shadow: 0 2px 10px rgba(18,60,57,0.06), 0 1px 2px rgba(18,60,57,0.08);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,.display{font-family:'Zilla Slab',serif;}
+.mono{font-family:'IBM Plex Mono',monospace;}
+button{font-family:inherit;cursor:pointer;}
+a{color:inherit;}
+
+/* ---------- App Shell ---------- */
+.app{display:flex;min-height:100vh;}
+
+/* Sidebar */
+.sidebar{
+  width:236px;flex-shrink:0;
+  background:var(--teal-deep);
+  color:#DCEFEC;
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;
+}
+.brand{
+  padding:22px 20px 18px 20px;
+  border-bottom:1px solid rgba(255,255,255,0.08);
+}
+.brand .mark{
+  display:flex;align-items:center;gap:10px;
+}
+.brand .mark svg{flex-shrink:0;}
+.brand-name{font-family:'Zilla Slab',serif;font-size:17px;font-weight:600;color:#fff;line-height:1.2;}
+.brand-sub{font-size:11px;color:#8FC4BE;letter-spacing:.04em;margin-top:2px;}
+
+.nav{flex:1;padding:14px 10px;overflow-y:auto;}
+.nav-section-label{
+  font-size:10.5px;letter-spacing:.08em;color:#5F938D;
+  padding:14px 10px 6px 10px;text-transform:uppercase;font-weight:600;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 11px;border-radius:8px;
+  font-size:13.5px;color:#C6E3DE;
+  margin-bottom:2px;
+  border:none;background:transparent;width:100%;text-align:left;
+  transition:background .15s, color .15s;
+}
+.nav-item svg{flex-shrink:0;opacity:.85;}
+.nav-item:hover{background:rgba(255,255,255,0.06);color:#fff;}
+.nav-item.active{background:var(--teal);color:#fff;}
+.nav-item.active svg{opacity:1;}
+.nav-item .tag{
+  margin-left:auto;font-size:10px;font-family:'IBM Plex Mono',monospace;
+  background:rgba(255,255,255,0.12);padding:1px 6px;border-radius:10px;color:#EAF7F4;
+}
+
+.sidebar-foot{
+  padding:14px 18px 18px 18px;border-top:1px solid rgba(255,255,255,0.08);
+  font-size:11px;color:#5F938D;line-height:1.5;
+}
+
+/* Main */
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{
+  height:62px;flex-shrink:0;
+  background:var(--surface);border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 26px;position:sticky;top:0;z-index:20;
+}
+.crumb{font-size:13px;color:var(--slate);}
+.crumb b{color:var(--ink);font-weight:600;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.search-box{
+  display:flex;align-items:center;gap:8px;
+  background:var(--paper);border:1px solid var(--line);border-radius:8px;
+  padding:7px 12px;width:260px;
+}
+.search-box input{border:none;background:transparent;outline:none;font-size:13px;width:100%;color:var(--ink);}
+.avatar{
+  width:32px;height:32px;border-radius:50%;background:var(--teal-soft);color:var(--teal-deep);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12.5px;font-family:'Zilla Slab',serif;
+}
+
+.content{padding:26px 30px 60px 30px;max-width:1400px;width:100%;margin:0 auto;}
+.view{display:none;animation:fadein .25s ease;}
+.view.active{display:block;}
+@keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+.page-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;gap:20px;flex-wrap:wrap;}
+.page-title{font-size:22px;font-weight:600;margin:0 0 4px 0;}
+.page-desc{font-size:13px;color:var(--slate);margin:0;max-width:640px;line-height:1.6;}
+
+.btn{
+  display:inline-flex;align-items:center;gap:6px;
+  border-radius:8px;padding:9px 16px;font-size:13px;font-weight:600;border:1px solid transparent;
+  transition:all .15s;
+}
+.btn-primary{background:var(--teal);color:#fff;}
+.btn-primary:hover{background:var(--teal-deep);}
+.btn-ghost{background:var(--surface);color:var(--ink);border-color:var(--line);}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal-deep);}
+.btn-sm{padding:6px 11px;font-size:12px;}
+
+/* Cards */
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:12px;
+  box-shadow:var(--shadow);
+}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px;}
+.kpi{padding:18px 20px;}
+.kpi-label{font-size:12px;color:var(--slate);display:flex;align-items:center;gap:6px;margin-bottom:8px;}
+.kpi-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.kpi-value{font-family:'Zilla Slab',serif;font-size:30px;font-weight:600;line-height:1;}
+.kpi-sub{font-size:11.5px;color:var(--slate-light);margin-top:6px;}
+
+/* Filter bar */
+.filterbar{
+  display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding:14px 16px;margin-bottom:16px;
+}
+.filterbar select, .filterbar input[type=text], .filterbar input[type=month], .filterbar input[type=number]{
+  border:1px solid var(--line);border-radius:7px;padding:8px 10px;font-size:13px;
+  background:var(--surface);color:var(--ink);outline:none;font-family:inherit;
+}
+.filterbar select:focus, .filterbar input:focus{border-color:var(--teal);}
+.filterbar label{font-size:11.5px;color:var(--slate);display:flex;flex-direction:column;gap:4px;font-weight:600;}
+.filterbar .spacer{flex:1;}
+
+/* Category pill tabs */
+.pilltabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;}
+.pilltabs button{
+  border:1px solid var(--line);background:var(--surface);border-radius:20px;
+  padding:7px 14px;font-size:12.5px;color:var(--slate);font-weight:600;
+}
+.pilltabs button.active{background:var(--teal-deep);border-color:var(--teal-deep);color:#fff;}
+.pilltabs button:hover:not(.active){border-color:var(--teal);color:var(--teal-deep);}
+
+/* Table */
+.table-wrap{overflow-x:auto;border-radius:12px;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+thead th{
+  text-align:left;font-size:11px;letter-spacing:.03em;text-transform:uppercase;
+  color:var(--slate);background:var(--paper);padding:11px 14px;border-bottom:1px solid var(--line);
+  white-space:nowrap;position:sticky;top:0;
+}
+tbody td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle;}
+tbody tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#FAFCFB;}
+.code-cell{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--teal-deep);font-weight:600;}
+.name-cell{font-weight:600;}
+.subtext{font-size:11.5px;color:var(--slate-light);}
+
+.badge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;}
+.badge-green{background:var(--green-soft);color:var(--green);}
+.badge-amber{background:var(--amber-soft);color:#9C6B0C;}
+.badge-red{background:var(--red-soft);color:var(--red);}
+.badge-gray{background:#EEF1F0;color:var(--slate);}
+
+/* Percentile gauge - signature component */
+.gauge-wrap{display:flex;align-items:center;gap:8px;min-width:150px;}
+.gauge{position:relative;width:100px;height:8px;border-radius:5px;overflow:visible;
+  background:linear-gradient(to right, var(--green) 0%, var(--green) 50%, var(--amber) 50%, var(--amber) 75%, var(--red) 75%, var(--red) 100%);
+}
+.gauge-marker{
+  position:absolute;top:-4px;width:2px;height:16px;background:var(--ink);
+  transform:translateX(-1px);
+}
+.gauge-marker::after{
+  content:'';position:absolute;top:-5px;left:-3px;width:8px;height:8px;background:var(--ink);
+  border-radius:50%;
+}
+.gauge-val{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;width:34px;}
+
+/* Buttons in table */
+.icon-btn{
+  background:transparent;border:1px solid var(--line);border-radius:7px;width:30px;height:30px;
+  display:inline-flex;align-items:center;justify-content:center;color:var(--slate);
+}
+.icon-btn:hover{border-color:var(--teal);color:var(--teal-deep);}
+
+/* Modal / Drawer */
+.overlay{
+  position:fixed;inset:0;background:rgba(18,32,30,0.45);z-index:100;
+  display:none;align-items:stretch;justify-content:flex-end;
+}
+.overlay.active{display:flex;}
+.drawer{
+  width:520px;max-width:92vw;background:var(--surface);height:100%;overflow-y:auto;
+  box-shadow:-8px 0 30px rgba(0,0,0,0.15);
+  animation:slidein .25s ease;
+}
+@keyframes slidein{from{transform:translateX(30px);opacity:.6;}to{transform:translateX(0);opacity:1;}}
+.drawer-head{
+  padding:22px 26px;border-bottom:1px solid var(--line);
+  display:flex;justify-content:space-between;align-items:flex-start;position:sticky;top:0;background:var(--surface);z-index:2;
+}
+.drawer-body{padding:22px 26px 40px 26px;}
+.drawer-close{background:none;border:none;font-size:20px;color:var(--slate);line-height:1;}
+.dl-section{margin-bottom:22px;}
+.dl-label{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--slate-light);font-weight:700;margin-bottom:6px;}
+.dl-value{font-size:13.5px;line-height:1.7;color:var(--ink);}
+.dl-value.mono{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--paper);padding:10px 12px;border-radius:8px;border:1px solid var(--line);white-space:pre-wrap;}
+.sql-editor{
+  width:100%;min-height:280px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;line-height:1.6;
+  background:#0F2723;color:#D7F5EE;padding:14px 16px;border-radius:8px;border:1px solid var(--teal-deep);
+  white-space:pre;overflow:auto;resize:vertical;outline:none;tab-size:2;
+}
+.sql-editor:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(31,111,107,0.15);}
+.chart-placeholder{
+  border:1.5px dashed var(--line);border-radius:10px;padding:26px;text-align:center;color:var(--slate-light);
+  font-size:12.5px;display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--teal-deep);color:#fff;padding:12px 20px;border-radius:9px;font-size:13px;
+  display:flex;align-items:center;gap:10px;opacity:0;pointer-events:none;transition:all .3s ease;box-shadow:var(--shadow);z-index:200;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* AI assistant floating button + chat bubbles */
+.ai-fab{
+  position:fixed;bottom:28px;right:28px;z-index:90;
+  width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;
+  background:linear-gradient(135deg, var(--teal) 0%, #2E8C87 60%, #3AA79E 100%);
+  box-shadow:0 6px 18px rgba(18,60,57,0.35);
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .15s ease;
+}
+.ai-fab:hover{transform:scale(1.07);}
+.chat-bubble{max-width:88%;padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.6;}
+.chat-user{align-self:flex-end;background:var(--teal-deep);color:#fff;border-bottom-right-radius:3px;}
+.chat-ai{align-self:flex-start;background:var(--paper);border:1px solid var(--line);border-bottom-left-radius:3px;}
+.chat-ai .dl-label{margin-top:8px;}
+.ai-result-card{
+  border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin-top:8px;background:var(--surface);cursor:pointer;
+}
+.ai-result-card:hover{border-color:var(--teal);}
+
+/* form grid */
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.formgrid .full{grid-column:1/-1;}
+.field label{font-size:12px;font-weight:600;color:var(--slate);display:block;margin-bottom:5px;}
+.field select,.field input{
+  width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;outline:none;
+}
+.field select:focus,.field input:focus{border-color:var(--teal);}
+.upload-zone{
+  border:1.5px dashed var(--line);border-radius:10px;padding:26px;text-align:center;color:var(--slate);font-size:12.5px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;background:var(--paper);
+}
+.upload-zone b{color:var(--teal-deep);}
+
+.notice{
+  display:flex;gap:10px;align-items:flex-start;background:var(--amber-soft);border:1px solid #F0DBA8;
+  color:#8A5D0C;padding:12px 14px;border-radius:9px;font-size:12.5px;margin-bottom:16px;line-height:1.6;
+}
+.notice svg{flex-shrink:0;margin-top:1px;}
+
+.two-col{display:grid;grid-template-columns:1.3fr 1fr;gap:18px;align-items:start;}
+@media (max-width:1100px){.two-col{grid-template-columns:1fr;} .kpi-row{grid-template-columns:1fr 1fr;} .formgrid{grid-template-columns:1fr;}}
+
+input[type=number].mini{width:80px;font-family:'IBM Plex Mono',monospace;padding:6px 8px;border:1px solid var(--line);border-radius:6px;font-size:12.5px;}
+input[type=number].mini:focus{border-color:var(--teal);outline:none;}
+.editable-note{font-size:10.5px;color:var(--slate-light);}
+
+.section-title{font-size:15px;font-weight:600;margin:0 0 12px 0;display:flex;align-items:center;gap:8px;}
+.section-title .n{
+  width:22px;height:22px;border-radius:6px;background:var(--teal-soft);color:var(--teal-deep);
+  display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:700;
+}
+.card-pad{padding:20px 22px;}
+.legend{display:flex;gap:16px;font-size:11.5px;color:var(--slate);flex-wrap:wrap;}
+.legend span{display:inline-flex;align-items:center;gap:6px;}
+.legend i{width:9px;height:9px;border-radius:50%;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="mark">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect width="30" height="30" rx="8" fill="#1F6F6B"/><path d="M15 7v16M8 12l7-5 7 5M8 18l7 5 7-5" stroke="#DCEFEC" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <div class="brand-name">指標平台</div>
+          <div class="brand-sub">QUALITY INDICATOR HUB</div>
+        </div>
+      </div>
+    </div>
+    <nav class="nav" id="navList">
+      <div class="nav-section-label">總覽</div>
+      <button class="nav-item active" data-view="dashboard">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 9l3-3 2.5 2.5L13 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 13.5h12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        總覽儀表板
+      </button>
+
+      <div class="nav-section-label">指標作業</div>
+      <button class="nav-item" data-view="manage">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2.5" width="12" height="11" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 6h7M4.5 8.5h7M4.5 11h4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        指標管理 <span class="tag" id="navCountManage">—</span>
+      </button>
+      <button class="nav-item" data-view="import">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8m0 0L5 7m3 3l3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 11v1.5A1.5 1.5 0 004 14h8a1.5 1.5 0 001.5-1.5V11" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+        醫中指標匯入
+      </button>
+      <button class="nav-item" data-view="threshold">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V7M8 13V3M13 13V9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        閾值/目標值設定
+      </button>
+      <button class="nav-item" data-view="manual">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13.5l2.7-.6 7-7-2.1-2.1-7 7-.6 2.7z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+        指標填報(醫品中心)
+      </button>
+      <button class="nav-item" data-view="annual">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="10.5" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M2 6.2h12" stroke="currentColor" stroke-width="1.3"/><path d="M5.3 2v2.6M10.7 2v2.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        年度指標查詢
+      </button>
+
+      <div class="nav-section-label">維護保留</div>
+      <button class="nav-item" data-view="indmaint">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2.5l1.2 2.4 2.6.4-1.9 1.9.5 2.6L8 8.6l-2.4 1.2.5-2.6-1.9-1.9 2.6-.4L8 2.5z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M3 13.5h10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        指標基本檔／SQL維護 <span class="tag" id="navCountIndMaint">—</span>
+      </button>
+      <button class="nav-item" data-view="settings">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.3" stroke="currentColor" stroke-width="1.3"/><path d="M8 2.5v1.4M8 12.1v1.4M13.5 8h-1.4M3.9 8H2.5M11.8 4.2l-1 1M5.2 10.8l-1 1M11.8 11.8l-1-1M5.2 5.2l-1-1" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        基本檔/權限維護
+      </button>
+    </nav>
+    <div class="sidebar-foot">v2.0 CR原型 · 醫品中心 × 資訊部<br>資料為模擬示意，非實際數值</div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="crumb">指標平台 / <b id="crumbCurrent">總覽儀表板</b></div>
+      <div class="topbar-right">
+        <div class="search-box">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="6" cy="6" r="4.3" stroke="#8FA0A3" stroke-width="1.3"/><path d="M9.2 9.2L12 12" stroke="#8FA0A3" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <input type="text" placeholder="搜尋指標代碼或名稱…" id="globalSearch">
+        </div>
+        <div class="avatar">品管</div>
+      </div>
+    </div>
+
+    <div class="content" id="contentRoot">
+      <!-- Views injected below -->
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="drawerOverlay">
+  <div class="drawer" id="drawerPanel"></div>
+</div>
+
+<div class="overlay" id="aiOverlay">
+  <div class="drawer" id="aiPanel" style="width:460px;display:flex;flex-direction:column;">
+    <div class="drawer-head" style="flex-shrink:0;">
+      <div>
+        <h3 style="margin:0;font-size:16px;display:flex;align-items:center;gap:7px;">✨ AI 指標助手 <span class="badge badge-gray" style="font-weight:600;">示意功能</span></h3>
+        <div class="subtext" style="margin-top:3px;">輸入一句話：找指標，或描述新指標讓 AI 生成草稿</div>
+      </div>
+      <button class="drawer-close" onclick="closeAIAssistant()">&times;</button>
+    </div>
+    <div id="aiLog" style="flex:1;overflow-y:auto;padding:18px 20px;display:flex;flex-direction:column;gap:14px;"></div>
+    <div style="flex-shrink:0;border-top:1px solid var(--line);padding:14px 20px;background:var(--surface);">
+      <div class="chip-row" id="aiChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;"></div>
+      <div style="display:flex;gap:8px;align-items:flex-end;">
+        <textarea id="aiInput" rows="2" placeholder="例如：幫我找TCPI裡面紅燈的指標 / 幫我建立一個「出院後7天內再急診比率」指標，DQI分類，百分比" style="flex:1;border:1px solid var(--line);border-radius:8px;padding:9px 11px;font-size:13px;font-family:inherit;resize:none;"></textarea>
+        <button class="btn btn-primary btn-sm" id="aiSendBtn" style="flex-shrink:0;">送出</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button class="ai-fab" id="aiFab" title="AI 指標助手" onclick="openAIAssistant()">
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2l1.8 5.2L18 9l-5.2 1.8L11 16l-1.8-5.2L4 9l5.2-1.8L11 2z" fill="#fff"/><path d="M18 13l.9 2.6L21.5 16.5l-2.6.9L18 20l-.9-2.6-2.6-.9 2.6-.9L18 13z" fill="#fff" opacity="0.8"/></svg>
+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ===================== 模擬資料 =====================
+// 分類架構（依規格書 Excel 對應：持續性監控指標、P4P、TCPI、THIS、DQI、對外提報、營運分析）
+
+const CATEGORIES = ["全部", "持續性監控指標", "P4P", "TCPI", "THIS", "DQI", "對外提報", "營運分析"];
+const UNIT_OPTIONS = ["%", "‰", "天", "人次", "分", "元", "件", "次"];
+
+const TCPI_L2 = {
+  "綜合照護指標": ["整體綜合急性照護指標","加護病房整體性指標","內科加護病房指標","外科加護病房指標","綜合科加護病房指標","心臟加護病房指標","神經加護病房指標","亞急性呼吸照護病房指標","手術照護指標","一般病房照護指標","兒童照護","產科照護","急診照護","重點照護-急性心肌梗塞照護","重點照護-急性中風照護"],
+  "急性精神照護指標": ["轉出/出院至急性住院照護","傷害行為","非計畫性離院導致出院","非自願性身體約束","隔離的使用","有紀錄的跌倒","藥物安全監測","急性精神科病人住院天數","精神科住院病人再住院","門診如期返診","思覺失調症照護"]
+};
+
+const P4P_L2 = ["整體急性照護指標","手術照護指標","麻醉照護指標","住院照護指標","急性照護指標","加護病房指標","兒科照護指標","重點指標","婦產科照護指標","其他"];
+
+const STATUS_OPTS = ["正常","停用"]; // 9/2討論決議：狀態搜尋拿掉「換指標」選項（僅保留於歷史資料顯示）
+
+function pct(n){ return n; }
+
+// 分子/分母邏輯 SQL 對照（點擊「分子邏輯」「分母邏輯」跳出視窗，依規格書圖c示意）
+// 分子/分母 SQL 自訂覆寫儲存（使用者可自行修改邏輯）
+// key: `${code}_num` / `${code}_den` -> {sql, editor, time, note}
+const SQL_OVERRIDES = {};
+
+function defaultSqlSnippet(code, part){
+  return `USE [KPIDB]
+GO
+/****** Object: StoredProcedure [QIP].[mSP_INS_QIP_${code}] ******/
+CREATE PROC [QIP].[mSP_INS_QIP_${code}]
+  @KPIYearMonth varchar(6) = NULL
+ ,@KpiCode nvarchar(128) = '${code}'
+AS
+/*===============================================
+ Description: ${code} ${part==='num'?'分子':'分母'}計算邏輯
+ Note: 依收案條件計算符合人次／人日
+===============================================*/
+SELECT COUNT(*) AS ${part==='num'?'Numerator':'Denominator'}
+FROM QIP.QIPKPI main
+INNER JOIN HISDB..INPTInpatientDetail e
+  ON main.EncounterId = e.InpatientEncounterId
+WHERE main.KPIYearMonth = @KPIYearMonth
+  AND main.KpiCode = @KpiCode
+  ${part==='num' ? "AND main.IsNumeratorMatch = 1" : ""}
+GO`;
+}
+function sqlSnippet(code, part){
+  const ov = SQL_OVERRIDES[`${code}_${part}`];
+  return ov ? ov.sql : defaultSqlSnippet(code, part);
+}
+function sqlIsCustom(code, part){ return !!SQL_OVERRIDES[`${code}_${part}`]; }
+function sqlMeta(code, part){
+  const ov = SQL_OVERRIDES[`${code}_${part}`];
+  return ov ? `${ov.editor} 於 ${ov.time} 修改` : '系統預設邏輯，尚未自訂';
+}
+
+// 圖表可選擇多個對應 Power BI 報表 URL（規格書 9/2 討論新增）
+function chartLinks(code){
+  return [
+    {label:`${code}｜趨勢總覽`, url:`https://powerbi.internal.skh.org.tw/reports/${code.toLowerCase()}-trend`},
+    {label:`${code}｜跨科別比較`, url:`https://powerbi.internal.skh.org.tw/reports/${code.toLowerCase()}-compare`},
+    {label:`${code}｜與醫中百分位`, url:`https://powerbi.internal.skh.org.tw/reports/${code.toLowerCase()}-percentile`},
+  ];
+}
+
+// 指標主檔（含燈號百分位、趨勢、目標值、平均值、閾值等）
+// trend: up=較前月上升(45°) / down=較前月下降(-45°) / flat=持平
+const INDICATORS = [
+  {code:"CQI-001", name:"非計畫性重返加護病房比率", category:"TCPI", l2:"綜合照護指標", l3:"加護病房整體性指標", genMethod:"系統", status:"正常", percentile:32, trend:"down", target:2.5, avg:2.8, thLow:1.6, thHigh:4.0, unit:"%", updateTime:"2026-06-24 09:12", updater:"李亞璇",
+    calc:"分子/分母 × 100%，季更新一次", numerator:"轉出ICU後48小時內非計畫性重返ICU人次", denominator:"該季由ICU轉出之總人次", inclusion:"排除轉安寧、轉院、DNR個案", version:"公版 v2021.3"},
+  {code:"CQI-014", name:"手術部位感染率", category:"TCPI", l2:"綜合照護指標", l3:"手術照護指標", genMethod:"系統", status:"正常", percentile:68, trend:"up", target:1.2, avg:1.5, thLow:0.4, thHigh:2.6, unit:"%", updateTime:"2026-06-24 09:12", updater:"李亞璇",
+    calc:"分子/分母 × 100%", numerator:"監測期間發生SSI之手術人次", denominator:"監測期間執行該類手術總人次", inclusion:"依CDC NHSN定義之手術分類", version:"公版 v2021.3"},
+  {code:"PSY-007", name:"精神科住院病人非自願性身體約束使用率", category:"TCPI", l2:"急性精神照護指標", l3:"非自願性身體約束", genMethod:"系統", status:"正常", percentile:81, trend:"up", target:3.0, avg:3.6, thLow:1.2, thHigh:5.4, unit:"%", updateTime:"2026-06-20 14:02", updater:"王凱倫",
+    calc:"分子/分母 × 100%", numerator:"住院期間曾接受身體約束之人次", denominator:"急性精神科出院總人次", inclusion:"不含保護性約束就醫當日", version:"公版 v2020.1"},
+  {code:"P4P-A02", name:"急性後期整合照護計畫收案完成率", category:"P4P", l2:"整體急性照護指標", genMethod:"手工", status:"正常", percentile:45, trend:"flat", target:80, avg:76.4, thLow:60, thHigh:92, unit:"%", updateTime:"2026-06-18 11:30", updater:"陳品心",
+    calc:"分子/分母 × 100%", numerator:"完成收案且達成照護計畫人數", denominator:"符合收案條件之總人數", inclusion:"依健保署PAC收案標準", version:"公版 2026"},
+  {code:"P4P-S11", name:"手術當日預防性抗生素給藥適當率", category:"P4P", l2:"手術照護指標", genMethod:"系統", status:"正常", percentile:22, trend:"down", target:95, avg:96.1, thLow:88, thHigh:100, unit:"%", updateTime:"2026-06-24 09:12", updater:"李亞璇",
+    calc:"分子/分母 × 100%", numerator:"符合給藥時機與藥物選擇人次", denominator:"該月手術總人次", inclusion:"排除急診緊急手術", version:"公版 2025"},
+  {code:"THIS-3301", name:"門診回診準時率", category:"THIS", genMethod:"系統", status:"正常", percentile:57, trend:"flat", target:88, avg:85.2, thLow:74, thHigh:96, unit:"%", updateTime:"2026-06-22 16:44", updater:"李亞璇",
+    calc:"分子/分母 × 100%", numerator:"如期於預約期限內回診人次", denominator:"應回診總人次", inclusion:"依THIS平台定義計算", version:"公版 THIS-2024"},
+  {code:"THIS-4410", name:"急診壅塞指標-等待住院超過24小時比率", category:"THIS", genMethod:"系統", status:"換指標", percentile:74, trend:"up", target:5, avg:6.3, thLow:1.5, thHigh:11, unit:"%", updateTime:"2026-05-30 10:05", updater:"李亞璇",
+    calc:"分子/分母 × 100%", numerator:"急診等待住院逾24小時人次", denominator:"急診收治住院總人次", inclusion:"不含轉他院個案", version:"公版 THIS-2023，2026Q2起換版"},
+  {code:"DQI-021", name:"病歷首頁完整性缺失率", category:"DQI", genMethod:"手工", status:"正常", percentile:18, trend:"down", target:2, avg:2.4, thLow:0.3, thHigh:4.5, unit:"%", updateTime:"2026-06-15 09:20", updater:"陳品心",
+    calc:"分子/分母 × 100%", numerator:"抽審缺失份數", denominator:"抽審總份數", inclusion:"每月抽審100份", version:"院內公版"},
+  {code:"OPR-102", name:"平均住院天數", category:"營運分析", genMethod:"系統", status:"正常", percentile:40, trend:"flat", target:6.5, avg:6.8, thLow:5.0, thHigh:8.6, unit:"天", updateTime:"2026-06-24 09:12", updater:"系統排程",
+    calc:"總住院日數/出院人數", numerator:"當月總住院日數", denominator:"當月出院人數", inclusion:"含轉出轉入個案", version:"院內公版"},
+  {code:"OPR-118", name:"病床使用率", category:"營運分析", genMethod:"系統", status:"正常", percentile:63, trend:"up", target:85, avg:82.7, thLow:70, thHigh:94, unit:"%", updateTime:"2026-06-24 09:12", updater:"系統排程",
+    calc:"占床日數/可用床日數 × 100%", numerator:"當月占床日數", denominator:"當月可用床日數", inclusion:"不含關床期間", version:"院內公版"},
+  {code:"EXT-501", name:"對外提報-傳染病通報即時率", category:"對外提報", genMethod:"手工", status:"正常", percentile:29, trend:"down", target:98, avg:97.2, thLow:92, thHigh:100, unit:"%", updateTime:"2026-06-10 13:15", updater:"王凱倫",
+    calc:"分子/分母 × 100%", numerator:"24小時內完成通報件數", denominator:"應通報總件數", inclusion:"依疾管署通報規範", version:"公版 2026"},
+  {code:"CMI-201", name:"跌倒發生率(千住院人日)", category:"持續性監控指標", genMethod:"系統", status:"正常", percentile:52, trend:"flat", target:1.8, avg:2.0, thLow:0.9, thHigh:3.1, unit:"‰", updateTime:"2026-06-24 09:12", updater:"系統排程",
+    calc:"跌倒人次/千住院人日", numerator:"當月跌倒發生人次", denominator:"當月住院人日數/1000", inclusion:"含未受傷跌倒事件", version:"院內公版"},
+  {code:"CMI-215", name:"壓傷發生率", category:"持續性監控指標", genMethod:"系統", status:"停用", percentile:88, trend:"up", target:0.5, avg:0.7, thLow:0.1, thHigh:1.3, unit:"%", updateTime:"2026-04-02 08:40", updater:"陳品心",
+    calc:"分子/分母 × 100%", numerator:"住院期間新發壓傷人次", denominator:"住院總人次", inclusion:"不含入院前已存在壓傷", version:"公版 2019（已停用，改用CMI-216）"},
+];
+
+// 分子/分母「操作型定義」原始快照（供「還原為系統預設」時復原文字內容用）
+const ORIGINAL_OPDEF = {};
+INDICATORS.forEach(i=>{
+  ORIGINAL_OPDEF[`${i.code}_num`] = i.numerator || '';
+  ORIGINAL_OPDEF[`${i.code}_den`] = i.denominator || '';
+});
+function opDefOf(code, part){
+  const ind = INDICATORS.find(x=>x.code===code);
+  return ind ? (part==='num' ? (ind.numerator||'') : (ind.denominator||'')) : '';
+}
+
+// 改善方案存放：第三階段原決議為 KM「檔案連結」；使用者近期回饋需同時支援直接上傳 Word/PDF 等檔案並可下載，故兩種方式並存
+const IMPROVEMENT_LINKS = {}; // key: `${code}_${monthIndex}` -> {type:'link'|'file', url?, fileName?, fileSize?, objectUrl?, savedBy, time}
+
+function makeDemoBlobUrl(filename, mime){
+  try{
+    const blob = new Blob([`示意檔案內容（原型模擬）— ${filename}\n\n此為 HTML 原型示意用之佔位內容，正式系統將存放實際上傳之檔案。`], {type:mime});
+    return URL.createObjectURL(blob);
+  }catch(e){ return '#'; }
+}
+const FILE_MIME = {
+  pdf:'application/pdf',
+  doc:'application/msword', docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  xls:'application/vnd.ms-excel', xlsx:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+  ppt:'application/vnd.ms-powerpoint', pptx:'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+};
+function fileExt(name){ return (name.split('.').pop()||'').toLowerCase(); }
+function fileIconIdOf(ext){
+  if(ext==='pdf') return {label:'PDF', color:'#C1443C'};
+  if(ext==='doc'||ext==='docx') return {label:'DOC', color:'#2B6CB0'};
+  if(ext==='xls'||ext==='xlsx') return {label:'XLS', color:'#2E9E5B'};
+  if(ext==='ppt'||ext==='pptx') return {label:'PPT', color:'#D26B1F'};
+  return {label:'檔案', color:'var(--slate)'};
+}
+
+IMPROVEMENT_LINKS["CQI-001_4"] = {type:'link', url:"https://km.skh.org.tw/docs/cqi001-2026-05-plan", savedBy:"李亞璇", time:"2026-06-03 10:12"};
+IMPROVEMENT_LINKS["PSY-007_3"] = {type:'file', fileName:"PSY-007_2026-04_改善方案.pdf", fileSize:"842 KB", objectUrl: makeDemoBlobUrl("PSY-007_2026-04_改善方案.pdf", FILE_MIME.pdf), savedBy:"王凱倫", time:"2026-05-02 09:40"};
+IMPROVEMENT_LINKS["CQI-014_2"] = {type:'file', fileName:"CQI-014_2026-03_感染管制會議紀錄.docx", fileSize:"156 KB", objectUrl: makeDemoBlobUrl("CQI-014_2026-03_感染管制會議紀錄.docx", FILE_MIME.docx), savedBy:"李亞璇", time:"2026-04-05 14:20"};
+
+// 醫中匯入紀錄
+const IMPORT_RECORDS = [
+  {category:"TCPI", subcat:"綜合照護指標", month:"2026-05", items:186, importedBy:"李亞璇", time:"2026-06-08 10:22", status:"已匯入"},
+  {category:"TCPI", subcat:"急性精神照護指標", month:"2026-05", items:64, importedBy:"李亞璇", time:"2026-06-08 10:25", status:"已匯入"},
+  {category:"P4P", subcat:"—", month:"2026-05", items:212, importedBy:"王凱倫", time:"2026-06-05 15:03", status:"已匯入"},
+  {category:"THIS", subcat:"—", month:"2026-05", items:97, importedBy:"李亞璇", time:"2026-06-02 09:11", status:"已匯入"},
+  {category:"TCPI", subcat:"綜合照護指標", month:"2026-06", items:0, importedBy:"—", time:"—", status:"待匯入"},
+  {category:"P4P", subcat:"—", month:"2026-06", items:0, importedBy:"—", time:"—", status:"待匯入"},
+];
+
+// 年度指標查詢 - 每月數值 (示範以 12 個月百分比/數值呈現)
+const ANNUAL_MONTHS = ["1月","2月","3月","4月","5月","6月","7月","8月","9月","10月","11月","12月"];
+function genAnnualSeries(base, noise){
+  return ANNUAL_MONTHS.map((m,i)=> i<6 ? +(base + (Math.sin(i)*noise)).toFixed(1) : null);
+}
+
+// ============ 0802醫品中心簡報回饋：歷期/同儕資料分析用模擬資料 ============
+// 依簡報 p7(歷期資料分析：趨勢圖／管制圖) 與 p8(同儕資料分析：同儕/分期比較) 之呈現方式建置
+
+const MONTH_LABELS = ["2026/01","2026/02","2026/03","2026/04","2026/05","2026/06"];
+
+// 依指標 code 產生穩定但看似隨機的偏移量（避免每次重繪跳動）
+function seedRand(str, i){
+  let h = 0; for(const c of str) h = (h*31 + c.charCodeAt(0)) >>> 0;
+  const x = Math.sin(h + i*17.13) * 10000;
+  return x - Math.floor(x); // 0~1
+}
+
+function indicatorMonthlySeries(i){
+  return MONTH_LABELS.map((m, idx)=>{
+    const wobble = (seedRand(i.code, idx) - 0.5) * (i.avg * 0.32);
+    return +(i.avg + wobble).toFixed(2);
+  });
+}
+
+function peerSeries(i){
+  const medCenter = MONTH_LABELS.map((m, idx)=> +(i.avg * (1.05 + (seedRand(i.code+'MC', idx)-0.5)*0.18)).toFixed(2));
+  const regional  = MONTH_LABELS.map((m, idx)=> +(i.avg * (0.9  + (seedRand(i.code+'RG', idx)-0.5)*0.18)).toFixed(2));
+  const lastYear  = MONTH_LABELS.map((m, idx)=> +(i.avg * (1.1  + (seedRand(i.code+'LY', idx)-0.5)*0.14)).toFixed(2));
+  const medCenterQ3 = +(i.avg*1.18).toFixed(2);
+  const regionalQ3  = +(i.avg*1.02).toFixed(2);
+  return { medCenter, regional, lastYear, medCenterQ3, regionalQ3 };
+}
+
+// 提報單位／資料來源／Q&A 對照（依簡報 p6「指標相關資訊」頁籤設計，依分類給預設內容）
+const REPORT_UNIT_MAP = {
+  "TCPI":"感染管制室、醫品中心",
+  "P4P":"醫務企管組、醫品中心",
+  "THIS":"醫務企管組",
+  "DQI":"病歷室、醫品中心",
+  "營運分析":"醫務企管組",
+  "對外提報":"醫品中心",
+  "持續性監控指標":"醫品中心、各單位品管小組",
+};
+const DATA_SOURCE_MAP = {
+  "系統":"分子、分母均由 HIS 系統自動計算產出",
+  "手工":"分子由提報單位人工提供，分母由系統或提報單位提供",
+};
+function reportUnitOf(i){ return REPORT_UNIT_MAP[i.category] || "醫品中心"; }
+function dataSourceOf(i){ return DATA_SOURCE_MAP[i.genMethod] || "—"; }
+function qaOf(i){
+  return [
+    {q:`「${i.name}」的收案是否含跨年度個案？`, a:`以事件發生月份為收案月份，跨年度個案依實際發生月份歸屬，不重複計算。`},
+    {q:`分子分母是否涵蓋所有院區／科別？`, a:`依指標定義之收案條件計算，如需排除特定院區或科別，請參閱「收案方式」欄位說明。`},
+  ];
+}
+function svgLineChart(opts){
+  const { series, labels, width=560, height=250, bands=null, markers=[], yUnit='', showLegend=true } = opts;
+  const padL=42, padR=bands?34:16, padT=16, padB=30;
+  const innerW = width-padL-padR, innerH = height-padT-padB;
+  const allVals = series.flatMap(s=>s.values).concat(bands?[bands.ucl,bands.lcl].flat():[]).filter(v=>v!=null);
+  let minV = Math.min(...allVals), maxV = Math.max(...allVals);
+  if(minV===maxV){ minV-=1; maxV+=1; }
+  const pad = (maxV-minV)*0.15; minV -= pad; maxV = maxV+pad; if(minV<0 && allVals.every(v=>v>=0)) minV=0;
+  const xStep = innerW/(labels.length-1||1);
+  const yScale = v => padT + innerH - ((v-minV)/(maxV-minV))*innerH;
+  const xScale = idx => padL + idx*xStep;
+
+  const gridY = [0,1,2,3,4].map(k=> minV + (maxV-minV)*k/4);
+
+  let svg = `<svg viewBox="0 0 ${width} ${height}" width="100%" style="overflow:visible;font-family:'IBM Plex Mono',monospace;">`;
+  // gridlines
+  gridY.forEach(v=>{
+    const y = yScale(v);
+    svg += `<line x1="${padL}" y1="${y}" x2="${width-padR}" y2="${y}" stroke="var(--line)" stroke-width="1"/>`;
+    svg += `<text x="${padL-8}" y="${y+3}" font-size="9" fill="var(--slate-light)" text-anchor="end">${v.toFixed(1)}${yUnit}</text>`;
+  });
+  // bands (control limits): UCL / +1SD / target / -1SD / LCL
+  if(bands){
+    const bandDefs = [
+      {vals:bands.ucl, color:'#C1443C', label:'UCL'},
+      {vals:bands.sigma1High, color:'#D99A2B', label:'+1σ'},
+      {vals:bands.target, color:'#5B6B70', label:'目標', dash:'4 3'},
+      {vals:bands.sigma1Low, color:'#D99A2B', label:'-1σ'},
+      {vals:bands.lcl, color:'#2E9E5B', label:'LCL'},
+    ];
+    bandDefs.forEach(b=>{
+      const pts = b.vals.map((v,idx)=> `${xScale(idx)},${yScale(v)}`).join(' ');
+      svg += `<polyline points="${pts}" fill="none" stroke="${b.color}" stroke-width="1.1" stroke-dasharray="${b.dash||'2 3'}" opacity="0.85"/>`;
+      const lastV = b.vals[b.vals.length-1];
+      svg += `<text x="${width-padR+3}" y="${yScale(lastV)+3}" font-size="9" fill="${b.color}" font-weight="600">${b.label}</text>`;
+    });
+  }
+  // marker shading (改善行動期間)
+  markers.forEach(mk=>{
+    const x = xScale(mk.idx);
+    svg += `<line x1="${x}" y1="${padT}" x2="${x}" y2="${padT+innerH}" stroke="#D64B8C" stroke-width="1.4" stroke-dasharray="3 2"/>`;
+    svg += `<circle cx="${x}" cy="${yScale(mk.value)}" r="7" fill="none" stroke="#D64B8C" stroke-width="2"/>`;
+  });
+  // x labels
+  labels.forEach((l,idx)=>{
+    svg += `<text x="${xScale(idx)}" y="${height-8}" font-size="9" fill="var(--slate-light)" text-anchor="middle">${l.slice(2)}</text>`;
+  });
+  // series lines
+  const palette = ['#1F6F6B','#D99A2B','#5B6B70','#C1443C','#3A7CA5'];
+  series.forEach((s,si)=>{
+    const color = s.color || palette[si%palette.length];
+    const pts = s.values.map((v,idx)=> v==null?null:`${xScale(idx)},${yScale(v)}`).filter(Boolean).join(' ');
+    svg += `<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.2"/>`;
+    s.values.forEach((v,idx)=>{ if(v!=null) svg += `<circle cx="${xScale(idx)}" cy="${yScale(v)}" r="3" fill="${color}"/>`; });
+  });
+  svg += `</svg>`;
+
+  if(showLegend){
+    const legendItems = series.map((s,si)=>`<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;"><i style="width:9px;height:9px;border-radius:50%;background:${s.color||['#1F6F6B','#D99A2B','#5B6B70','#C1443C','#3A7CA5'][si%5]};display:inline-block;"></i>${s.name}</span>`).join('');
+    svg += `<div style="margin-top:6px;font-size:11.5px;color:var(--slate);">${legendItems}</div>`;
+  }
+  return svg;
+}
+
+</script>
+<script>
+// ===================== 共用小工具 =====================
+const $root = document.getElementById('contentRoot');
+const $crumb = document.getElementById('crumbCurrent');
+const $toast = document.getElementById('toast');
+
+const VIEW_TITLES = {
+  dashboard:"總覽儀表板", manage:"指標管理", import:"醫中指標匯入",
+  threshold:"閾值/目標值設定", manual:"指標填報(醫品中心)", annual:"年度指標查詢",
+  indmaint:"指標基本檔／SQL維護", settings:"基本檔/權限維護"
+};
+
+function showToast(msg){
+  $toast.textContent = msg;
+  $toast.classList.add('show');
+  clearTimeout(window.__toastTimer);
+  window.__toastTimer = setTimeout(()=> $toast.classList.remove('show'), 2400);
+}
+
+function zone(p){ return p < 50 ? 'green' : (p <= 75 ? 'amber' : 'red'); }
+function zoneLabel(p){ return p < 50 ? '綠燈' : (p <= 75 ? '黃燈' : '紅燈'); }
+
+function buildGauge(p){
+  return `<div class="gauge-wrap" title="與醫中比：第 ${p} 百分位（${zoneLabel(p)}）">
+    <div class="gauge"><div class="gauge-marker" style="left:${p}%"></div></div>
+    <span class="gauge-val" style="color:var(--${zone(p)==='amber'?'amber':zone(p)})">${p}%</span>
+  </div>`;
+}
+
+function statusBadge(s){
+  const map = {"正常":"green","停用":"gray","換指標":"amber"};
+  return `<span class="badge badge-${map[s]||'gray'}">${s}</span>`;
+}
+function methodBadge(m){
+  return `<span class="badge ${m==='系統'?'badge-green':'badge-amber'}">${m==='系統'?'⚙ 系統':'✎ 手工'}</span>`;
+}
+
+// 趨勢箭頭（9/2討論新增：本院比，與前月數值相比較，顯示於燈號右邊）
+function trendArrow(t){
+  const cfg = {
+    up:   {rot:-45, color:'var(--red)',  title:'較前月上升'},
+    down: {rot:45,  color:'var(--green)',title:'較前月下降'},
+    flat: {rot:0,   color:'var(--slate-light)', title:'與前月持平'}
+  }[t] || {rot:0,color:'var(--slate-light)',title:'—'};
+  return `<span title="${cfg.title}" style="display:inline-flex;transform:rotate(${cfg.rot}deg);color:${cfg.color};">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 7h8m0 0L7.5 3.5M11 7l-3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </span>`;
+}
+
+function escapeHtml(s){ return (s+'').replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// 小型彈出視窗（分子/分母 SQL 提示、圖表多URL選單 共用）
+function openMiniModal(title, bodyHtml){
+  let m = document.getElementById('miniModalOverlay');
+  if(!m){
+    m = document.createElement('div');
+    m.id = 'miniModalOverlay';
+    m.className = 'overlay';
+    m.innerHTML = `<div class="drawer" style="width:640px;max-width:92vw;" id="miniModalPanel"></div>`;
+    document.body.appendChild(m);
+    m.addEventListener('click', e=>{ if(e.target===m) m.classList.remove('active'); });
+  }
+  document.getElementById('miniModalPanel').innerHTML = `
+    <div class="drawer-head">
+      <h3 style="margin:0;font-size:16px;">${title}</h3>
+      <button class="drawer-close" onclick="document.getElementById('miniModalOverlay').classList.remove('active')">&times;</button>
+    </div>
+    <div class="drawer-body">${bodyHtml}</div>`;
+  m.classList.add('active');
+}
+
+// 分子/分母 SQL 編輯器（共用元件）：產生編輯區塊 HTML，並綁定驗證/儲存/還原事件
+// 供「指標基本檔／SQL維護」頁面的分頁，以及其他快速入口共用，確保全站只有一套編輯邏輯
+// 內含「操作型定義」文字欄位（收案條件、計算範圍等文字說明）與「SQL 邏輯」程式碼欄位，兩者一併儲存
+function sqlEditorBodyHtml(code, part){
+  const partLabel = part==='num'?'分子':'分母';
+  const custom = sqlIsCustom(code, part);
+  return `
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+      <span class="badge ${custom?'badge-amber':'badge-gray'}">${custom?'✎ 已自訂':'系統預設'}</span>
+      <span class="subtext" id="sqlMetaText-${code}-${part}">${sqlMeta(code, part)}</span>
+    </div>
+
+    <div class="dl-label" style="margin-top:2px;">操作型定義（文字說明）</div>
+    <div class="subtext" style="margin-bottom:6px;">以文字描述${partLabel}之收案條件、計算範圍與排除條件，供人工判讀與稽核對照，非程式邏輯本身。</div>
+    <textarea id="opdefEditor-${code}-${part}" rows="3" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:10px 12px;font-size:13px;font-family:inherit;line-height:1.6;">${escapeHtml(opDefOf(code, part))}</textarea>
+
+    <div class="dl-label" style="margin-top:16px;">SQL 邏輯（程式碼）</div>
+    <div class="subtext" style="margin-bottom:6px;">系統排程計算時實際執行之 SQL，需與上方操作型定義所述邏輯一致。</div>
+    <textarea class="sql-editor" id="sqlEditor-${code}-${part}" spellcheck="false">${escapeHtml(sqlSnippet(code, part))}</textarea>
+
+    <div class="notice" style="margin-top:12px;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      修改後請先「驗證語法」確認 SQL 可執行，再「儲存並生效」；操作型定義文字會一併儲存。生效後將於下次排程時套用新邏輯計算指標數值，請務必會同資訊部覆核操作型定義與 SQL 是否一致。
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:14px;">
+      <button class="btn btn-ghost btn-sm" id="sqlResetBtn-${code}-${part}" ${custom?'':'disabled'}>還原為系統預設</button>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-ghost btn-sm" id="sqlValidateBtn-${code}-${part}">🔎 驗證語法</button>
+        <button class="btn btn-primary btn-sm" id="sqlSaveBtn-${code}-${part}">儲存並生效</button>
+      </div>
+    </div>
+    <div id="sqlValidateResult-${code}-${part}" style="margin-top:8px;"></div>
+  `;
+}
+function bindSqlEditorEvents(code, part, onChange){
+  const partLabel = part==='num'?'分子':'分母';
+  const editor = document.getElementById(`sqlEditor-${code}-${part}`);
+  const opdefEditor = document.getElementById(`opdefEditor-${code}-${part}`);
+  document.getElementById(`sqlValidateBtn-${code}-${part}`).addEventListener('click', ()=>{
+    const val = editor.value.trim();
+    const resultEl = document.getElementById(`sqlValidateResult-${code}-${part}`);
+    // 簡易示意驗證：檢查基本關鍵字與括號配對，非真正連線資料庫執行
+    const hasSelect = /select/i.test(val);
+    const hasFrom = /from/i.test(val);
+    const parensBalanced = (val.match(/\(/g)||[]).length === (val.match(/\)/g)||[]).length;
+    if(hasSelect && hasFrom && parensBalanced){
+      resultEl.innerHTML = `<div style="color:var(--green);font-size:12.5px;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M4.3 7.2l1.8 1.8 3.6-3.8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>語法檢查通過（示意驗證，正式環境將連線測試資料庫執行）</div>`;
+    } else {
+      resultEl.innerHTML = `<div style="color:var(--red);font-size:12.5px;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M7 4v4M7 10h.01" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>語法檢查未通過：請確認含有 SELECT／FROM 子句，且括號數量成對。</div>`;
+    }
+  });
+  document.getElementById(`sqlSaveBtn-${code}-${part}`).addEventListener('click', ()=>{
+    const val = editor.value;
+    const opdefVal = opdefEditor.value;
+    if(!val.trim()){ showToast('SQL 內容不可為空'); return; }
+    if(!opdefVal.trim()){ showToast('操作型定義不可為空'); return; }
+    SQL_OVERRIDES[`${code}_${part}`] = { sql: val, opdef: opdefVal, editor: '目前使用者', time: new Date().toLocaleString('sv-SE').slice(0,16) };
+    const ind = INDICATORS.find(x=>x.code===code);
+    if(ind){
+      if(part==='num') ind.numerator = opdefVal; else ind.denominator = opdefVal;
+      ind.updateTime = new Date().toLocaleString('sv-SE').slice(0,16);
+      ind.updater = '目前使用者';
+    }
+    showToast(`${code}：${partLabel}操作型定義與SQL已儲存並生效`);
+    if(onChange) onChange();
+  });
+  document.getElementById(`sqlResetBtn-${code}-${part}`).addEventListener('click', ()=>{
+    delete SQL_OVERRIDES[`${code}_${part}`];
+    const ind = INDICATORS.find(x=>x.code===code);
+    if(ind){
+      const orig = ORIGINAL_OPDEF[`${code}_${part}`];
+      if(orig!==undefined){ if(part==='num') ind.numerator = orig; else ind.denominator = orig; }
+    }
+    showToast(`${code}：${partLabel}操作型定義與SQL已還原為系統預設`);
+    if(onChange) onChange();
+  });
+}
+
+function showChartPicker(code, name){
+  const links = chartLinks(code);
+  openMiniModal(`${name}　圖表串接`, `
+    <div class="subtext" style="margin-bottom:12px;">可選擇多個對應 URL 進行串接（9/2討論新增），點選後另開視窗導向 Power BI 對應頁面。</div>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      ${links.map(l=>`
+        <button class="btn btn-ghost" style="justify-content:space-between;width:100%;" onclick="showToast('已開啟：${l.label}（示意，非實際連結）')">
+          <span>${l.label}</span>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M4.5 8.5l4-4M5 4.5h3.5V8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>`).join('')}
+    </div>
+    <div class="field" style="margin-top:16px;">
+      <label>新增自訂圖表 URL</label>
+      <input type="text" placeholder="https://powerbi.internal.skh.org.tw/…" id="customChartUrl">
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px;">
+      <button class="btn btn-primary btn-sm" onclick="showToast('已新增自訂圖表連結')">儲存連結</button>
+    </div>
+  `);
+}
+
+// ===================== 導覽切換 =====================
+document.querySelectorAll('.nav-item').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    $crumb.textContent = VIEW_TITLES[view];
+    renderView(view);
+  });
+});
+
+function renderView(view){
+  const fns = {
+    dashboard: renderDashboard, manage: renderManage, import: renderImportView,
+    threshold: renderThreshold, manual: renderManual, annual: renderAnnual,
+    indmaint: renderIndicatorMaint, settings: renderSettings
+  };
+  $root.innerHTML = `<div class="view active" id="view-${view}"></div>`;
+  (fns[view]||renderDashboard)(document.getElementById(`view-${view}`));
+  document.getElementById('navCountManage').textContent = INDICATORS.filter(i=>i.status==='正常').length;
+  document.getElementById('navCountIndMaint').textContent = INDICATORS.length;
+}
+
+// ===================== 1. 總覽儀表板 =====================
+function renderDashboard(el){
+  const total = INDICATORS.length;
+  const red = INDICATORS.filter(i=>zone(i.percentile)==='red').length;
+  const amber = INDICATORS.filter(i=>zone(i.percentile)==='amber').length;
+  const pending = IMPORT_RECORDS.filter(r=>r.status==='待匯入').length;
+
+  const catCounts = {};
+  INDICATORS.forEach(i=> catCounts[i.category] = (catCounts[i.category]||0)+1);
+  const maxCat = Math.max(...Object.values(catCounts));
+
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">總覽儀表板</h1>
+        <p class="page-desc">彙整各分類指標燈號、待處理匯入與最新異動，作為醫品中心與資訊部每日巡檢的第一站。</p>
+      </div>
+      <button class="btn btn-primary" onclick="showToast('已匯出總覽報表 PDF')">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7m0 0L4.3 6.3M7 9l2.7-2.7" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M2.5 10v1.2A1.3 1.3 0 003.8 12.5h6.4a1.3 1.3 0 001.3-1.3V10" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>
+        匯出總覽報表
+      </button>
+    </div>
+
+    <div class="kpi-row">
+      <div class="card kpi"><div class="kpi-label"><span class="kpi-dot" style="background:var(--teal)"></span>納管指標總數</div><div class="kpi-value">${total}</div><div class="kpi-sub">橫跨 7 大分類</div></div>
+      <div class="card kpi"><div class="kpi-label"><span class="kpi-dot" style="background:var(--red)"></span>紅燈指標（&gt;75百分位）</div><div class="kpi-value" style="color:var(--red)">${red}</div><div class="kpi-sub">建議優先檢視改善方案</div></div>
+      <div class="card kpi"><div class="kpi-label"><span class="kpi-dot" style="background:var(--amber)"></span>黃燈指標（50–75百分位）</div><div class="kpi-value" style="color:#9C6B0C">${amber}</div><div class="kpi-sub">持續監測趨勢</div></div>
+      <div class="card kpi"><div class="kpi-label"><span class="kpi-dot" style="background:var(--slate-light)"></span>本月待匯入項目</div><div class="kpi-value">${pending}</div><div class="kpi-sub">醫中指標匯入排程</div></div>
+    </div>
+
+    <div class="card card-pad" style="margin-bottom:22px;">
+      <div class="section-title">六大系統功能 <span class="subtext" style="font-weight:400;">（對應 0802 醫品中心簡報「指標管理系統」規劃）</span></div>
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:10px;">
+        ${[
+          {icon:'🔍', label:'資料查詢', view:'manage'},
+          {icon:'📈', label:'趨勢分析', view:'manage'},
+          {icon:'🤝', label:'同儕比較', view:'manage'},
+          {icon:'🔔', label:'預警提示', view:'dashboard'},
+          {icon:'📐', label:'統計製程管制(SPC)', view:'manage'},
+          {icon:'🎯', label:'目標設定與判讀', view:'threshold'},
+        ].map(f=>`
+          <button class="btn btn-ghost" style="flex-direction:column;gap:6px;padding:14px 8px;height:auto;" onclick="document.querySelector('.nav-item[data-view=${f.view}]').click()">
+            <span style="font-size:20px;">${f.icon}</span>
+            <span style="font-size:11.5px;font-weight:600;">${f.label}</span>
+          </button>`).join('')}
+      </div>
+    </div>
+
+    <div class="card card-pad" style="margin-bottom:22px;background:linear-gradient(135deg, var(--teal-soft) 0%, #FFFFFF 70%);border-color:var(--teal);">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2l1.8 5.2L18 9l-5.2 1.8L11 16l-1.8-5.2L4 9l5.2-1.8L11 2z" fill="#fff"/></svg>
+        </div>
+        <div style="flex:1;min-width:220px;">
+          <div style="font-weight:700;font-size:14px;">✨ AI 指標助手（示意功能）</div>
+          <div class="subtext" style="margin-top:3px;">一句話找指標，或一句話描述需求讓 AI 產生新指標草稿。右下角浮動按鈕隨時可開啟。</div>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openAIAssistant()">開啟 AI 助手</button>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">A</span>各分類指標分布</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${Object.entries(catCounts).map(([c,n])=>`
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:112px;font-size:12.5px;color:var(--slate);flex-shrink:0;">${c}</div>
+              <div style="flex:1;background:var(--paper);border-radius:6px;height:14px;overflow:hidden;">
+                <div style="width:${(n/maxCat*100).toFixed(0)}%;height:100%;background:var(--teal);border-radius:6px;"></div>
+              </div>
+              <div class="mono" style="width:20px;text-align:right;font-size:12px;color:var(--slate);">${n}</div>
+            </div>`).join('')}
+        </div>
+        <div class="legend" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--line);">
+          <span><i style="background:var(--green)"></i>&lt;50 百分位（優於／同醫中）</span>
+          <span><i style="background:var(--amber)"></i>50–75 百分位</span>
+          <span><i style="background:var(--red)"></i>&gt;75 百分位（需關注）</span>
+        </div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">B</span>近期異動紀錄</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          ${INDICATORS.slice().sort((a,b)=> b.updateTime.localeCompare(a.updateTime)).slice(0,6).map(i=>`
+            <div style="display:flex;gap:10px;">
+              <div style="width:6px;height:6px;border-radius:50%;background:var(--${zone(i.percentile)});margin-top:6px;flex-shrink:0;"></div>
+              <div style="flex:1;min-width:0;">
+                <div style="font-size:12.5px;font-weight:600;">${i.name}</div>
+                <div class="subtext">${i.code} · ${i.updater} · ${i.updateTime}</div>
+              </div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+// ===================== 2. 指標管理 =====================
+let manageState = { category:"全部", l2:"", keyword:"", status:"全部" };
+
+function renderManage(el){
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">指標管理 <span class="subtext" style="font-weight:400;">（第一階段更名為「指標基本檔」）</span></h1>
+        <p class="page-desc">以指標為單位顯示（含子指標，不細到要素）。燈號代表本院數值與醫中匯入資料相比之百分位落點，每季更新一次；燈號右側顯示與前月相較之「本院比」趨勢箭頭。</p>
+      </div>
+    </div>
+
+    <div class="pilltabs" id="catPills"></div>
+    <div class="card filterbar" id="l2bar" style="display:none;"></div>
+
+    <div class="card filterbar">
+      <label>指標搜尋
+        <input type="text" id="mgKeyword" placeholder="關鍵字或代碼…" style="width:200px;">
+      </label>
+      <label>狀態
+        <select id="mgStatus">
+          <option>全部</option>
+          ${STATUS_OPTS.map(s=>`<option>${s}</option>`).join('')}
+        </select>
+      </label>
+      <div class="spacer"></div>
+      <div class="legend">
+        <span><i style="background:var(--green)"></i>綠燈 &lt;50</span>
+        <span><i style="background:var(--amber)"></i>黃燈 50–75</span>
+        <span><i style="background:var(--red)"></i>紅燈 &gt;75</span>
+      </div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr>
+          <th>與醫中比（燈號）</th><th>趨勢</th><th>指標代碼</th><th>指標名稱</th><th>分類</th><th>產生方式</th><th>狀態</th><th>更新時間</th><th></th>
+        </tr></thead>
+        <tbody id="mgBody"></tbody>
+      </table>
+    </div>
+    <div class="subtext" style="margin-top:10px;">※ 指標新增需提交資訊部處理，建置完成後續維護（如目標值、閾值）再交由使用者自行操作。</div>
+  `;
+
+  const pills = document.getElementById('catPills');
+  pills.innerHTML = CATEGORIES.map(c=>`<button data-cat="${c}" class="${c===manageState.category?'active':''}">${c}</button>`).join('');
+  pills.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+    manageState.category = b.dataset.cat; manageState.l2=''; renderManage(el);
+  }));
+
+  const l2bar = document.getElementById('l2bar');
+  if(manageState.category === 'TCPI'){
+    l2bar.style.display='flex';
+    const allL3 = Object.entries(TCPI_L2).map(([l2,arr])=>`<optgroup label="${l2}">${arr.map(x=>`<option value="${x}">${x}</option>`).join('')}</optgroup>`).join('');
+    l2bar.innerHTML = `<label>分類（第二/三層）
+      <select id="mgL2"><option value="">全部次分類</option>${allL3}</select>
+    </label>`;
+    document.getElementById('mgL2').value = manageState.l2;
+    document.getElementById('mgL2').addEventListener('change', e=>{ manageState.l2 = e.target.value; renderTable(); });
+  } else if(manageState.category === 'P4P'){
+    l2bar.style.display='flex';
+    l2bar.innerHTML = `<label>分類（第二層）
+      <select id="mgL2"><option value="">全部次分類</option>${P4P_L2.map(x=>`<option>${x}</option>`).join('')}</select>
+    </label>`;
+    document.getElementById('mgL2').value = manageState.l2;
+    document.getElementById('mgL2').addEventListener('change', e=>{ manageState.l2 = e.target.value; renderTable(); });
+  } else {
+    l2bar.style.display='none';
+  }
+
+  document.getElementById('mgKeyword').value = manageState.keyword;
+  document.getElementById('mgKeyword').addEventListener('input', e=>{ manageState.keyword = e.target.value; renderTable(); });
+  document.getElementById('mgStatus').value = manageState.status;
+  document.getElementById('mgStatus').addEventListener('change', e=>{ manageState.status = e.target.value; renderTable(); });
+
+  function renderTable(){
+    let list = INDICATORS.filter(i=>{
+      if(manageState.category!=='全部' && i.category!==manageState.category) return false;
+      if(manageState.l2 && i.l2!==manageState.l2 && i.l3!==manageState.l2) return false;
+      if(manageState.status!=='全部' && i.status!==manageState.status) return false;
+      if(manageState.keyword){
+        const k = manageState.keyword.toLowerCase();
+        if(!i.name.toLowerCase().includes(k) && !i.code.toLowerCase().includes(k)) return false;
+      }
+      return true;
+    });
+    const body = document.getElementById('mgBody');
+    if(list.length===0){
+      body.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--slate-light);padding:40px;">查無符合條件的指標</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(i=>`
+      <tr>
+        <td>${buildGauge(i.percentile)}</td>
+        <td>${trendArrow(i.trend)}</td>
+        <td class="code-cell">${i.code}</td>
+        <td class="name-cell">${i.name}${i.l3?`<div class="subtext">${i.l2} / ${i.l3}</div>`:(i.l2?`<div class="subtext">${i.l2}</div>`:'')}</td>
+        <td>${i.category}</td>
+        <td>${methodBadge(i.genMethod)}</td>
+        <td>${statusBadge(i.status)}</td>
+        <td class="subtext">${i.updateTime}</td>
+        <td><button class="icon-btn" onclick="openIndicatorDrawer('${i.code}')" title="檢視定義">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1.5 7S3.7 3 7 3s5.5 4 5.5 4-2.2 4-5.5 4-5.5-4-5.5-4z" stroke="currentColor" stroke-width="1.2"/><circle cx="7" cy="7" r="1.6" stroke="currentColor" stroke-width="1.2"/></svg>
+        </button></td>
+      </tr>`).join('');
+  }
+  renderTable();
+}
+
+function openIndicatorDrawer(code){
+  const i = INDICATORS.find(x=>x.code===code);
+  if(!i) return;
+  const overlay = document.getElementById('drawerOverlay');
+  const panel = document.getElementById('drawerPanel');
+  panel.innerHTML = `
+    <div class="drawer-head">
+      <div>
+        <div class="subtext mono">${i.code}</div>
+        <h3 style="margin:4px 0 0 0;font-size:18px;">${i.name}</h3>
+      </div>
+      <button class="drawer-close" onclick="closeDrawer()">&times;</button>
+    </div>
+    <div class="drawer-body">
+      <div class="dl-section" style="display:flex;gap:22px;align-items:center;">
+        ${buildGauge(i.percentile)}
+        <div>
+          <div class="dl-label">與醫中比</div>
+          <div class="dl-value">第 ${i.percentile} 百分位・${zoneLabel(i.percentile)}（${i.genMethod}產生）</div>
+        </div>
+        <div style="margin-left:auto;">
+          <div class="dl-label">本院比（較前月）</div>
+          <div class="dl-value" style="display:flex;align-items:center;gap:6px;">${trendArrow(i.trend)} ${i.trend==='up'?'上升':(i.trend==='down'?'下降':'持平')}</div>
+        </div>
+      </div>
+      <div class="dl-section">
+        <div class="dl-label">分類</div>
+        <div class="dl-value">${i.category}${i.l2?` ／ ${i.l2}`:''}${i.l3?` ／ ${i.l3}`:''}</div>
+      </div>
+      <div class="dl-section" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+        <div><div class="dl-label">目標值</div><div class="dl-value mono" style="padding:8px 10px;">${i.target}${i.unit}</div></div>
+        <div><div class="dl-label">平均值</div><div class="dl-value mono" style="padding:8px 10px;">${i.avg}${i.unit}</div></div>
+        <div><div class="dl-label">閾值範圍</div><div class="dl-value mono" style="padding:8px 10px;">${i.thLow}–${i.thHigh}${i.unit}</div></div>
+      </div>
+      <div class="dl-section">
+        <div class="dl-label">i. 計算方式（公版定義）</div>
+        <div class="dl-value">${i.calc}</div>
+      </div>
+      <div class="dl-section" style="display:flex;gap:24px;">
+        <div style="flex:1;">
+          <div class="dl-label">ii. 分子計算方式</div>
+          <div class="dl-value">${i.numerator}</div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="openIndicatorEditForm('${i.code}','num', ()=>openIndicatorDrawer('${i.code}'))">🔎 維護分子邏輯（SQL）${sqlIsCustom(i.code,'num')?' <span class="badge badge-amber" style="margin-left:4px;">已自訂</span>':''}</button>
+        </div>
+        <div style="flex:1;">
+          <div class="dl-label">分母計算方式</div>
+          <div class="dl-value">${i.denominator}</div>
+          <button class="btn btn-ghost btn-sm" style="margin-top:8px;" onclick="openIndicatorEditForm('${i.code}','den', ()=>openIndicatorDrawer('${i.code}'))">🔎 維護分母邏輯（SQL）${sqlIsCustom(i.code,'den')?' <span class="badge badge-amber" style="margin-left:4px;">已自訂</span>':''}</button>
+        </div>
+      </div>
+      <div class="dl-section">
+        <div class="dl-label">iii. 收案方式／相關說明</div>
+        <div class="dl-value">${i.inclusion}</div>
+      </div>
+      <div class="dl-section" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div><div class="dl-label">提報單位</div><div class="dl-value">${reportUnitOf(i)}</div></div>
+        <div><div class="dl-label">資料來源</div><div class="dl-value">${dataSourceOf(i)}</div></div>
+      </div>
+      <div class="dl-section">
+        <div class="dl-label">iv. 指標版本</div>
+        <div class="dl-value">${i.version}</div>
+      </div>
+      <div class="dl-section">
+        <div class="dl-label">v. 更新時間／更新人員</div>
+        <div class="dl-value">${i.updateTime} · ${i.updater}</div>
+      </div>
+      <div class="dl-section">
+        <div class="dl-label">vi. 圖表（可選擇多個 URL 串接）</div>
+        <div class="chart-placeholder" style="cursor:pointer;" onclick="showChartPicker('${i.code}','${escapeHtml(i.name)}')">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none"><path d="M4 20V10M12 20V4M20 20v-7" stroke="#8FA0A3" stroke-width="1.8" stroke-linecap="round"/></svg>
+          點擊選擇對應 Power BI 圖表連結（共 ${chartLinks(i.code).length} 組可選）
+        </div>
+      </div>
+
+      <div class="dl-section" style="border-top:1px solid var(--line);padding-top:18px;">
+        <div class="dl-label">vii. 歷期與同儕資料分析（0802醫品中心簡報回饋）</div>
+        <div class="pilltabs" id="chartTabs-${i.code}" style="margin:8px 0 4px 0;">
+          <button data-tab="trend" class="active">趨勢圖</button>
+          <button data-tab="control">管制圖</button>
+          <button data-tab="peer">同儕比較</button>
+        </div>
+        <div class="filterbar" style="padding:8px 0;">
+          <label style="flex-direction:row;align-items:center;gap:6px;font-weight:500;">維度下鑽
+            <select id="dimSelect-${i.code}" style="margin-left:4px;">
+              <option value="全院">全院彙總</option>
+              <option value="科別">依科別</option>
+              <option value="醫師別">依醫師別</option>
+              <option value="病房別">依病房別</option>
+              <option value="年齡別">依年齡別</option>
+            </select>
+          </label>
+          <span class="subtext">選擇頻率：月｜圖表：標記折線圖</span>
+        </div>
+        <div id="chartArea-${i.code}" class="card" style="padding:14px 16px;background:var(--paper);"></div>
+        <div class="subtext" id="chartNote-${i.code}" style="margin-top:8px;"></div>
+      </div>
+
+      <div class="dl-section" style="border-top:1px solid var(--line);padding-top:18px;">
+        <div class="dl-label">viii. Q&amp;A</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          ${qaOf(i).map(qa=>`
+            <div style="background:var(--paper);border-radius:8px;padding:10px 12px;">
+              <div style="font-weight:600;font-size:12.5px;">Q：${qa.q}</div>
+              <div class="subtext" style="margin-top:4px;">A：${qa.a}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  overlay.classList.add('active');
+  initIndicatorCharts(i);
+}
+
+function initIndicatorCharts(i){
+  let activeTab = 'trend';
+  const tabsEl = document.getElementById(`chartTabs-${i.code}`);
+  const areaEl = document.getElementById(`chartArea-${i.code}`);
+  const noteEl = document.getElementById(`chartNote-${i.code}`);
+  const dimSel = document.getElementById(`dimSelect-${i.code}`);
+
+  function draw(){
+    const dim = dimSel.value;
+    const dimShift = dim==='全院' ? 0 : (seedRand(i.code+dim,0)-0.5)*i.avg*0.15;
+    const monthly = indicatorMonthlySeries(i).map(v=> +(v+dimShift).toFixed(2));
+
+    // 找出該指標已存在的改善方案連結，標記於趨勢圖上
+    const markers = [];
+    for(let idx=0; idx<MONTH_LABELS.length; idx++){
+      if(IMPROVEMENT_LINKS[`${i.code}_${idx}`]) markers.push({idx, value: monthly[idx]});
+    }
+
+    if(activeTab==='trend'){
+      areaEl.innerHTML = svgLineChart({
+        series:[{name:`${i.name}（${dim}）`, values:monthly, color:'#1F6F6B'}],
+        labels: MONTH_LABELS, markers
+      });
+      noteEl.innerHTML = markers.length ? `📍 圓圈標記處為已上傳改善／行動方案之月份（${markers.map(m=>MONTH_LABELS[m.idx]).join('、')}）` : '尚無改善方案標記。點選年度指標查詢頁面之連結圖示可新增。';
+    } else if(activeTab==='control'){
+      const sd = Math.abs((i.thHigh - i.avg)/2) || i.avg*0.1;
+      const bands = {
+        ucl: MONTH_LABELS.map(()=> i.thHigh),
+        lcl: MONTH_LABELS.map(()=> i.thLow),
+        sigma1High: MONTH_LABELS.map(()=> +(i.avg+sd).toFixed(2)),
+        sigma1Low: MONTH_LABELS.map(()=> +(i.avg-sd).toFixed(2)),
+        target: MONTH_LABELS.map(()=> i.target),
+      };
+      areaEl.innerHTML = svgLineChart({
+        series:[{name:`${i.name}（實際值）`, values:monthly, color:'#16262E'}],
+        labels: MONTH_LABELS, bands
+      });
+      const outOfControl = monthly.filter(v=> v>i.thHigh || v<i.thLow).length;
+      noteEl.innerHTML = `管制界限：UCL ${i.thHigh}${i.unit}／LCL ${i.thLow}${i.unit}／目標 ${i.target}${i.unit}。${outOfControl>0?`<span style="color:var(--red);font-weight:600;">共 ${outOfControl} 個月超出管制界限，建議標記異常燈號並啟動改善。</span>`:'各月份均在管制界限內。'} 取代醫品部人工判讀管制圖作業。`;
+    } else {
+      const peer = peerSeries(i);
+      areaEl.innerHTML = svgLineChart({
+        series:[
+          {name:'本院', values:monthly, color:'#1F6F6B'},
+          {name:'去年同期值', values:peer.lastYear, color:'#8FA0A3'},
+          {name:'醫學中心平均', values:peer.medCenter, color:'#D99A2B'},
+          {name:'區域醫院平均', values:peer.regional, color:'#C1443C'},
+        ],
+        labels: MONTH_LABELS
+      });
+      noteEl.innerHTML = `醫學中心 Q3：${peer.medCenterQ3}${i.unit}／區域醫院 Q3：${peer.regionalQ3}${i.unit}（可於下方勾選調整比較對象，對應 THIS 同儕分析頁面設計）`;
+    }
+  }
+
+  tabsEl.querySelectorAll('button').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      tabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+      b.classList.add('active');
+      activeTab = b.dataset.tab;
+      draw();
+    });
+  });
+  dimSel.addEventListener('change', draw);
+  draw();
+}
+
+function closeDrawer(){ document.getElementById('drawerOverlay').classList.remove('active'); }
+document.getElementById('drawerOverlay').addEventListener('click', e=>{ if(e.target.id==='drawerOverlay') closeDrawer(); });
+
+// ===================== 3. 醫中指標匯入 =====================
+let importQueryState = { category:"P4P", month:"2026-05" };
+
+function renderImportView(el){
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">醫中指標匯入</h1>
+        <p class="page-desc">P4P 及 THIS 依提供的 Excel 格式匯入；TCPI 匯入類別分為「綜合照護指標」及「急性精神照護指標」。</p>
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">1</span>查詢介面</div>
+        <div class="filterbar" style="padding:0 0 14px 0;">
+          <label>分類搜尋
+            <select id="impQCat"><option>P4P</option><option>TCPI</option><option>THIS</option><option>DQI</option><option>對外提報</option></select>
+          </label>
+          <label>搜尋粒度
+            <select id="impQGran"><option value="month">月</option><option value="quarter">季</option><option value="year">年</option></select>
+          </label>
+          <label>期間
+            <input type="month" id="impQMonth" value="2026-05">
+          </label>
+        </div>
+        <div class="subtext" style="margin-bottom:10px;">9/2討論新增：搜尋條件保留可擴充彈性（如 DQI、對外提報），並新增「季」查詢粒度。</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>分類</th><th>子分類</th><th>月份</th><th>匯入筆數</th><th>匯入人員</th><th>匯入時間</th><th>狀態</th></tr></thead>
+            <tbody id="impQBody"></tbody>
+          </table>
+        </div>
+        <div class="subtext" style="margin-top:10px;">顯示資料依照原始 Excel 欄位結構呈現，供匯入前後比對。</div>
+      </div>
+
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">2</span>匯入介面</div>
+        <div class="formgrid">
+          <div class="field">
+            <label>匯入選項</label>
+            <select id="impCat">
+              <option>P4P</option><option>TCPI</option><option>THIS</option><option>DQI</option><option>對外提報</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>匯入月份</label>
+            <input type="month" id="impMonth" value="2026-06">
+          </div>
+          <div class="field full" id="impTcpiCatWrap" style="display:none;">
+            <label>匯入類別（TCPI）</label>
+            <select id="impTcpiCat">
+              <option>綜合照護指標</option>
+              <option>急性精神照護指標</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label>檔案格式：依照 Excel 範本</label>
+            <div class="upload-zone">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="#8FA0A3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="#8FA0A3" stroke-width="1.6" stroke-linecap="round"/></svg>
+              拖曳檔案至此，或 <b>點擊選擇 Excel 檔</b>
+              <span class="subtext">支援 .xlsx，需符合對應分類之匯入範本</span>
+            </div>
+          </div>
+        </div>
+        <div class="notice" style="margin-top:14px;">
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+          重新匯入規則：系統將依「分類＋子分類＋月份」為鍵值，<b>先刪除原有資料再匯入新檔案</b>，請確認上傳檔案為最終版本。
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:14px;">
+          <button class="btn btn-ghost" onclick="showToast('已下載範本')">下載範本</button>
+          <button class="btn btn-primary" id="impSubmit">開始匯入</button>
+        </div>
+      </div>
+    </div>
+  `;
+
+  function renderQTable(){
+    const cat = document.getElementById('impQCat').value;
+    const month = document.getElementById('impQMonth').value;
+    const list = IMPORT_RECORDS.filter(r=> r.category===cat && r.month===month);
+    const body = document.getElementById('impQBody');
+    if(list.length===0){
+      body.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--slate-light);padding:30px;">此分類／月份尚無匯入紀錄</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(r=>`
+      <tr>
+        <td>${r.category}</td><td>${r.subcat}</td><td>${r.month}</td>
+        <td class="mono">${r.items}</td><td>${r.importedBy}</td><td class="subtext">${r.time}</td>
+        <td>${r.status==='已匯入'?'<span class="badge badge-green">已匯入</span>':'<span class="badge badge-gray">待匯入</span>'}</td>
+      </tr>`).join('');
+  }
+  document.getElementById('impQCat').value = importQueryState.category;
+  document.getElementById('impQMonth').value = importQueryState.month;
+  document.getElementById('impQCat').addEventListener('change', e=>{ importQueryState.category=e.target.value; renderQTable(); });
+  document.getElementById('impQMonth').addEventListener('change', e=>{ importQueryState.month=e.target.value; renderQTable(); });
+  renderQTable();
+
+  const impCat = document.getElementById('impCat');
+  const tcpiWrap = document.getElementById('impTcpiCatWrap');
+  impCat.addEventListener('change', ()=>{ tcpiWrap.style.display = impCat.value==='TCPI' ? 'block' : 'none'; });
+
+  document.getElementById('impSubmit').addEventListener('click', ()=>{
+    showToast(`已送出匯入請求：${impCat.value} · ${document.getElementById('impMonth').value}`);
+  });
+}
+
+// ===================== 4. 閾值/目標值設定 =====================
+let thState = { category:"全部", l2:"", keyword:"", month:"2026-06", year:"2026", quarter:"2026-Q2", granularity:"month", freezeSim:false };
+
+function renderThreshold(el){
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">閾值、平均值及目標值輸入</h1>
+        <p class="page-desc">以「指標」為單位維護（不細到要素）。目標值由使用者手動輸入；平均值系統自動計算前一年平均，可手動修改；閾值＝年平均 ± 2 個標準差，同樣可手動覆寫。</p>
+      </div>
+      <button class="btn btn-primary" onclick="showToast('已儲存本頁修改')">儲存變更</button>
+    </div>
+
+    <div class="notice">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      標準差計算公式：X 為常態分布隨機變數之觀測值，μ 為分布平均值，σ 為標準差；閾值上下限 = μ ± 2σ。<br>
+      9/2討論新增：<b>每年 2/1</b> 系統將自動產生前一年之目標值與平均值（目標值預帶前一年平均值）；<b>每年 3/1</b> 起該年度欄位將自動凍結、不可再修改，如需異動請洽資訊部。
+    </div>
+
+    <div class="pilltabs" id="thPills"></div>
+    <div class="card filterbar" id="thL2bar" style="display:none;"></div>
+    <div class="card filterbar">
+      <label>指標搜尋 <input type="text" id="thKeyword" placeholder="關鍵字或代碼…" style="width:200px;"></label>
+      <label>搜尋粒度
+        <select id="thGranularity"><option value="year">年</option><option value="quarter">季</option><option value="month">月</option></select>
+      </label>
+      <label id="thPeriodWrap">期間 <input type="text" id="thMonth"></label>
+      <div class="spacer"></div>
+      <label style="flex-direction:row;align-items:center;gap:6px;font-weight:500;">
+        <input type="checkbox" id="thFreezeSim" style="width:auto;"> 模擬 3/1 後畫面（欄位凍結）
+      </label>
+      <div class="subtext">共 <span id="thCount">0</span> 筆</div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr>
+          <th>指標代碼</th><th>指標名稱</th><th>目標值<br><span class="editable-note">手動輸入</span></th>
+          <th>平均值<br><span class="editable-note">自動算出，可修改</span></th>
+          <th>閾值下限</th><th>閾值上限</th><th>更新時間</th><th>更新人員</th>
+        </tr></thead>
+        <tbody id="thBody"></tbody>
+      </table>
+    </div>
+  `;
+
+  const pills = document.getElementById('thPills');
+  pills.innerHTML = CATEGORIES.map(c=>`<button data-cat="${c}" class="${c===thState.category?'active':''}">${c}</button>`).join('');
+  pills.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{ thState.category=b.dataset.cat; thState.l2=''; renderThreshold(el); }));
+
+  const l2bar = document.getElementById('thL2bar');
+  if(thState.category==='TCPI'){
+    l2bar.style.display='flex';
+    const allL3 = Object.entries(TCPI_L2).map(([l2,arr])=>`<optgroup label="${l2}">${arr.map(x=>`<option value="${x}">${x}</option>`).join('')}</optgroup>`).join('');
+    l2bar.innerHTML = `<label>分類（第二/三層）<select id="thL2"><option value="">全部次分類</option>${allL3}</select></label>`;
+    document.getElementById('thL2').value = thState.l2;
+    document.getElementById('thL2').addEventListener('change', e=>{ thState.l2=e.target.value; renderTable(); });
+  } else if(thState.category==='P4P'){
+    l2bar.style.display='flex';
+    l2bar.innerHTML = `<label>分類（第二層）<select id="thL2"><option value="">全部次分類</option>${P4P_L2.map(x=>`<option>${x}</option>`).join('')}</select></label>`;
+    document.getElementById('thL2').value = thState.l2;
+    document.getElementById('thL2').addEventListener('change', e=>{ thState.l2=e.target.value; renderTable(); });
+  } else { l2bar.style.display='none'; }
+
+  const granSel = document.getElementById('thGranularity');
+  const periodInput = document.getElementById('thMonth');
+  function syncPeriodInput(){
+    const g = granSel.value;
+    if(g==='year'){ periodInput.type='number'; periodInput.min=2020; periodInput.max=2030; periodInput.value = thState.year; }
+    else if(g==='quarter'){ periodInput.type='text'; periodInput.placeholder='如 2026-Q2'; periodInput.value = thState.quarter; }
+    else { periodInput.type='month'; periodInput.value = thState.month; }
+  }
+  granSel.value = thState.granularity;
+  syncPeriodInput();
+  granSel.addEventListener('change', ()=>{ thState.granularity = granSel.value; syncPeriodInput(); });
+  periodInput.addEventListener('change', e=>{
+    if(thState.granularity==='year') thState.year = e.target.value;
+    else if(thState.granularity==='quarter') thState.quarter = e.target.value;
+    else thState.month = e.target.value;
+  });
+
+  document.getElementById('thKeyword').value = thState.keyword;
+  document.getElementById('thKeyword').addEventListener('input', e=>{ thState.keyword=e.target.value; renderTable(); });
+  document.getElementById('thFreezeSim').checked = thState.freezeSim;
+  document.getElementById('thFreezeSim').addEventListener('change', e=>{ thState.freezeSim = e.target.checked; renderTable(); });
+
+  function renderTable(){
+    let list = INDICATORS.filter(i=>{
+      if(thState.category!=='全部' && i.category!==thState.category) return false;
+      if(thState.l2 && i.l2!==thState.l2 && i.l3!==thState.l2) return false;
+      if(thState.keyword){
+        const k = thState.keyword.toLowerCase();
+        if(!i.name.toLowerCase().includes(k) && !i.code.toLowerCase().includes(k)) return false;
+      }
+      return true;
+    });
+    document.getElementById('thCount').textContent = list.length;
+    const body = document.getElementById('thBody');
+    if(list.length===0){
+      body.innerHTML = `<tr><td colspan="8" style="text-align:center;color:var(--slate-light);padding:40px;">查無符合條件的指標</td></tr>`;
+      return;
+    }
+    const frozen = thState.freezeSim;
+    body.innerHTML = list.map(i=>`
+      <tr data-code="${i.code}">
+        <td class="code-cell">${i.code}${frozen?' <span class="badge badge-gray" style="margin-left:4px;">🔒</span>':''}</td>
+        <td class="name-cell">${i.name}</td>
+        <td>${frozen?`<span class="mono">${i.target}${i.unit}</span>`:`<input type="number" step="0.1" class="mini th-target" value="${i.target}"> ${i.unit}`}</td>
+        <td>${frozen?`<span class="mono">${i.avg}${i.unit}</span>`:`<input type="number" step="0.1" class="mini th-avg" value="${i.avg}"> ${i.unit}`}</td>
+        <td>${frozen?`<span class="mono">${i.thLow}</span>`:`<input type="number" step="0.1" class="mini th-low" value="${i.thLow}">`}</td>
+        <td>${frozen?`<span class="mono">${i.thHigh}</span>`:`<input type="number" step="0.1" class="mini th-high" value="${i.thHigh}">`}</td>
+        <td class="subtext">${i.updateTime}</td>
+        <td class="subtext">${i.updater}</td>
+      </tr>`).join('');
+
+    if(!frozen){
+      body.querySelectorAll('tr').forEach(tr=>{
+        const code = tr.dataset.code;
+        tr.querySelector('.th-avg').addEventListener('change', e=>{
+          const avg = parseFloat(e.target.value);
+          const sd = Math.abs(avg*0.28) || 0.3; // 示意標準差估算
+          tr.querySelector('.th-low').value = (avg - 2*sd).toFixed(1);
+          tr.querySelector('.th-high').value = (avg + 2*sd).toFixed(1);
+          showToast(`${code}：已依新平均值重新計算閾值（μ±2σ）`);
+        });
+      });
+    }
+  }
+  renderTable();
+}
+
+// ===================== 5. 指標填報（醫品中心） =====================
+let manualState = { category:"全部", keyword:"", month:"2026-06" };
+
+function renderManual(el){
+  const lockDay = 26;
+  const now = new Date(2026,6,7); // 模擬今日 2026-07-07
+  const isLocked = now.getDate() >= lockDay;
+
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">指標填報（醫品中心）</h1>
+        <p class="page-desc">手工填報介面，操作方式與年度指標查詢畫面一致。每月 26 號將鎖定前一個月數值，鎖定後不可輸入，如需異動請由醫品中心釐清後，資訊部協助修訂。</p>
+      </div>
+      <button class="btn btn-ghost" onclick="showToast('已依查詢條件匯出 Excel')">依查詢條件匯出</button>
+    </div>
+
+    <div class="notice">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      每月 26 日將自動鎖定前一個月填報數值。今日模擬日期為 2026-07-07，${isLocked ? '<b>2026-06 資料已鎖定，如需修改請洽資訊部。</b>' : '本月尚未鎖定，可正常填報。'}
+    </div>
+
+    <div class="pilltabs" id="mnPills"></div>
+    <div class="card filterbar">
+      <label>指標搜尋 <input type="text" id="mnKeyword" placeholder="關鍵字或代碼…" style="width:200px;"></label>
+      <label>月份搜尋 <input type="month" id="mnMonth" value="2026-06"></label>
+      <div class="spacer"></div>
+      <div class="subtext">共 <span id="mnCount">0</span> 筆</div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr><th>指標代碼</th><th>指標名稱</th><th>分類</th><th>本月填報值</th><th>目標值</th><th>狀態</th></tr></thead>
+        <tbody id="mnBody"></tbody>
+      </table>
+    </div>
+  `;
+
+  const pills = document.getElementById('mnPills');
+  pills.innerHTML = CATEGORIES.map(c=>`<button data-cat="${c}" class="${c===manualState.category?'active':''}">${c}</button>`).join('');
+  pills.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{ manualState.category=b.dataset.cat; renderTable(); pills.querySelectorAll('button').forEach(x=>x.classList.toggle('active', x===b)); }));
+
+  document.getElementById('mnKeyword').addEventListener('input', e=>{ manualState.keyword=e.target.value; renderTable(); });
+  document.getElementById('mnMonth').addEventListener('change', e=>{ manualState.month=e.target.value; renderTable(); });
+
+  function renderTable(){
+    let list = INDICATORS.filter(i=>{
+      if(manualState.category!=='全部' && i.category!==manualState.category) return false;
+      if(manualState.keyword){
+        const k = manualState.keyword.toLowerCase();
+        if(!i.name.toLowerCase().includes(k) && !i.code.toLowerCase().includes(k)) return false;
+      }
+      return true;
+    });
+    document.getElementById('mnCount').textContent = list.length;
+    const body = document.getElementById('mnBody');
+    body.innerHTML = list.map(i=>`
+      <tr>
+        <td class="code-cell">${i.code}</td>
+        <td class="name-cell">${i.name}</td>
+        <td>${i.category}</td>
+        <td>${isLocked
+          ? `<span class="mono">${i.avg}${i.unit}</span> <span class="badge badge-gray" style="margin-left:6px;">🔒 已鎖定</span>`
+          : `<input type="number" step="0.1" class="mini" value="${i.avg}"> ${i.unit}`}
+        </td>
+        <td class="mono">${i.target}${i.unit}</td>
+        <td>${statusBadge(i.status)}</td>
+      </tr>`).join('');
+  }
+  renderTable();
+}
+
+// ===================== 6. 年度指標查詢 =====================
+let annualState = { category:"全部", year:"2026" };
+
+function renderAnnual(el){
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">年度指標查詢</h1>
+        <p class="page-desc">包含系統及手工指標要素之年度趨勢檢視。改善方案僅指標層級需要（要素不需要），每月最多一份，可選擇存放 KM 連結，或直接上傳 Word／PDF／Excel 等檔案，上傳後可隨時下載回原始檔案。</p>
+      </div>
+      <button class="btn btn-ghost" onclick="showToast('已依查詢條件匯出 Excel')">依查詢條件匯出</button>
+    </div>
+
+    <div class="pilltabs" id="anPills"></div>
+    <div class="card filterbar">
+      <label>指標搜尋 <input type="text" id="anKeyword" placeholder="關鍵字或代碼…" style="width:200px;"></label>
+      <label>年份搜尋
+        <select id="anYear"><option>2026</option><option>2025</option><option>2024</option></select>
+      </label>
+      <div class="spacer"></div>
+      <div class="legend">
+        <span><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M2 9l3-3 2.5 2.5L13 3" stroke="var(--slate-light)" stroke-width="1.4"/></svg> 尚無改善方案</span>
+        <span><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="var(--teal)" stroke-width="1.3"/><path d="M4.5 6h5M4.5 8.5h3" stroke="var(--teal)" stroke-width="1.2" stroke-linecap="round"/></svg> 已存有 KM 連結</span>
+        <span><svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 2.5h5.5L11 5v6.5a.6.6 0 01-.6.6H3a.6.6 0 01-.6-.6V3.1a.6.6 0 01.6-.6z" stroke="var(--teal)" stroke-width="1.2" stroke-linejoin="round"/></svg> 已上傳檔案，點擊下載</span>
+      </div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr>
+          <th>指標代碼</th><th>指標名稱</th>
+          ${ANNUAL_MONTHS.map(m=>`<th>${m}</th>`).join('')}
+        </tr></thead>
+        <tbody id="anBody"></tbody>
+      </table>
+    </div>
+  `;
+
+  const pills = document.getElementById('anPills');
+  pills.innerHTML = CATEGORIES.map(c=>`<button data-cat="${c}" class="${c===annualState.category?'active':''}">${c}</button>`).join('');
+  pills.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+    annualState.category=b.dataset.cat;
+    pills.querySelectorAll('button').forEach(x=>x.classList.toggle('active', x===b));
+    renderTable();
+  }));
+  document.getElementById('anKeyword').addEventListener('input', renderTable);
+  document.getElementById('anYear').addEventListener('change', e=>{ annualState.year=e.target.value; renderTable(); });
+
+  function renderTable(){
+    const keyword = document.getElementById('anKeyword').value.toLowerCase();
+    let list = INDICATORS.filter(i=>{
+      if(annualState.category!=='全部' && i.category!==annualState.category) return false;
+      if(keyword && !i.name.toLowerCase().includes(keyword) && !i.code.toLowerCase().includes(keyword)) return false;
+      return true;
+    });
+    const body = document.getElementById('anBody');
+    if(list.length===0){
+      body.innerHTML = `<tr><td colspan="${ANNUAL_MONTHS.length+2}" style="text-align:center;color:var(--slate-light);padding:40px;">查無符合條件的指標</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(i=>{
+      const series = genAnnualSeries(i.avg, i.avg*0.06);
+      const dataRow = `<tr>
+        <td class="code-cell">${i.code}</td>
+        <td class="name-cell">${i.name}</td>
+        ${series.map(v=> `<td class="mono">${v===null?'<span class="subtext">—</span>':v}</td>`).join('')}
+      </tr>`;
+      const linkRow = `<tr style="background:#FAFCFB;">
+        <td colspan="2" class="subtext" style="text-align:right;padding-right:14px;">改善方案（連結／檔案）</td>
+        ${ANNUAL_MONTHS.map((m,idx)=>{
+          const link = IMPROVEMENT_LINKS[`${i.code}_${idx}`];
+          if(link && link.type==='file'){
+            const ext = fileExt(link.fileName);
+            const tag = fileIconIdOf(ext);
+            return `<td><button class="icon-btn" title="${link.fileName}（${link.fileSize}）&#10;由 ${link.savedBy} 於 ${link.time} 上傳&#10;點擊下載" style="border-color:${tag.color};color:${tag.color};" onclick="downloadImprovementFile('${i.code}',${idx})">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M3 2.5h5.5L11 5v6.5a.6.6 0 01-.6.6H3a.6.6 0 01-.6-.6V3.1a.6.6 0 01.6-.6z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 5.5v3M5.5 7l1.5 1.5L8.5 7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button></td>`;
+          }
+          if(link && link.type==='link'){
+            return `<td><button class="icon-btn" title="${link.url}&#10;由 ${link.savedBy} 於 ${link.time} 存入&#10;點擊開啟連結" style="border-color:var(--teal);color:var(--teal);" onclick="showToast('已開啟連結：${link.url}')">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><rect x="2" y="2" width="10" height="10" rx="2" stroke="currentColor" stroke-width="1.3"/><path d="M4.5 6h5M4.5 8.5h3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            </button></td>`;
+          }
+          return `<td><button class="icon-btn" title="尚無改善方案，點擊新增連結或上傳檔案" onclick="promptImprovementLink('${i.code}',${idx})">
+            <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M7 3v8M3 7h8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+          </button></td>`;
+        }).join('')}
+      </tr>`;
+      return dataRow + linkRow;
+    }).join('');
+  }
+  renderTable();
+
+  window.downloadImprovementFile = function(code, idx){
+    const link = IMPROVEMENT_LINKS[`${code}_${idx}`];
+    if(!link || link.type!=='file') return;
+    const a = document.createElement('a');
+    a.href = link.objectUrl;
+    a.download = link.fileName;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast(`已下載：${link.fileName}`);
+  };
+
+  window.promptImprovementLink = function(code, idx){
+    let mode = 'link';
+    let pendingFile = null;
+    const renderBody = () => `
+      <div class="pilltabs" id="imLinkTabs" style="margin-bottom:14px;">
+        <button data-m="link" class="${mode==='link'?'active':''}">KM 連結</button>
+        <button data-m="file" class="${mode==='file'?'active':''}">上傳檔案</button>
+      </div>
+      <div class="subtext" style="margin-bottom:10px;">每月至多存放一份改善方案（連結或檔案擇一），上傳後可隨時下載回原始檔案。</div>
+      <div id="imLinkPane"></div>
+    `;
+    openMiniModal(`${code}　改善方案（${ANNUAL_MONTHS[idx]}）`, renderBody());
+
+    function renderPane(){
+      const pane = document.getElementById('imLinkPane');
+      if(mode==='link'){
+        pane.innerHTML = `
+          <div class="field"><label>KM 文件連結網址</label><input type="text" id="kmLinkInput" placeholder="https://km.skh.org.tw/docs/…"></div>
+          <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+            <button class="btn btn-primary btn-sm" id="kmSaveBtn">存入連結</button>
+          </div>`;
+        document.getElementById('kmSaveBtn').addEventListener('click', ()=>{
+          const url = document.getElementById('kmLinkInput').value.trim();
+          if(!url){ showToast('請輸入連結網址'); return; }
+          IMPROVEMENT_LINKS[`${code}_${idx}`] = {type:'link', url, savedBy:'目前使用者', time: new Date().toLocaleString('sv-SE').slice(0,16)};
+          showToast(`${code}：已存入 ${ANNUAL_MONTHS[idx]} 改善方案連結`);
+          document.getElementById('miniModalOverlay').classList.remove('active');
+          renderTable();
+        });
+      } else {
+        pane.innerHTML = `
+          <div class="upload-zone" id="imUploadZone" style="cursor:pointer;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M12 3v12m0 0l-4-4m4 4l4-4" stroke="#8FA0A3" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke="#8FA0A3" stroke-width="1.6" stroke-linecap="round"/></svg>
+            <span id="imUploadLabel">點擊選擇檔案，或拖曳至此</span>
+            <span class="subtext">支援 .pdf .doc .docx .xls .xlsx .ppt .pptx，單檔 20MB 以內</span>
+            <input type="file" id="imFileInput" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="display:none;">
+          </div>
+          <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+            <button class="btn btn-primary btn-sm" id="imSaveBtn" disabled>儲存檔案</button>
+          </div>`;
+        const zone = document.getElementById('imUploadZone');
+        const input = document.getElementById('imFileInput');
+        const label = document.getElementById('imUploadLabel');
+        const saveBtn = document.getElementById('imSaveBtn');
+        zone.addEventListener('click', ()=> input.click());
+        input.addEventListener('change', ()=>{
+          const f = input.files[0];
+          if(!f) return;
+          const okExt = ['pdf','doc','docx','xls','xlsx','ppt','pptx'].includes(fileExt(f.name));
+          if(!okExt){ showToast('檔案格式不支援，請上傳 pdf/doc/docx/xls/xlsx/ppt/pptx'); return; }
+          pendingFile = f;
+          label.textContent = `已選擇：${f.name}（${(f.size/1024).toFixed(0)} KB）`;
+          saveBtn.disabled = false;
+        });
+        saveBtn.addEventListener('click', ()=>{
+          if(!pendingFile) return;
+          const objectUrl = URL.createObjectURL(pendingFile);
+          IMPROVEMENT_LINKS[`${code}_${idx}`] = {
+            type:'file', fileName: pendingFile.name, fileSize: (pendingFile.size/1024).toFixed(0)+' KB',
+            objectUrl, savedBy:'目前使用者', time: new Date().toLocaleString('sv-SE').slice(0,16)
+          };
+          showToast(`${code}：已上傳 ${ANNUAL_MONTHS[idx]} 改善方案檔案`);
+          document.getElementById('miniModalOverlay').classList.remove('active');
+          renderTable();
+        });
+      }
+    }
+    document.getElementById('imLinkTabs').querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        mode = b.dataset.m;
+        document.getElementById('imLinkTabs').querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+        b.classList.add('active');
+        renderPane();
+      });
+    });
+    renderPane();
+  };
+}
+
+// ===================== 7. 指標基本檔／SQL維護（合併頁面） =====================
+let indMaintState = { category:"全部", keyword:"" };
+
+function renderIndicatorMaint(el){
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">指標基本檔／SQL維護</h1>
+        <p class="page-desc">維護指標之基本資訊（代碼、名稱、分類、單位、說明、收案方式、狀態）與分子／分母 SQL 計算邏輯，整合為單一入口。點擊「編輯」可在同一視窗切換「基本資料」與「SQL邏輯」分頁。</p>
+      </div>
+      <button class="btn btn-primary" onclick="openIndicatorEditForm(null)">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 3v8M3 7h8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+        新增指標
+      </button>
+    </div>
+
+    <div class="notice">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      分子／分母欄位顯示目前邏輯狀態（預設／已自訂），點擊可直接跳至該指標編輯視窗的「SQL邏輯」分頁維護；修改後請務必會同資訊部覆核再生效。
+    </div>
+
+    <div class="pilltabs" id="imPills"></div>
+    <div class="card filterbar">
+      <label>指標搜尋 <input type="text" id="imKeyword" placeholder="關鍵字或代碼…" style="width:220px;"></label>
+      <div class="spacer"></div>
+      <div class="subtext">共 <span id="imCount">0</span> 筆，已自訂SQL <span id="imSqlCustomCount">0</span> 筆</div>
+    </div>
+
+    <div class="card table-wrap">
+      <table>
+        <thead><tr>
+          <th>指標代碼</th><th>指標名稱</th><th>分類</th><th>單位</th><th>分子邏輯</th><th>分母邏輯</th><th>狀態</th><th>更新時間</th><th></th>
+        </tr></thead>
+        <tbody id="imBody"></tbody>
+      </table>
+    </div>
+  `;
+
+  const pills = document.getElementById('imPills');
+  pills.innerHTML = CATEGORIES.map(c=>`<button data-cat="${c}" class="${c===indMaintState.category?'active':''}">${c}</button>`).join('');
+  pills.querySelectorAll('button').forEach(b=> b.addEventListener('click', ()=>{
+    indMaintState.category = b.dataset.cat;
+    pills.querySelectorAll('button').forEach(x=>x.classList.toggle('active', x===b));
+    renderTable();
+  }));
+  document.getElementById('imKeyword').addEventListener('input', e=>{ indMaintState.keyword=e.target.value; renderTable(); });
+
+  function sqlPartCell(i, part){
+    const custom = sqlIsCustom(i.code, part);
+    return `<td><button class="btn btn-ghost btn-sm" style="${custom?'border-color:var(--amber);color:#9C6B0C;':''}" onclick="openIndicatorEditForm('${i.code}','${part}', renderIndMaintRefresh)">
+      🔎 ${part==='num'?'分子':'分母'} ${custom?'<span class="badge badge-amber" style="margin-left:4px;">已自訂</span>':'<span class="badge badge-gray" style="margin-left:4px;">預設</span>'}
+    </button></td>`;
+  }
+
+  function renderTable(){
+    let list = INDICATORS.filter(i=>{
+      if(indMaintState.category!=='全部' && i.category!==indMaintState.category) return false;
+      if(indMaintState.keyword){
+        const k = indMaintState.keyword.toLowerCase();
+        if(!i.name.toLowerCase().includes(k) && !i.code.toLowerCase().includes(k)) return false;
+      }
+      return true;
+    });
+    document.getElementById('imCount').textContent = list.length;
+    document.getElementById('imSqlCustomCount').textContent = list.filter(i=> sqlIsCustom(i.code,'num')||sqlIsCustom(i.code,'den')).length;
+    const body = document.getElementById('imBody');
+    if(list.length===0){
+      body.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--slate-light);padding:40px;">查無符合條件的指標</td></tr>`;
+      return;
+    }
+    body.innerHTML = list.map(i=>`
+      <tr>
+        <td class="code-cell">${i.code}</td>
+        <td class="name-cell">${i.name}${i.l3?`<div class="subtext">${i.l2} / ${i.l3}</div>`:(i.l2?`<div class="subtext">${i.l2}</div>`:'')}</td>
+        <td>${i.category}</td>
+        <td class="mono">${i.unit||'—'}</td>
+        ${sqlPartCell(i,'num')}
+        ${sqlPartCell(i,'den')}
+        <td>${statusBadge(i.status)}</td>
+        <td class="subtext">${i.updateTime}</td>
+        <td style="white-space:nowrap;">
+          <button class="icon-btn" title="編輯基本資料" onclick="openIndicatorEditForm('${i.code}')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M3 11l.5-2.6 6-6 2.1 2.1-6 6L3 11z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="icon-btn" title="${i.status==='停用'?'啟用':'停用'}" onclick="toggleIndicatorStatus('${i.code}')">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.4" stroke="currentColor" stroke-width="1.2"/><path d="M7 4.2v3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          </button>
+        </td>
+      </tr>`).join('');
+  }
+  window.renderIndMaintRefresh = renderTable;
+  renderTable();
+}
+
+window.toggleIndicatorStatus = function(code){
+  const i = INDICATORS.find(x=>x.code===code);
+  if(!i) return;
+  i.status = i.status==='停用' ? '正常' : '停用';
+  i.updateTime = new Date().toLocaleString('sv-SE').slice(0,16);
+  i.updater = '目前使用者';
+  showToast(`${code}：狀態已切換為「${i.status}」`);
+  if(window.renderIndMaintRefresh) window.renderIndMaintRefresh();
+};
+
+function nextIndicatorCode(){
+  let n = INDICATORS.length + 1;
+  let code;
+  do { code = `NEW-${String(n).padStart(3,'0')}`; n++; } while(INDICATORS.some(x=>x.code===code));
+  return code;
+}
+
+// 指標編輯視窗：整合「基本資料」與「分子/分母 SQL邏輯」三個分頁於同一視窗
+// initialTab: 'basic' | 'num' | 'den'；onSaved：儲存後的回呼（未指定時預設刷新本頁列表）
+// prefill：新增指標時可帶入預設欄位值（例如由 AI 助手草稿帶入）
+window.openIndicatorEditForm = function(code, initialTab, onSaved, prefill){
+  const isNew = !code;
+  const i = isNew ? Object.assign({
+    code:'', name:'', category:CATEGORIES[1], l2:'', l3:'', unit:'%', genMethod:'手工', status:'正常',
+    percentile:50, trend:'flat', target:0, avg:0, thLow:0, thHigh:0,
+    calc:'', numerator:'', denominator:'', inclusion:'', definition:'', note:'', version:'v1.0（新建）',
+    updateTime:new Date().toLocaleString('sv-SE').slice(0,16), updater:'目前使用者'
+  }, prefill||{}) : INDICATORS.find(x=>x.code===code);
+  if(!i){ showToast('找不到指標資料'); return; }
+
+  const refresh = () => { if(onSaved) onSaved(); else if(window.renderIndMaintRefresh) window.renderIndMaintRefresh(); };
+  let activeTab = (!isNew && initialTab) ? initialTab : 'basic';
+
+  const renderL2Options = (cat, selected) => {
+    if(cat==='TCPI'){
+      const allL3 = Object.entries(TCPI_L2).map(([l2,arr])=>`<optgroup label="${l2}">${arr.map(x=>`<option value="${x}" ${x===selected?'selected':''}>${x}</option>`).join('')}</optgroup>`).join('');
+      return `<option value="">（無）</option>${allL3}`;
+    }
+    if(cat==='P4P'){
+      return `<option value="">（無）</option>${P4P_L2.map(x=>`<option value="${x}" ${x===selected?'selected':''}>${x}</option>`).join('')}`;
+    }
+    return `<option value="">（不適用）</option>`;
+  };
+
+  function basicPaneHtml(){
+    return `
+    <div class="formgrid">
+      <div class="field"><label>指標代碼${isNew?'':'（既有指標不可修改）'}</label><input type="text" id="imfCode" value="${escapeHtml(i.code||(isNew?nextIndicatorCode():''))}" ${isNew?'':'disabled'}></div>
+      <div class="field"><label>指標名稱</label><input type="text" id="imfName" value="${escapeHtml(i.name)}"></div>
+      <div class="field"><label>分類</label>
+        <select id="imfCategory">${CATEGORIES.slice(1).map(c=>`<option value="${c}" ${c===i.category?'selected':''}>${c}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>次分類（TCPI／P4P適用）</label><select id="imfL2">${renderL2Options(i.category, i.category==='TCPI' ? i.l3 : i.l2)}</select></div>
+      <div class="field"><label>單位</label>
+        <select id="imfUnit">${UNIT_OPTIONS.map(u=>`<option value="${u}" ${u===i.unit?'selected':''}>${u}</option>`).join('')}</select>
+      </div>
+      <div class="field"><label>產生方式</label>
+        <select id="imfMethod"><option value="系統" ${i.genMethod==='系統'?'selected':''}>系統</option><option value="手工" ${i.genMethod==='手工'?'selected':''}>手工</option></select>
+      </div>
+      <div class="field"><label>狀態</label>
+        <select id="imfStatus"><option value="正常" ${i.status==='正常'?'selected':''}>正常</option><option value="停用" ${i.status==='停用'?'selected':''}>停用</option></select>
+      </div>
+      <div class="field"><label>提報單位</label><input type="text" id="imfReportUnit" value="${escapeHtml(i.reportUnit||reportUnitOf(i))}"></div>
+      <div class="field full"><label>說明／定義</label><textarea id="imfDefinition" rows="3" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;">${escapeHtml(i.definition||'')}</textarea></div>
+      <div class="field full"><label>計算方式</label><textarea id="imfCalc" rows="2" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;">${escapeHtml(i.calc||'')}</textarea></div>
+      <div class="field"><label>分子計算方式（摘要）</label><textarea id="imfNumerator" rows="2" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;">${escapeHtml(i.numerator||'')}</textarea></div>
+      <div class="field"><label>分母計算方式（摘要）</label><textarea id="imfDenominator" rows="2" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;">${escapeHtml(i.denominator||'')}</textarea></div>
+      <div class="field full"><p class="subtext" style="margin:-6px 0 0 0;">完整操作型定義與 SQL 邏輯請至「分子邏輯 SQL」／「分母邏輯 SQL」分頁維護，儲存後會同步更新此處摘要。</p></div>
+      <div class="field full"><label>收案方式／相關說明</label><textarea id="imfInclusion" rows="2" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;">${escapeHtml(i.inclusion||'')}</textarea></div>
+      <div class="field full"><label>備註</label><textarea id="imfNote" rows="2" style="width:100%;border:1px solid var(--line);border-radius:7px;padding:9px 11px;font-size:13px;font-family:inherit;">${escapeHtml(i.note||'')}</textarea></div>
+      <div class="field"><label>指標版本</label><input type="text" id="imfVersion" value="${escapeHtml(i.version||'')}"></div>
+    </div>
+    <div class="notice" style="margin-top:14px;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      指標新增需提交資訊部處理，建置完成後續維護（如目標值、閾值、分子/分母 SQL）再交由使用者自行操作。
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('miniModalOverlay').classList.remove('active')">取消</button>
+      <button class="btn btn-primary btn-sm" id="imfSaveBtn">${isNew?'新增並儲存':'儲存變更'}</button>
+    </div>`;
+  }
+
+  function bindBasicPane(){
+    document.getElementById('imfCategory').addEventListener('change', e=>{
+      document.getElementById('imfL2').innerHTML = renderL2Options(e.target.value, '');
+    });
+    document.getElementById('imfSaveBtn').addEventListener('click', ()=>{
+      const code2 = document.getElementById('imfCode').value.trim();
+      const name = document.getElementById('imfName').value.trim();
+      if(!code2 || !name){ showToast('指標代碼與名稱為必填'); return; }
+      if(isNew && INDICATORS.some(x=>x.code===code2)){ showToast('指標代碼已存在，請重新輸入'); return; }
+
+      const category = document.getElementById('imfCategory').value;
+      const l2val = document.getElementById('imfL2').value;
+      const payload = {
+        name, category,
+        l2: category==='TCPI' ? (Object.keys(TCPI_L2).find(k=>TCPI_L2[k].includes(l2val))||'') : (category==='P4P' ? '' : ''),
+        l3: category==='TCPI' ? l2val : '',
+        unit: document.getElementById('imfUnit').value,
+        genMethod: document.getElementById('imfMethod').value,
+        status: document.getElementById('imfStatus').value,
+        reportUnit: document.getElementById('imfReportUnit').value.trim(),
+        definition: document.getElementById('imfDefinition').value,
+        calc: document.getElementById('imfCalc').value,
+        numerator: document.getElementById('imfNumerator').value,
+        denominator: document.getElementById('imfDenominator').value,
+        inclusion: document.getElementById('imfInclusion').value,
+        note: document.getElementById('imfNote').value,
+        version: document.getElementById('imfVersion').value,
+        updateTime: new Date().toLocaleString('sv-SE').slice(0,16),
+        updater: '目前使用者',
+      };
+      if(category==='P4P') payload.l2 = l2val;
+
+      if(isNew){
+        INDICATORS.push(Object.assign({}, i, payload, {code:code2}));
+        ORIGINAL_OPDEF[`${code2}_num`] = payload.numerator || '';
+        ORIGINAL_OPDEF[`${code2}_den`] = payload.denominator || '';
+        showToast(`已新增指標 ${code2}`);
+        document.getElementById('miniModalOverlay').classList.remove('active');
+      } else {
+        Object.assign(i, payload);
+        showToast(`${code2}：指標基本檔已儲存`);
+        document.getElementById('miniModalOverlay').classList.remove('active');
+      }
+      refresh();
+      const navTag = document.getElementById('navCountIndMaint');
+      if(navTag) navTag.textContent = INDICATORS.length;
+    });
+  }
+
+  function render(){
+    if(isNew){
+      openMiniModal('新增指標', basicPaneHtml());
+      bindBasicPane();
+      return;
+    }
+    openMiniModal(`${i.code}　指標維護`, `
+      <div class="pilltabs" id="indTabs" style="margin-bottom:14px;">
+        <button data-t="basic" class="${activeTab==='basic'?'active':''}">基本資料</button>
+        <button data-t="num" class="${activeTab==='num'?'active':''}">分子邏輯 SQL${sqlIsCustom(i.code,'num')?' 🟠':''}</button>
+        <button data-t="den" class="${activeTab==='den'?'active':''}">分母邏輯 SQL${sqlIsCustom(i.code,'den')?' 🟠':''}</button>
+      </div>
+      <div id="indFormPane"></div>
+    `);
+    document.getElementById('indTabs').querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        activeTab = b.dataset.t;
+        document.getElementById('indTabs').querySelectorAll('button').forEach(x=>x.classList.toggle('active', x===b));
+        renderPane();
+      });
+    });
+    renderPane();
+  }
+
+  function renderPane(){
+    const pane = document.getElementById('indFormPane');
+    if(activeTab==='basic'){
+      pane.innerHTML = basicPaneHtml();
+      bindBasicPane();
+    } else {
+      const part = activeTab; // 'num' | 'den'
+      pane.innerHTML = `
+        <div class="subtext" style="margin-bottom:6px;">${i.name} — 系統排程計算時使用之 SQL 邏輯，可自行修改後儲存生效。</div>
+        ${sqlEditorBodyHtml(i.code, part)}
+      `;
+      bindSqlEditorEvents(i.code, part, ()=>{
+        refresh();
+        // 更新分頁標籤上的自訂圓點與表格內「已自訂」徽章
+        document.getElementById('indTabs').querySelectorAll('button').forEach(b=>{
+          if(b.dataset.t==='num') b.innerHTML = `分子邏輯 SQL${sqlIsCustom(i.code,'num')?' 🟠':''}`;
+          if(b.dataset.t==='den') b.innerHTML = `分母邏輯 SQL${sqlIsCustom(i.code,'den')?' 🟠':''}`;
+        });
+        renderPane();
+      });
+    }
+  }
+
+  render();
+};
+
+
+// ===================== 8. 基本檔/權限維護（現有保留） =====================
+function renderSettings(el){
+  el.innerHTML = `
+    <div class="page-head">
+      <div>
+        <h1 class="page-title">基本檔／權限維護</h1>
+        <p class="page-desc">此區塊為現有功能保留項目，維持原操作方式不變。</p>
+      </div>
+    </div>
+    <div class="two-col">
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">1</span>指標基本檔設定</div>
+        <p class="dl-value" style="color:var(--slate);">維護指標代碼、名稱、分類歸屬、單位、說明與啟用狀態，並可於同一視窗切換維護分子/分母 SQL 邏輯。已建置為獨立頁面，可於左側「指標基本檔／SQL維護」直接操作。</p>
+        <button class="btn btn-ghost btn-sm" style="margin-top:10px;" onclick="document.querySelector('.nav-item[data-view=indmaint]').click()">前往維護 →</button>
+      </div>
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">2</span>手工填報權限維護</div>
+        <p class="dl-value" style="color:var(--slate);">設定各單位人員對應可填報之指標分類與範圍。</p>
+      </div>
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">3</span>指標寄送設定</div>
+        <p class="dl-value" style="color:var(--slate);">現行以排程寄送指標異動通知；未來由 CDR 報表呈現後可考慮取消本功能。</p>
+      </div>
+      <div class="card card-pad">
+        <div class="section-title"><span class="n">4</span>選單權限維護</div>
+        <p class="dl-value" style="color:var(--slate);">依角色設定可見選單與操作權限，沿用現有系統管理介面。</p>
+      </div>
+    </div>
+
+    <div class="card card-pad" style="margin-top:18px;">
+      <div class="section-title"><span class="n">CR</span>開發歷程對照（依三份規格書彙整）</div>
+      <div style="display:flex;flex-direction:column;gap:16px;">
+        <div style="display:flex;gap:14px;">
+          <div class="badge badge-green" style="flex-shrink:0;height:fit-content;">第一階段</div>
+          <div class="dl-value" style="color:var(--slate);">UI 介面開發：指標基本檔建置、醫中指標匯入介面、閾值/平均值/目標值輸入介面。9/2討論新增分目錄、月份搜尋加入「季」、指標列表新增「趨勢」箭頭與分子/分母 SQL 檢視、圖表可串接多組 URL、狀態搜尋拿掉「換指標」選項。</div>
+        </div>
+        <div style="display:flex;gap:14px;">
+          <div class="badge badge-amber" style="flex-shrink:0;height:fit-content;">第二階段</div>
+          <div class="dl-value" style="color:var(--slate);">醫中指標匯入功能實作（重新匯入將先刪除原資料再匯入）；閾值/平均值/目標值計算邏輯：每年 2/1 自動產生前一年目標值與平均值，平均值修改時閾值自動重算，每年 3/1 欄位凍結不可再修改。</div>
+        </div>
+        <div style="display:flex;gap:14px;">
+          <div class="badge badge-gray" style="flex-shrink:0;height:fit-content;">第三階段</div>
+          <div class="dl-value" style="color:var(--slate);">年度指標查詢修改（新增匯出按鈕）；改善方案上傳原決議為 KM 知識管理平台「檔案連結」設計，僅指標層級需要、每月至多一份。<br><span style="color:var(--teal-deep);font-weight:600;">後續使用者回饋補充：</span>除 KM 連結外，另開放直接上傳 Word／PDF／Excel／PowerPoint 等檔案，並可隨時下載回原始檔案。</div>
+        </div>
+        <div style="display:flex;gap:14px;">
+          <div class="badge" style="flex-shrink:0;height:fit-content;background:#E9E4F5;color:#5A3E9E;">0802簡報</div>
+          <div class="dl-value" style="color:var(--slate);">醫品中心回饋：歷期資料分析（趨勢圖／管制圖，取代人工管制圖判讀）、同儕資料分析（去年同期值、醫學中心／區域醫院平均與 Q3）、指標異常燈號化、需支援維度下鑽（科別／醫師別／病房別／年齡別）、改善方案需可標記於趨勢圖上。已納入本原型「指標管理」詳情頁的歷期與同儕分析區塊。</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-pad" style="margin-top:18px;">
+      <div class="section-title">痛點對應（依 0802 簡報「現況問題」彙整）</div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>原系統痛點</th><th>本原型對應方案</th></tr></thead>
+          <tbody>
+            <tr><td>驗證碼辨識困難，平均需輸入 3 次以上才成功</td><td>新平台採院內單一登入（SSO），移除圖形驗證碼機制</td></tr>
+            <tr><td>查詢等待過久，逾 75% 機率需久候資料才出現</td><td>資料來源由 BIKM 人工彙整改為 Power BI 直接串接後台資料庫，排程自動更新</td></tr>
+            <tr><td>手工填報平台使用率低、不易進入</td><td>整合單一入口（指標管理／指標填報／年度查詢皆同一平台），降低操作門檻</td></tr>
+            <tr><td>106 項指標仰賴人工讀管制圖（約 212 分鐘/次）</td><td>改為燈號自動判讀（目標值±閾值），管制圖僅作為輔助分析圖表</td></tr>
+            <tr><td>指標資料缺乏「維度」欄位，無法深入分析</td><td>指標詳情頁新增維度下鑽選項（科別／醫師別／病房別／年齡別）</td></tr>
+            <tr><td>不清楚 email 通知 3 次內容差異、指標與指標相關報表窗口不明</td><td>改為系統內查詢取代 email 通知，並於各功能頁標註對應提報單位</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="notice" style="margin-top:18px;">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none"><circle cx="7.5" cy="7.5" r="6.2" stroke="#8A5D0C" stroke-width="1.3"/><path d="M7.5 5v3.4M7.5 10.4h.01" stroke="#8A5D0C" stroke-width="1.4" stroke-linecap="round"/></svg>
+      <b>待與醫品中心確認之規格落差：</b>CR 規格書（第二階段）載明目標值／平均值預設為「前一年平均」，惟 0802 簡報第23頁載明「目標值：過去2年平均」，兩者基準不一致，建議會議中確認採用哪個版本後統一調整計算邏輯。
+    </div>
+  `;
+}
+
+// ===================== 9. AI 指標助手（示意功能） =====================
+// 純前端規則式關鍵字解析，模擬「一句話找指標／一句話生成指標」的 AI 助手體驗。
+// 正式導入時建議改由後端串接 LLM（如 Claude API）解析語意並回傳結構化結果。
+
+const AI_CATEGORY_HINTS = [
+  { cat:"TCPI", keys:["tcpi","加護病房","icu","手術","精神科","約束","跌倒","壓傷"] },
+  { cat:"P4P", keys:["p4p","論質計酬","急性後期","pac"] },
+  { cat:"THIS", keys:["this","回診","急診壅塞","等候"] },
+  { cat:"DQI", keys:["dqi","病歷","資料品質"] },
+  { cat:"對外提報", keys:["對外提報","通報","疾管署","法定傳染病"] },
+  { cat:"營運分析", keys:["營運","住院天數","病床","佔床","使用率"] },
+];
+const AI_GENERATE_HINTS = ["新增","建立","建置","生成","新建","做一個","做一支","幫我做","幫我建立","幫我新增","幫我建置","加入一個"];
+const AI_FIND_HINTS = ["找","查","搜尋","查詢","有哪些","看看","列出","顯示","哪些指標"];
+const AI_LIGHT_HINTS = [
+  { key:"紅燈", test:p=>zone(p)==='red' }, { key:"紅色", test:p=>zone(p)==='red' }, { key:"異常", test:p=>zone(p)==='red' },
+  { key:"黃燈", test:p=>zone(p)==='amber' }, { key:"綠燈", test:p=>zone(p)==='green' }, { key:"良好", test:p=>zone(p)==='green' },
+];
+
+function aiDetectCategory(text){
+  const low = text.toLowerCase();
+  for(const h of AI_CATEGORY_HINTS){ if(h.keys.some(k=>low.includes(k))) return h.cat; }
+  return null;
+}
+function aiDetectUnit(text){
+  if(/比率|率|百分|%/.test(text)) return '%';
+  if(/千分|‰/.test(text)) return '‰';
+  if(/人次/.test(text)) return '人次';
+  if(/天數|天/.test(text)) return '天';
+  return '%';
+}
+function aiIsGenerateIntent(text){ return AI_GENERATE_HINTS.some(k=>text.includes(k)); }
+
+function aiExtractName(text){
+  const m = text.match(/[「『"']([^」』"']{2,40})[」』"']/);
+  if(m) return m[1];
+  let cleaned = text;
+  [...AI_GENERATE_HINTS, "指標", "一個", "一支", "幫我"].forEach(k=>{ cleaned = cleaned.split(k).join(''); });
+  cleaned = cleaned.replace(/(TCPI|P4P|THIS|DQI|對外提報|營運分析|分類|百分比|人次|天數|的|，|,|。)/gi, ' ').trim();
+  return cleaned || '未命名指標草稿';
+}
+
+function aiFindIndicators(text){
+  const low = text.toLowerCase();
+  const cat = aiDetectCategory(text);
+  const lightHint = AI_LIGHT_HINTS.find(h=>text.includes(h.key));
+  const statusHint = text.includes('停用') ? '停用' : (text.includes('正常') && !text.includes('不正常') ? '正常' : null);
+  const methodHint = text.includes('手工') ? '手工' : (text.includes('系統') ? '系統' : null);
+  // 移除意圖詞、分類詞、燈號詞後剩下的字，當作關鍵字比對指標名稱/代碼
+  let kw = text;
+  [...AI_FIND_HINTS, ...AI_CATEGORY_HINTS.flatMap(h=>h.keys), '指標','相關','的'].forEach(k=>{ kw = kw.split(k).join(' '); });
+  kw = kw.replace(/[，,。？?！!]/g,' ').trim();
+  const kwTokens = kw.split(/\s+/).filter(t=>t.length>=2);
+
+  // 明確條件（分類／燈號／狀態／產生方式）視為必要篩選（AND），避免像「TCPI裡紅燈」誤把TCPI裡的綠燈也列入
+  let pool = INDICATORS;
+  if(cat) pool = pool.filter(i=>i.category===cat);
+  if(lightHint) pool = pool.filter(i=>lightHint.test(i.percentile));
+  if(statusHint) pool = pool.filter(i=>i.status===statusHint);
+  if(methodHint) pool = pool.filter(i=>i.genMethod===methodHint);
+
+  const scored = pool.map(i=>{
+    let score = 1; // 通過上述必要篩選即有基礎分數
+    kwTokens.forEach(t=>{
+      if(i.name.includes(t) || i.code.toLowerCase().includes(t.toLowerCase())) score += 2;
+    });
+    if(text.toUpperCase().includes(i.code)) score += 5;
+    return { i, score };
+  }).sort((a,b)=>b.score-a.score).slice(0,8).map(x=>x.i);
+
+  // 若有明確條件但完全無結果，退回全庫依關鍵字比對，避免使用者拿不到任何回應
+  if(scored.length===0 && kwTokens.length>0){
+    const fallback = INDICATORS.filter(i=> kwTokens.some(t=> i.name.includes(t) || i.code.toLowerCase().includes(t.toLowerCase()))).slice(0,8);
+    return { results: fallback, cat, lightHint, statusHint, methodHint, kwTokens };
+  }
+
+  return { results: scored, cat, lightHint, statusHint, methodHint, kwTokens };
+}
+
+function aiGenerateDraft(text){
+  const category = aiDetectCategory(text) || CATEGORIES[1];
+  const unit = aiDetectUnit(text);
+  const name = aiExtractName(text);
+  const genMethod = text.includes('手工') ? '手工' : '系統';
+  const definition = `（AI 草稿，請確認並補充）依描述「${text}」自動產生：說明本指標之收案對象、計算期間與排除條件。`;
+  const calc = `分子/分母 × 100${unit==='%'?'%':''}`;
+  return { name, category, unit, genMethod, definition, calc };
+}
+
+function aiOpenDrawerFor(code){ closeAIAssistant(); document.querySelector('.nav-item[data-view=manage]').click(); setTimeout(()=>openIndicatorDrawer(code), 150); }
+
+function aiAppendBubble(role, html){
+  const log = document.getElementById('aiLog');
+  const div = document.createElement('div');
+  div.className = `chat-bubble ${role==='user'?'chat-user':'chat-ai'}`;
+  div.innerHTML = html;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function aiRespond(text){
+  if(aiIsGenerateIntent(text)){
+    const draft = aiGenerateDraft(text);
+    const draftIdx = AI_DRAFTS.push(draft) - 1;
+    aiAppendBubble('ai', `
+      我理解您想「新增指標」，已依描述產生草稿如下，請確認後再儲存：
+      <div class="ai-result-card" style="cursor:default;">
+        <div style="font-weight:600;font-size:13px;">${escapeHtml(draft.name)}</div>
+        <div class="subtext" style="margin-top:4px;">分類：${draft.category}　單位：${draft.unit}　產生方式：${draft.genMethod}</div>
+        <div class="subtext" style="margin-top:4px;">${escapeHtml(draft.definition)}</div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="aiApplyDraftByIndex(${draftIdx})">套用到新增指標表單</button>
+      <div class="subtext" style="margin-top:8px;">⚠️ 示意功能：實際名稱、計算方式仍需人工確認，指標新增仍須提交資訊部處理。</div>
+    `);
+  } else {
+    const { results, cat, lightHint, statusHint } = aiFindIndicators(text);
+    if(results.length===0){
+      aiAppendBubble('ai', `找不到符合的指標，換個說法試試？例如指定分類（TCPI/P4P/THIS…）或關鍵字（如「跌倒」「再入院」）。`);
+      return;
+    }
+    const condDesc = [cat?`分類=${cat}`:null, lightHint?`燈號=${lightHint.key}`:null, statusHint?`狀態=${statusHint}`:null].filter(Boolean).join('、');
+    aiAppendBubble('ai', `
+      ${condDesc?`我解讀到的條件：${condDesc}。`:''}找到 ${results.length} 筆相關指標，點擊可查看詳情：
+      ${results.map(i=>`
+        <div class="ai-result-card" onclick="aiOpenDrawerFor('${i.code}')">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="code-cell">${i.code}</span>${statusBadge(i.status)}
+          </div>
+          <div style="font-weight:600;font-size:13px;margin-top:3px;">${i.name}</div>
+          <div class="subtext" style="margin-top:2px;">${i.category} · 與醫中比第${i.percentile}百分位（${zoneLabel(i.percentile)}）</div>
+        </div>`).join('')}
+    `);
+  }
+}
+
+// 存放 AI 生成的指標草稿，供按鈕以索引取用，避免直接把 JSON 字串塞進 onclick 屬性造成解析問題
+const AI_DRAFTS = [];
+window.aiApplyDraftByIndex = function(idx){
+  const draft = AI_DRAFTS[idx];
+  if(!draft) return;
+  closeAIAssistant();
+  document.querySelector('.nav-item[data-view=indmaint]').click();
+  setTimeout(()=> openIndicatorEditForm(null, 'basic', null, draft), 150);
+};
+
+function aiSend(){
+  const input = document.getElementById('aiInput');
+  const text = input.value.trim();
+  if(!text) return;
+  aiAppendBubble('user', escapeHtml(text));
+  input.value = '';
+  setTimeout(()=> aiRespond(text), 250); // 模擬思考延遲
+}
+window.aiSendExample = function(idx){
+  const text = AI_EXAMPLE_CHIPS[idx];
+  if(!text) return;
+  document.getElementById('aiInput').value = text;
+  aiSend();
+};
+
+const AI_EXAMPLE_CHIPS = [
+  "幫我找TCPI裡面紅燈的指標",
+  "有哪些跌倒相關的指標",
+  "幫我建立一個「出院後7天內再急診比率」指標，DQI分類，百分比",
+  "查詢停用的指標",
+];
+
+function openAIAssistant(){
+  const overlay = document.getElementById('aiOverlay');
+  overlay.classList.add('active');
+  const log = document.getElementById('aiLog');
+  if(!log.dataset.inited){
+    log.dataset.inited = '1';
+    aiAppendBubble('ai', `您好，我是 AI 指標助手（示意功能）。您可以：<br>① 用一句話描述想找的指標，我會幫您篩選；<br>② 用一句話描述新指標，我會幫您產生草稿供確認。`);
+    const chips = document.getElementById('aiChips');
+    chips.innerHTML = AI_EXAMPLE_CHIPS.map((c,idx)=>`<button class="btn btn-ghost btn-sm" style="font-size:11.5px;padding:5px 10px;" onclick="aiSendExample(${idx})">${escapeHtml(c)}</button>`).join('');
+  }
+  document.getElementById('aiInput').focus();
+}
+function closeAIAssistant(){ document.getElementById('aiOverlay').classList.remove('active'); }
+document.getElementById('aiOverlay').addEventListener('click', e=>{ if(e.target.id==='aiOverlay') closeAIAssistant(); });
+document.getElementById('aiSendBtn').addEventListener('click', aiSend);
+document.getElementById('aiInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); aiSend(); }
+});
+
+// ===================== 初始化 =====================
+renderView('dashboard');
+
+</script>
+</body>
+</html>
