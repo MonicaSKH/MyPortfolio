@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAC.Record - 施打紀錄查詢與補建</title>
+  <link rel="stylesheet" href="../../../.github/skills/ui-preview/references/xui-base.css">
+  <style>
+    .x-form-grid { display: grid; grid-template-columns: 100px 1fr 100px 1fr 100px 1fr; gap: 10px 12px; align-items: center; }
+    .x-form-grid label { font-size: 14px; font-weight: 500; color: var(--xv-text--high-emphasis-text); text-align: right; white-space: nowrap; }
+    .x-form-grid-4 { display: grid; grid-template-columns: 120px 1fr 120px 1fr; gap: 12px 16px; align-items: center; }
+    .x-form-grid-4 label { font-size: 14px; font-weight: 500; color: var(--xv-text--high-emphasis-text); text-align: right; white-space: nowrap; }
+    .x-card-container + .x-card-container { margin-top: 16px; }
+    .x-btn-group { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 0; }
+    .x-status-badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+    .x-status-badge--success { background: rgba(9,122,31,0.12); color: var(--xv-status--success); }
+    .x-status-badge--pending { background: rgba(0,103,204,0.12); color: var(--xv-status--primary); }
+    .x-status-badge--error { background: rgba(191,46,58,0.12); color: var(--xv-status--error); }
+    .x-status-badge--warning { background: rgba(168,84,0,0.12); color: var(--xv-status--warning); }
+    .x-status-badge--manual { background: rgba(168,84,0,0.12); color: var(--xv-status--warning); }
+    .x-info-banner { padding: 10px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+    .x-info-banner--info { background: rgba(0,103,204,0.08); border-left: 4px solid var(--xv-status--primary); color: var(--xv-status--primary); }
+    .x-summary-bar { display: flex; gap: 24px; padding: 8px 16px; font-size: 14px; color: var(--xv-text--medium-emphasis-text); background: var(--xv-container--surface); border-radius: 6px; margin-bottom: 8px; }
+    .x-summary-bar strong { color: var(--xv-text--high-emphasis-text); }
+    .x-detail-panel { background: var(--xv-container--surface); border: 1px solid var(--xv-text--dividing-line); border-radius: 8px; padding: 16px; margin-top: 12px; }
+    .x-audit-trail { font-size: 13px; color: var(--xv-text--medium-emphasis-text); border-top: 1px solid var(--xv-text--dividing-line); padding-top: 8px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="x-page-layout">
+    <!-- Header -->
+    <div class="x-page-layout-header">
+      <span class="x-page-layout-header-title">VAC.Record 施打紀錄查詢與補建</span>
+      <div class="x-page-layout-header-item-group">
+        <button class="x-btn x-btn--sm x-btn--tertiary">匯出 Excel</button>
+        <button class="x-btn x-btn--sm x-btn--primary">補建紀錄</button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="x-page-layout-body">
+
+      <!-- Query Section -->
+      <div class="x-card-container">
+        <div class="x-card-header">查詢條件</div>
+        <div class="x-card-body">
+          <div class="x-form-grid">
+            <label>病患姓名</label>
+            <div class="x-input-text-container x-input-text-container--standalone">
+              <input class="x-input-input" type="text" placeholder="姓名/身分證/病歷號" />
+            </div>
+            <label>疫苗種類</label>
+            <select class="x-select-native x-select-native--md">
+              <option value="">全部</option>
+              <option value="FLU">流感疫苗</option>
+              <option value="COV">COVID-19</option>
+              <option value="HBV">B型肝炎</option>
+              <option value="DTP">五合一</option>
+            </select>
+            <label>上傳狀態</label>
+            <select class="x-select-native x-select-native--md">
+              <option value="">全部</option>
+              <option value="N">未上傳</option>
+              <option value="S">已上傳</option>
+              <option value="F">上傳失敗</option>
+            </select>
+            <label>施打日起</label>
+            <input class="x-input-input--date" type="date" value="2026-04-01" />
+            <label>施打日迄</label>
+            <input class="x-input-input--date" type="date" value="2026-04-10" />
+            <label></label>
+            <div>
+              <button class="x-btn x-btn--md x-btn--primary">查詢</button>
+              <button class="x-btn x-btn--md x-btn--tertiary" style="margin-left:8px;">清除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary Bar -->
+      <div class="x-summary-bar">
+        <span>查詢結果：<strong>12</strong> 筆</span>
+        <span>未上傳：<strong style="color:var(--xv-status--primary);">5</strong></span>
+        <span>已上傳：<strong style="color:var(--xv-status--success);">6</strong></span>
+        <span>上傳失敗：<strong style="color:var(--xv-status--error);">1</strong></span>
+      </div>
+
+      <!-- Results Table -->
+      <div class="x-card-container">
+        <div class="x-card-body" style="padding:0;">
+          <div class="x-table-wrap" style="max-height: 340px; overflow: auto;">
+            <table class="x-table-native">
+              <thead>
+                <tr>
+                  <th style="width:120px;">施打日期</th>
+                  <th style="width:100px;">病患姓名</th>
+                  <th style="width:100px;">病歷號</th>
+                  <th style="width:160px;">疫苗名稱</th>
+                  <th style="width:120px;">批號</th>
+                  <th style="width:60px;">劑次</th>
+                  <th style="width:80px;">公費/自費</th>
+                  <th style="width:90px;">上傳狀態</th>
+                  <th style="width:70px;">來源</th>
+                  <th style="width:100px;">操作</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="x-table-row--selected">
+                  <td>2026-04-10</td><td>張小芳</td><td>P20250815001</td>
+                  <td>B型肝炎疫苗</td><td>HBV-2026C01</td><td>第3劑</td>
+                  <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                  <td><span class="x-status-badge x-status-badge--pending">未上傳</span></td>
+                  <td>施打</td>
+                  <td><button class="x-btn x-btn--sm x-btn--tertiary">修改</button></td>
+                </tr>
+                <tr>
+                  <td>2026-04-10</td><td>林阿公</td><td>P19410302003</td>
+                  <td>流感疫苗（四價）</td><td>FLU-2026B01</td><td>--</td>
+                  <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                  <td><span class="x-status-badge x-status-badge--success">已上傳</span></td>
+                  <td>施打</td>
+                  <td><button class="x-btn x-btn--sm x-btn--tertiary">查看</button></td>
+                </tr>
+                <tr>
+                  <td>2026-04-09</td><td>陳美玲</td><td>P19850710005</td>
+                  <td>COVID-19 追加劑</td><td>COV-XBB-02</td><td>第4劑</td>
+                  <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                  <td><span class="x-status-badge x-status-badge--error">失敗</span></td>
+                  <td>施打</td>
+                  <td><button class="x-btn x-btn--sm x-btn--danger">修正</button></td>
+                </tr>
+                <tr>
+                  <td>2026-04-08</td><td>王小弟</td><td>P20260101002</td>
+                  <td>五合一疫苗</td><td>DTP-2026A01</td><td>第2劑</td>
+                  <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                  <td><span class="x-status-badge x-status-badge--success">已上傳</span></td>
+                  <td><span class="x-status-badge x-status-badge--manual">補建</span></td>
+                  <td><button class="x-btn x-btn--sm x-btn--tertiary">查看</button></td>
+                </tr>
+                <tr>
+                  <td>2026-04-07</td><td>李大花</td><td>P19750420008</td>
+                  <td>HPV疫苗（9價）</td><td>HPV-2026D01</td><td>第1劑</td>
+                  <td style="color:var(--xv-text--medium-emphasis-text);">自費</td>
+                  <td><span class="x-status-badge x-status-badge--pending">未上傳</span></td>
+                  <td>施打</td>
+                  <td><button class="x-btn x-btn--sm x-btn--tertiary">修改</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detail Panel (for selected record) -->
+      <div class="x-detail-panel">
+        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-size: 16px; font-weight: 700;">紀錄詳細 — 張小芳 / B型肝炎疫苗 第3劑</span>
+          <div style="display:flex; gap:8px;">
+            <button class="x-btn x-btn--sm x-btn--primary">儲存修改</button>
+            <button class="x-btn x-btn--sm x-btn--danger">刪除紀錄</button>
+            <button class="x-btn x-btn--sm x-btn--tertiary">取消</button>
+          </div>
+        </div>
+        <div class="x-form-grid-4">
+          <label>施打日期</label>
+          <input class="x-input-input--date" type="date" value="2026-04-10" />
+          <label>施打時間</label>
+          <div class="x-input-text-container x-input-text-container--standalone" style="max-width:120px;">
+            <input class="x-input-input" type="text" value="10:30" />
+          </div>
+          <label>疫苗代碼</label>
+          <span class="x-label" style="font-weight:600;">HBV-001 B型肝炎疫苗</span>
+          <label>批號</label>
+          <span class="x-label" style="font-weight:600;">HBV-2026C01</span>
+          <label>施打部位</label>
+          <select class="x-select-native x-select-native--md">
+            <option value="LT" selected>左大腿</option>
+            <option value="RT">右大腿</option>
+            <option value="LA">左上臂</option>
+            <option value="RA">右上臂</option>
+          </select>
+          <label>劑量(mL)</label>
+          <span class="x-label">0.5</span>
+          <label>施打人員</label>
+          <span class="x-label">王小明 護理師</span>
+          <label>上傳狀態</label>
+          <span class="x-status-badge x-status-badge--pending">未上傳</span>
+        </div>
+        <div class="x-audit-trail">
+          <strong>修改軌跡：</strong><br/>
+          2026-04-10 10:35 王小明 - 建立紀錄（施打作業）
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

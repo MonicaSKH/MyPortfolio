@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAC.Administer - 疫苗施打作業（完整 Demo）</title>
+  <link rel="stylesheet" href="../../../.github/skills/ui-preview/references/xui-base.css">
+  <style>
+    * { box-sizing: border-box; }
+    body { background: #f0f2f5; margin: 0; padding: 0; font-family: "Noto Sans TC", sans-serif; }
+    /* override framework's fixed-viewport layout for demo */
+    .x-page-layout { display: block !important; height: auto !important; min-height: 100vh; overflow: visible !important; }
+    .x-page-layout-header { position: sticky; top: 0; z-index: 100; }
+    .x-page-layout-footer { position: sticky; bottom: 0; z-index: 100; background: #fff; border-top: 1px solid #e8e8e8; }
+
+    /* ── scenario bar ── */
+    .scenario-bar {
+      background: #fff; border-bottom: 1px solid #e8e8e8;
+      padding: 8px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    }
+    .scenario-bar .slabel { font-size: 12px; color: #888; font-weight: 600; white-space: nowrap; }
+    .scenario-btn {
+      padding: 4px 14px; border-radius: 6px; border: 1px solid #d9d9d9;
+      background: #fff; font-size: 12px; cursor: pointer; transition: all .15s;
+    }
+    .scenario-btn:hover { border-color: #1677ff; color: #1677ff; }
+    .scenario-btn.s-adult  { background:#1677ff; color:#fff; border-color:#1677ff; }
+    .scenario-btn.s-child  { background:#52c41a; color:#fff; border-color:#52c41a; }
+    .scenario-btn.s-school { background:#fa8c16; color:#fff; border-color:#fa8c16; }
+
+    /* ── mode badge in header ── */
+    .mode-badge-header {
+      display: inline-block; font-size: 12px; padding: 2px 10px;
+      border-radius: 12px; margin-left: 10px; vertical-align: middle;
+      transition: background .2s;
+    }
+    .mode-badge-header.adult  { background: #1677ff; color: #fff; }
+    .mode-badge-header.child  { background: #52c41a; color: #fff; }
+    .mode-badge-header.school { background: #fa8c16; color: #fff; }
+
+    /* ── tags ── */
+    .tag { display:inline-block; padding:1px 8px; border-radius:4px; font-size:12px; font-weight:600; }
+    .tag--pending { background:#fff7e6; color:#d46b08; border:1px solid #ffd591; }
+    .tag--done    { background:#f6ffed; color:#389e0d; border:1px solid #b7eb8f; }
+    .tag--info    { background:#e6f4ff; color:#0958d9; border:1px solid #91caff; }
+
+    /* ── cards / boxes ── */
+    .warn-box { background:#fff7e6; border:1px solid #ffd591; border-radius:6px; padding:10px 14px; font-size:13px; color:#874d00; display:flex; align-items:center; gap:8px; }
+    .info-box  { background:#f6ffed; border:1px solid #95de64; border-radius:6px; padding:8px 12px; font-size:12px; color:#237804; display:flex; align-items:center; gap:8px; }
+    .note-box  { background:#e6f4ff; border:1px solid #91caff; border-radius:6px; padding:8px 12px; font-size:12px; color:#0958d9; }
+
+    .section-label { font-size: 12px; color: #888; margin-bottom: 4px; font-weight: 500; }
+
+    .order-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border: 1px solid #e8e8e8;
+      border-radius: 6px; background: #fff; margin-bottom: 8px;
+    }
+    .order-row.selected { background: #e6f4ff; border-color: #1677ff; }
+    .order-row .vaccine-name { font-weight: 600; font-size: 14px; color: #333; flex: 1; }
+
+    /* ── animate sections ── */
+    .anim-section {
+      overflow: hidden;
+      transition: max-height .35s ease, opacity .3s ease, margin-bottom .3s ease;
+    }
+    .anim-section.hidden  { max-height: 0 !important; opacity: 0; margin-bottom: 0 !important; }
+    .anim-section.visible { opacity: 1; }
+
+    /* ── identify panel ── */
+    .id-method-tab {
+      display: flex; gap: 0; border: 1px solid #d9d9d9; border-radius: 6px; overflow: hidden;
+      width: fit-content; margin-bottom: 12px;
+    }
+    .id-tab {
+      padding: 6px 16px; font-size: 13px; cursor: pointer; background: #fff;
+      border: none; transition: all .15s;
+    }
+    .id-tab:not(:last-child) { border-right: 1px solid #d9d9d9; }
+    .id-tab.active { background: #1677ff; color: #fff; }
+    .id-tab.active-child { background: #52c41a; color: #fff; }
+
+    /* ── schedule table ── */
+    .sch-table { width:100%; border-collapse:collapse; font-size:12px; }
+    .sch-table th { background:#fafafa; padding:6px 10px; border:1px solid #e8e8e8; color:#555; text-align:left; }
+    .sch-table td { padding:6px 10px; border:1px solid #e8e8e8; }
+    .sch-table tr.cur td { background:#f6ffed; font-weight:600; }
+
+    /* ── mode toggle in card header ── */
+    .mode-toggle-btn {
+      font-size:11px; padding:2px 10px; border-radius:10px;
+      border:1px solid #d9d9d9; background:#fff; cursor:pointer;
+      transition: all .15s; margin-left: auto;
+    }
+    .mode-toggle-btn:hover { border-color:#1677ff; color:#1677ff; }
+
+    .child-label { font-size:12px; font-weight:600; color:#389e0d; margin-bottom:6px; display:block; }
+
+    .grid-2 { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .grid-5 { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; }
+  </style>
+</head>
+<body>
+<div class="x-page-layout">
+
+  <!-- ── Scenario Bar (Demo only) ── -->
+  <div class="scenario-bar">
+    <span class="slabel">Demo 情境：</span>
+    <button class="scenario-btn s-adult"  onclick="loadScenario('adult')">成人·流感公費（有健保卡）</button>
+    <button class="scenario-btn"          onclick="loadScenario('child')">嬰幼兒·B肝第3劑（無健保卡）</button>
+    <button class="scenario-btn"          onclick="loadScenario('school')">學童·MMR 追加（有健保卡）</button>
+    <span style="margin-left:auto; font-size:11px; color:#aaa;">點選切換情境 · 可互動</span>
+  </div>
+
+  <!-- ── Header ── -->
+  <div class="x-page-layout-header">
+    <span class="x-page-layout-header-title">疫苗施打作業
+      <span class="mode-badge-header adult" id="header-mode-badge">標準施打站</span>
+    </span>
+    <div class="x-page-layout-header-item-group">
+      <button class="x-btn x-btn--sm x-btn--tertiary" onclick="resetForm()">清除</button>
+      <button class="x-btn x-btn--sm x-btn--tertiary">列印紀錄</button>
+    </div>
+  </div>
+
+  <!-- ── Body ── -->
+  <div class="x-page-layout-body" style="display:flex; flex-direction:column; gap:12px; padding:16px; overflow:visible;">
+
+    <!-- ══ STEP 1: 病患識別 ══ -->
+    <div class="x-card-container">
+      <div class="x-card-header" style="display:flex; align-items:center;">
+        Step 1｜病患識別
+        <!-- 兒童模式：Tab 切到「家長身分證」 -->
+        <div class="id-method-tab" style="margin-left:auto;">
+          <button class="id-tab active" id="tab-card" onclick="switchIdTab('card')">讀取健保卡</button>
+          <button class="id-tab" id="tab-id" onclick="switchIdTab('id')">身分證號輸入</button>
+          <button class="id-tab" id="tab-child" onclick="switchIdTab('child')">兒童（家長身分證）</button>
+        </div>
+      </div>
+      <div class="x-card-body" style="display:flex; flex-direction:column; gap:10px;">
+
+        <!-- 健保卡 -->
+        <div id="idpanel-card" style="display:flex; align-items:center; gap:14px; flex-wrap:wrap;">
+          <button class="x-btn x-btn--md x-btn--primary" onclick="doSearch()">讀取健保卡</button>
+          <span class="x-label" style="color:#888; font-size:13px;">插入健保卡後點擊，或改用其他識別方式</span>
+        </div>
+
+        <!-- 身分證號 -->
+        <div id="idpanel-id" style="display:none; align-items:center; gap:14px; flex-wrap:wrap;">
+          <label class="x-input x-input--md" style="flex:0 0 220px;">
+            <span class="x-input-label">身分證號 / 居留證號</span>
+            <div class="x-input-text-container">
+              <input class="x-input-input" type="text" id="input-id" placeholder="A123456789" />
+            </div>
+          </label>
+          <button class="x-btn x-btn--md x-btn--primary" onclick="doSearch()">查詢病歷</button>
+        </div>
+
+        <!-- 家長資訊（兒童識別） -->
+        <div id="idpanel-child" style="display:none; align-items:center; gap:14px; flex-wrap:wrap;">
+          <label class="x-input x-input--md" style="flex:0 0 220px;">
+            <span class="x-input-label">家長身分證號</span>
+            <div class="x-input-text-container">
+              <input class="x-input-input" type="text" id="input-parent-id" placeholder="A123456789" />
+            </div>
+          </label>
+          <div>
+            <div class="section-label">出生序（同胎次序）</div>
+            <select class="x-select-native x-select-native--md" id="input-birth-order" style="width:120px;">
+              <option>第 1 胎</option>
+              <option selected>第 2 胎</option>
+              <option>第 3 胎</option>
+              <option>第 4 胎</option>
+            </select>
+          </div>
+          <div>
+            <div class="section-label">胎別 <span style="color:#e53935;font-size:11px;">NIIS必填</span></div>
+            <select class="x-select-native x-select-native--md" id="input-no-birth" style="width:110px;">
+              <option value="1" selected>單胎</option>
+              <option value="2">雙胎</option>
+              <option value="3">多胎</option>
+            </select>
+          </div>
+          <button class="x-btn x-btn--md x-btn--primary" onclick="doSearch()">查詢嬰幼兒病歷</button>
+          <button class="x-btn x-btn--md x-btn--tertiary" style="border-style:dashed;">+ 建立新病歷</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══ STEP 2: 病患資料（查詢後顯示）══ -->
+    <div class="anim-section hidden" id="section-patient">
+      <div class="x-card-container">
+        <div class="x-card-header" style="display:flex; align-items:center;">
+          Step 2｜病患資料
+          <span id="auto-mode-banner" style="margin-left:12px; font-size:12px; padding:2px 10px; border-radius:10px; background:#f6ffed; color:#389e0d; border:1px solid #b7eb8f; display:none;">
+            ✔ 系統自動切換：兒童模式
+          </span>
+          <button class="mode-toggle-btn" id="mode-toggle-btn" onclick="manualModeToggle()">切換兒童模式</button>
+        </div>
+        <div class="x-card-body">
+          <!-- 標準病患資料 -->
+          <div class="grid-4" id="patient-fields-adult" style="margin-bottom:0;">
+            <label class="x-input x-input--md">
+              <span class="x-input-label">姓名</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" id="pt-name" readonly />
+              </div>
+            </label>
+            <label class="x-input x-input--md">
+              <span class="x-input-label">生日</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" id="pt-birth" readonly />
+              </div>
+            </label>
+            <label class="x-input x-input--md">
+              <span class="x-input-label">病歷號</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" id="pt-record" readonly />
+              </div>
+            </label>
+            <label class="x-input x-input--md">
+              <span class="x-input-label">健保身份</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" id="pt-ins" readonly />
+              </div>
+            </label>
+          </div>
+          <!-- 兒童額外欄位 -->
+          <div class="anim-section hidden" id="patient-fields-child" style="margin-top:10px;">
+            <div class="grid-5">
+              <label class="x-input x-input--md">
+                <span class="x-input-label">月齡</span>
+                <div class="x-input-text-container">
+                  <input class="x-input-input" type="text" id="pt-age-months" readonly style="font-weight:700; color:#389e0d;" />
+                </div>
+              </label>
+              <label class="x-input x-input--md">
+                <span class="x-input-label">家長姓名</span>
+                <div class="x-input-text-container">
+                  <input class="x-input-input" type="text" id="pt-parent-name" readonly />
+                </div>
+              </label>
+              <label class="x-input x-input--md">
+                <span class="x-input-label">家長身分證號</span>
+                <div class="x-input-text-container">
+                  <input class="x-input-input" type="text" id="pt-parent-id" readonly />
+                </div>
+              </label>
+              <label class="x-input x-input--md">
+                <span class="x-input-label">出生序（SeqBirth）</span>
+                <div class="x-input-text-container">
+                  <input class="x-input-input" type="text" id="pt-birth-order" readonly />
+                </div>
+              </label>
+              <label class="x-input x-input--md">
+                <span class="x-input-label">胎別（NoBirth）<span style="color:#e53935;font-size:11px;"> NIIS</span></span>
+                <div class="x-input-text-container">
+                  <input class="x-input-input" type="text" id="pt-no-birth" readonly />
+                </div>
+              </label>
+              <div style="display:flex; align-items:flex-end;">
+                <div class="info-box" style="width:100%; font-size:11px;">✔ NIIS：家長身分證 + 出生序 + 胎別</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 3: 待施打醫令 ══ -->
+    <div class="anim-section hidden" id="section-order">
+      <div class="x-card-container">
+        <div class="x-card-header">Step 3｜待施打醫令 <span style="font-size:12px; font-weight:normal; color:#888;">由醫師於診間開立</span></div>
+        <div class="x-card-body">
+          <div class="order-row selected">
+            <span class="vaccine-name" id="order-vac-name">—</span>
+            <span style="font-size:12px; color:#555; background:#f5f5f5; padding:1px 8px; border-radius:4px;" id="order-identity">—</span>
+            <span style="font-size:12px; color:#555; background:#f0f0f0; padding:1px 8px; border-radius:4px;" id="order-dose">—</span>
+            <span class="tag tag--pending">待施打</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ STEP 4: 兒童接種時程（兒童模式專屬）══ -->
+    <div class="anim-section hidden" id="section-schedule">
+      <div class="x-card-container" style="border-color:#52c41a;">
+        <div class="x-card-header" style="color:#389e0d;">
+          Step 4｜接種時程對照
+          <span style="font-size:12px; font-weight:normal; color:#888; margin-left:8px;">兒童模式專屬</span>
+        </div>
+        <div class="x-card-body">
+          <table class="sch-table" id="schedule-table">
+            <thead>
+              <tr><th>疫苗名稱</th><th>建議接種時程</th><th>本次劑次</th><th>狀態</th></tr>
+            </thead>
+            <tbody id="schedule-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ 驗證結果 ══ -->
+    <div class="anim-section hidden" id="section-verify">
+      <div class="warn-box" id="verify-text"></div>
+    </div>
+
+    <!-- ══ STEP 5（成人4）: 施打資訊確認 ══ -->
+    <div class="anim-section hidden" id="section-administer">
+      <div class="x-card-container">
+        <div class="x-card-header" id="administer-step-label">Step 4｜施打資訊確認</div>
+        <div class="x-card-body" style="display:flex; flex-direction:column; gap:12px;">
+          <div class="grid-4">
+            <label class="x-input x-input--md">
+              <span class="x-input-label">疫苗批號</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" id="adm-batch" />
+              </div>
+            </label>
+            <div>
+              <div class="section-label">批號型別 <span style="color:#e53935;font-size:11px;">NIIS必填</span></div>
+              <select class="x-select-native x-select-native--md" id="adm-batch-type">
+                <option value="1">中央公費（-CDC）</option>
+                <option value="2">自費</option>
+                <option value="3">地方自購（-hb）</option>
+              </select>
+            </div>
+            <div>
+              <div class="section-label">施打部位</div>
+              <select class="x-select-native x-select-native--md" id="adm-site">
+                <option>左上臂</option>
+                <option>右上臂</option>
+                <option>左大腿</option>
+                <option>右大腿</option>
+              </select>
+            </div>
+            <label class="x-input x-input--md">
+              <span class="x-input-label">劑量（mL）</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" value="0.5" />
+              </div>
+            </label>
+            <label class="x-input x-input--md">
+              <span class="x-input-label">施打人員</span>
+              <div class="x-input-text-container">
+                <input class="x-input-input" type="text" value="護理師 陳小芳" readonly />
+              </div>
+            </label>
+          </div>
+          <div class="note-box" id="write-note">
+            ✔ 確認後將同時寫入：NIS 醫令執行紀錄（→已執行）＋ VAC 施打紀錄（供 NIIS 上傳）
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Footer ── -->
+  <div class="x-page-layout-footer" style="display:flex; justify-content:flex-end; gap:12px; padding:12px 16px;">
+    <button class="x-btn x-btn--md x-btn--tertiary" onclick="resetForm()">取消</button>
+    <button class="x-btn x-btn--md x-btn--primary" id="confirm-btn" disabled onclick="confirmAdminister()">確認施打完成</button>
+  </div>
+
+</div>
+
+<script>
+/* ── DATA ── */
+const SCENARIOS = {
+  adult: {
+    name:'王大明', birth:'1950/03/15', ageLabel:'75 歲', record:'C0012345', ins:'一般（AB）',
+    isChild: false, ageMonths: null, parentName: null, parentId: null, birthOrder: null,
+    vacName:'流感疫苗（四價）', identity:'老人公費', batch:'FL2025-A001', site:'左上臂',
+    verify:'⚠ 系統驗證通過｜本年度公費次數：0 / 1｜距上次施打：365 天（符合間隔）',
+    schedule: null
+  },
+  child: {
+    name:'王小明', birth:'2025/10/02', ageLabel:'6 個月', record:'P0098765', ins:'（無健保卡）',
+    isChild: true, ageMonths:'6 個月', parentName:'王大明', parentId:'A123456789', birthOrder:'第 2 胎',
+    vacName:'B 型肝炎疫苗（第 3 劑）', identity:'嬰幼兒公費', batch:'HB2025-B002', site:'左大腿',
+    verify:'✔ 接種時程確認：目前月齡 6 個月，符合第 3 劑接種時程（6 個月）',
+    schedule: [
+      { vac:'B 型肝炎疫苗', schedule:'出生', dose:'第 1 劑', status:'done', cur:false },
+      { vac:'B 型肝炎疫苗', schedule:'滿 1 個月', dose:'第 2 劑', status:'done', cur:false },
+      { vac:'B 型肝炎疫苗', schedule:'滿 6 個月 ← 本次', dose:'第 3 劑', status:'pending', cur:true },
+    ]
+  },
+  school: {
+    name:'林小美', birth:'2017/06/10', ageLabel:'8 歲', record:'P0054321', ins:'一般（AB）',
+    isChild: false, ageMonths:null, parentName:null, parentId:null, birthOrder:null, noBirth:null,
+    vacName:'MMR 疫苗（麻疹腮腺炎德國麻疹）第 2 劑', identity:'兒童公費', vaccDoses: '第 2 劑（追加）',
+    batch:'MMR2025-C003', batchType:'1', site:'左上臂',
+    verify:'⚠ 系統驗證通過｜本年度公費次數：0 / 1｜符合接種資格',
+    schedule: [
+      { vac:'MMR 疫苗', schedule:'滿 12 個月', dose:'第 1 劑', status:'done', cur:false },
+      { vac:'MMR 疫苗', schedule:'小學入學前 ← 本次', dose:'第 2 劑（追加）', status:'pending', cur:true },
+    ]
+  }
+};
+
+let currentScenario = null;
+let isChildMode = false;
+let searched = false;
+
+/* ── Load Scenario ── */
+function loadScenario(key) {
+  currentScenario = key;
+  const s = SCENARIOS[key];
+
+  // scenario buttons
+  document.querySelectorAll('.scenario-btn').forEach(b => {
+    b.classList.remove('s-adult','s-child','s-school');
+  });
+  const btnClasses = { adult:'s-adult', child:'s-child', school:'s-school' };
+  event.target.classList.add(btnClasses[key]);
+
+  resetForm(false);
+  // pre-fill id fields
+  if (s.isChild) {
+    switchIdTab('child');
+    if (s.parentId) document.getElementById('input-parent-id').value = s.parentId;
+  } else {
+    switchIdTab('card');
+  }
+}
+
+/* ── ID tab switch ── */
+function switchIdTab(tab) {
+  ['card','id','child'].forEach(t => {
+    document.getElementById('idpanel-' + t).style.display = 'none';
+    document.getElementById('tab-' + t).classList.remove('active','active-child');
+  });
+  document.getElementById('idpanel-' + tab).style.display = 'flex';
+  document.getElementById('tab-' + tab).classList.add(tab === 'child' ? 'active-child' : 'active');
+}
+
+/* ── Search / Read card ── */
+function doSearch() {
+  if (!currentScenario) { alert('請先點選上方 Demo 情境'); return; }
+  const s = SCENARIOS[currentScenario];
+  searched = true;
+
+  // fill patient data
+  document.getElementById('pt-name').value  = s.name;
+  document.getElementById('pt-birth').value = s.birth + '（' + s.ageLabel + '）';
+  document.getElementById('pt-record').value = s.record;
+  document.getElementById('pt-ins').value   = s.ins;
+
+  // auto-detect child mode
+  applyChildMode(s.isChild, true);
+
+  if (s.isChild) {
+    document.getElementById('pt-age-months').value  = s.ageMonths;
+    document.getElementById('pt-parent-name').value = s.parentName;
+    document.getElementById('pt-parent-id').value   = s.parentId;
+    document.getElementById('pt-birth-order').value = s.birthOrder;
+    document.getElementById('pt-no-birth').value    = s.noBirth || '';
+  }
+
+  // order
+  document.getElementById('order-vac-name').textContent = s.vacName;
+  document.getElementById('order-identity').textContent = s.identity;
+  document.getElementById('order-dose').textContent     = s.vaccDoses || '—';
+
+  // schedule
+  if (s.schedule) {
+    const tbody = document.getElementById('schedule-body');
+    tbody.innerHTML = '';
+    s.schedule.forEach(row => {
+      const tr = document.createElement('tr');
+      if (row.cur) tr.className = 'cur';
+      tr.innerHTML = `<td>${row.vac}</td><td>${row.schedule}</td><td>${row.dose}</td>
+        <td><span class="tag tag--${row.status}">${row.status==='done'?'已完成':'待施打'}</span></td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // verify
+  document.getElementById('verify-text').textContent = s.verify;
+
+  // batch / site
+  document.getElementById('adm-batch').value = s.batch;
+  const batchTypeEl = document.getElementById('adm-batch-type');
+  if (batchTypeEl && s.batchType) {
+    for (let o of batchTypeEl.options) o.selected = (o.value === s.batchType);
+  }
+  const siteEl = document.getElementById('adm-site');
+  for (let o of siteEl.options) o.selected = (o.text === s.site);
+
+  // step label — +1 step whenever schedule is shown (infant OR school children with MMR)
+  document.getElementById('administer-step-label').textContent =
+    s.schedule ? 'Step 5｜施打資訊確認' : 'Step 4｜施打資訊確認';
+
+  // show sections
+  show('section-patient');
+  show('section-order');
+  show('section-verify');
+  if (s.schedule) show('section-schedule'); else hide('section-schedule');
+  show('section-administer');
+  document.getElementById('confirm-btn').disabled = false;
+}
+
+/* ── Apply Child Mode ── */
+function applyChildMode(child, isAuto) {
+  isChildMode = child;
+
+  // header badge
+  const badge = document.getElementById('header-mode-badge');
+  badge.textContent = child ? '兒童接種模式' : '標準施打站';
+  badge.className = 'mode-badge-header ' + (child ? 'child' : 'adult');
+
+  // patient extra fields
+  if (child) {
+    show('patient-fields-child');
+  } else {
+    hide('patient-fields-child');
+  }
+
+  // auto banner
+  const banner = document.getElementById('auto-mode-banner');
+  banner.style.display = (child && isAuto) ? 'inline-block' : 'none';
+
+  // toggle button
+  const btn = document.getElementById('mode-toggle-btn');
+  btn.textContent = child ? '切換標準模式' : '切換兒童模式';
+
+  // schedule section — controlled by doSearch based on s.schedule, not by child mode
+  // write note
+  document.getElementById('write-note').textContent = child
+    ? '✔ 確認後將同時寫入：NIS 醫令執行紀錄（→已執行）＋ VAC 施打紀錄（含家長身分證+出生序，供 NIIS 上傳）'
+    : '✔ 確認後將同時寫入：NIS 醫令執行紀錄（→已執行）＋ VAC 施打紀錄（供 NIIS 上傳）';
+}
+
+/* ── Manual mode toggle ── */
+function manualModeToggle() {
+  applyChildMode(!isChildMode, false);
+  document.getElementById('auto-mode-banner').style.display = 'none';
+}
+
+/* ── Confirm ── */
+function confirmAdminister() {
+  alert('施打完成！\n紀錄已寫入 VAC_RECORD 與 NIS 執行紀錄。\nNIIS 上傳狀態：待上傳');
+  resetForm(true);
+}
+
+/* ── Reset ── */
+function resetForm(showAlert) {
+  searched = false;
+  isChildMode = false;
+  ['section-patient','section-order','section-verify','section-administer','section-schedule']
+    .forEach(id => {
+      const el = document.getElementById(id);
+      el.style.maxHeight = '0';
+      el.className = 'anim-section hidden';
+    });
+  document.getElementById('confirm-btn').disabled = true;
+  document.getElementById('header-mode-badge').textContent = '標準施打站';
+  document.getElementById('header-mode-badge').className = 'mode-badge-header adult';
+  document.getElementById('auto-mode-banner').style.display = 'none';
+  document.getElementById('mode-toggle-btn').textContent = '切換兒童模式';
+  document.getElementById('input-id').value = '';
+  document.getElementById('input-parent-id').value = '';
+}
+
+/* ── helper ── */
+function show(id) {
+  const el = document.getElementById(id);
+  el.style.maxHeight = el.scrollHeight + 'px';
+  el.className = 'anim-section visible';
+  el.addEventListener('transitionend', function onEnd() {
+    el.style.maxHeight = 'none';
+    el.removeEventListener('transitionend', onEnd);
+  });
+}
+
+function hide(id) {
+  const el = document.getElementById(id);
+  // snapshot current height so transition from 'none' works
+  el.style.maxHeight = el.scrollHeight + 'px';
+  // force reflow
+  el.offsetHeight; // eslint-disable-line
+  el.style.maxHeight = '0';
+  el.className = 'anim-section hidden';
+}
+</script>
+</body>
+</html>

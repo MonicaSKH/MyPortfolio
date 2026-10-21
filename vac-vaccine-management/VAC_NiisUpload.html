@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAC.NiisUpload - NIIS 上傳與回饋</title>
+  <link rel="stylesheet" href="../../../.github/skills/ui-preview/references/xui-base.css">
+  <style>
+    .x-tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--xv-text--dividing-line); background: var(--xv-container--surface); }
+    .x-tab-item { padding: 10px 24px; cursor: pointer; font-weight: 600; font-size: 15px; color: var(--xv-text--medium-emphasis-text); border-bottom: 2px solid transparent; margin-bottom: -2px; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+    .x-tab-item--active { color: var(--xv-status--primary); border-bottom-color: var(--xv-status--primary); }
+    .x-tab-content { display: none; }
+    .x-tab-content--active { display: block; }
+    .x-form-grid { display: grid; grid-template-columns: 120px 1fr 120px 1fr; gap: 12px 16px; align-items: center; }
+    .x-form-grid label { font-size: 14px; font-weight: 500; color: var(--xv-text--high-emphasis-text); text-align: right; white-space: nowrap; }
+    .x-card-container + .x-card-container { margin-top: 16px; }
+    .x-btn-group { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 0; }
+    .x-status-badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+    .x-status-badge--success { background: rgba(9,122,31,0.12); color: var(--xv-status--success); }
+    .x-status-badge--pending { background: rgba(0,103,204,0.12); color: var(--xv-status--primary); }
+    .x-status-badge--error { background: rgba(191,46,58,0.12); color: var(--xv-status--error); }
+    .x-status-badge--warning { background: rgba(168,84,0,0.12); color: var(--xv-status--warning); }
+    .x-info-banner { padding: 10px 16px; border-radius: 6px; font-size: 14px; font-weight: 500; margin-bottom: 12px; }
+    .x-info-banner--success { background: rgba(9,122,31,0.1); border-left: 4px solid var(--xv-status--success); color: var(--xv-status--success); }
+    .x-info-banner--warning { background: rgba(168,84,0,0.1); border-left: 4px solid var(--xv-status--warning); color: var(--xv-status--warning); }
+    .x-info-banner--error { background: rgba(191,46,58,0.1); border-left: 4px solid var(--xv-status--error); color: var(--xv-status--error); }
+    .x-info-banner--info { background: rgba(0,103,204,0.08); border-left: 4px solid var(--xv-status--primary); color: var(--xv-status--primary); }
+    .x-summary-card { display: flex; gap: 32px; padding: 16px 24px; background: var(--xv-container--surface); border-radius: 8px; margin-bottom: 16px; }
+    .x-summary-item { display: flex; flex-direction: column; align-items: center; }
+    .x-summary-item-value { font-size: 28px; font-weight: 700; }
+    .x-summary-item-label { font-size: 13px; color: var(--xv-text--medium-emphasis-text); }
+    .x-inventory-grid { display: grid; grid-template-columns: 140px 1fr 100px 1fr 100px 1fr; gap: 10px 12px; align-items: center; }
+    .x-inventory-grid label { font-size: 14px; font-weight: 500; text-align: right; white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div class="x-page-layout">
+    <!-- Header -->
+    <div class="x-page-layout-header">
+      <span class="x-page-layout-header-title">VAC.NiisUpload NIIS 上傳與回饋</span>
+      <div class="x-page-layout-header-item-group">
+        <span class="x-label" style="font-size:14px; color:var(--xv-text--medium-emphasis-text);">NIIS 連線：正常</span>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="x-page-layout-body">
+      <!-- Tab Bar -->
+      <div class="x-tab-bar">
+        <button class="x-tab-item x-tab-item--active" onclick="switchTab('upload')">施打紀錄上傳</button>
+        <button class="x-tab-item" onclick="switchTab('feedback')">預注結果下載</button>
+        <button class="x-tab-item" onclick="switchTab('inventory')">庫存上傳</button>
+        <button class="x-tab-item" onclick="switchTab('history')">個人接種史查詢</button>
+        <button class="x-tab-item" onclick="switchTab('log')">上傳批次記錄</button>
+      </div>
+
+      <!-- Tab 1: 施打紀錄上傳 -->
+      <div id="tab-upload" class="x-tab-content x-tab-content--active" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">上傳設定</div>
+          <div class="x-card-body">
+            <div style="display:flex; gap:24px; align-items:center; margin-bottom:16px;">
+              <label class="x-radio-button x-radio-button--md">
+                <input type="radio" name="uploadMode" class="x-radio-input" checked />
+                <span>日期批次上傳</span>
+              </label>
+              <label class="x-radio-button x-radio-button--md">
+                <input type="radio" name="uploadMode" class="x-radio-input" />
+                <span>逐筆勾選上傳</span>
+              </label>
+            </div>
+            <div class="x-form-grid" style="max-width:600px;">
+              <label>施打日期起</label>
+              <input class="x-input-input--date" type="date" value="2026-04-10" />
+              <label>施打日期迄</label>
+              <input class="x-input-input--date" type="date" value="2026-04-10" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Upload Summary -->
+        <div class="x-summary-card">
+          <div class="x-summary-item">
+            <span class="x-summary-item-value" style="color:var(--xv-status--primary);">8</span>
+            <span class="x-summary-item-label">待上傳筆數</span>
+          </div>
+          <div class="x-summary-item">
+            <span class="x-summary-item-value" style="color:var(--xv-status--success);">0</span>
+            <span class="x-summary-item-label">成功</span>
+          </div>
+          <div class="x-summary-item">
+            <span class="x-summary-item-value" style="color:var(--xv-status--error);">0</span>
+            <span class="x-summary-item-label">失敗</span>
+          </div>
+        </div>
+
+        <!-- Records to Upload -->
+        <div class="x-card-container">
+          <div class="x-card-header">待上傳紀錄清單</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:260px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:40px;"><input type="checkbox" checked /></th>
+                    <th style="width:100px;">施打日期</th>
+                    <th style="width:100px;">病患姓名</th>
+                    <th style="width:100px;">身分證號</th>
+                    <th style="width:160px;">疫苗名稱</th>
+                    <th style="width:120px;">批號</th>
+                    <th style="width:80px;">公費/自費</th>
+                    <th style="width:80px;">狀態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><input type="checkbox" checked /></td>
+                    <td>2026-04-10</td><td>張小芳</td><td>A123***789</td>
+                    <td>B型肝炎疫苗</td><td>HBV-2026C01</td>
+                    <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--pending">待上傳</span></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" checked /></td>
+                    <td>2026-04-10</td><td>王小弟</td><td>B234***567</td>
+                    <td>五合一疫苗</td><td>DTP-2026A01</td>
+                    <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--pending">待上傳</span></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" checked /></td>
+                    <td>2026-04-10</td><td>林阿嬤</td><td>C345***890</td>
+                    <td>流感疫苗（四價）</td><td>FLU-2026B01</td>
+                    <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--pending">待上傳</span></td>
+                  </tr>
+                  <tr>
+                    <td><input type="checkbox" checked /></td>
+                    <td>2026-04-10</td><td>趙先生</td><td>D456***123</td>
+                    <td>COVID-19 追加劑</td><td>COV-XBB-03</td>
+                    <td><span class="x-status-badge x-status-badge--success">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--pending">待上傳</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="x-card-footer">
+            <button class="x-btn x-btn--lg x-btn--primary" style="min-width:180px;">確認送出 (8 筆)</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: 預注結果下載 -->
+      <div id="tab-feedback" class="x-tab-content" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">預注結果查詢</div>
+          <div class="x-card-body">
+            <div class="x-form-grid" style="max-width:600px;">
+              <label>上傳批次</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="">依日期查詢</option>
+                <option value="B202604100001">B202604100001 (2026-04-10)</option>
+                <option value="B202604090001">B202604090001 (2026-04-09)</option>
+              </select>
+              <label>日期區間</label>
+              <div style="display:flex; gap:8px; align-items:center;">
+                <input class="x-input-input--date" type="date" value="2026-04-09" />
+                <span>~</span>
+                <input class="x-input-input--date" type="date" value="2026-04-10" />
+              </div>
+            </div>
+            <div class="x-btn-group" style="max-width:600px;">
+              <button class="x-btn x-btn--md x-btn--primary">下載預注結果</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-info-banner x-info-banner--warning">
+          [!] 本次下載結果：15 筆中有 2 筆不符合接種時程，請修正後重新上傳。
+        </div>
+
+        <div class="x-card-container">
+          <div class="x-card-header">預注結果明細</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:260px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:100px;">施打日期</th>
+                    <th style="width:100px;">病患姓名</th>
+                    <th style="width:150px;">疫苗名稱</th>
+                    <th style="width:80px;">劑次</th>
+                    <th style="width:100px;">預注結果</th>
+                    <th style="width:200px;">不符合原因</th>
+                    <th style="width:80px;">操作</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2026-04-10</td><td>張小芳</td><td>B型肝炎疫苗</td><td>第3劑</td>
+                    <td><span class="x-status-badge x-status-badge--success">符合</span></td>
+                    <td>--</td><td></td>
+                  </tr>
+                  <tr>
+                    <td>2026-04-10</td><td>王小弟</td><td>五合一疫苗</td><td>第2劑</td>
+                    <td><span class="x-status-badge x-status-badge--success">符合</span></td>
+                    <td>--</td><td></td>
+                  </tr>
+                  <tr style="background:rgba(191,46,58,0.04);">
+                    <td>2026-04-09</td><td>陳美玲</td><td>COVID-19 追加劑</td><td>第4劑</td>
+                    <td><span class="x-status-badge x-status-badge--error">不符合</span></td>
+                    <td style="font-size:13px; color:var(--xv-status--error);">與前次施打間隔未達 84 天</td>
+                    <td><button class="x-btn x-btn--sm x-btn--danger">修正</button></td>
+                  </tr>
+                  <tr style="background:rgba(191,46,58,0.04);">
+                    <td>2026-04-09</td><td>黃某某</td><td>流感疫苗</td><td>第1劑</td>
+                    <td><span class="x-status-badge x-status-badge--error">不符合</span></td>
+                    <td style="font-size:13px; color:var(--xv-status--error);">年齡未滿 6 個月，不符公費資格</td>
+                    <td><button class="x-btn x-btn--sm x-btn--danger">修正</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: 庫存上傳 -->
+      <div id="tab-inventory" class="x-tab-content" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">庫存消耗/結存上傳</div>
+          <div class="x-card-body">
+            <div class="x-inventory-grid">
+              <label>疫苗種類</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="">請選擇</option>
+                <option value="FLU" selected>流感疫苗（四價）</option>
+                <option value="COV">COVID-19 追加劑</option>
+                <option value="HBV">B型肝炎疫苗</option>
+              </select>
+              <label>批號</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="FLU-2026B01" selected>FLU-2026B01</option>
+                <option value="FLU-2026A03">FLU-2026A03</option>
+              </select>
+              <label></label><span></span>
+              <label>入庫數量</label>
+              <span class="x-label" style="font-weight:700; font-size:18px;">300</span>
+              <label>消耗量</label>
+              <span class="x-label" style="font-weight:700; font-size:18px; color:var(--xv-status--error);">45</span>
+              <label>結存數量</label>
+              <span class="x-label" style="font-weight:700; font-size:18px; color:var(--xv-status--success);">255</span>
+            </div>
+            <div style="margin-top:16px;">
+              <div class="x-form-grid" style="max-width:500px;">
+                <label>調整原因</label>
+                <div class="x-input-text-container x-input-text-container--standalone" style="grid-column: 2 / -1;">
+                  <input class="x-input-input" type="text" placeholder="如有手動調整，請填寫原因" />
+                </div>
+              </div>
+            </div>
+            <div class="x-btn-group">
+              <button class="x-btn x-btn--md x-btn--primary">送出至 NIIS</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-card-container">
+          <div class="x-card-header">庫存上傳歷史</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:180px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th>上傳日期</th><th>疫苗</th><th>批號</th><th>消耗量</th><th>結存量</th><th>NIIS 確認編號</th><th>狀態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>2026-04-09</td><td>流感疫苗</td><td>FLU-2026B01</td>
+                    <td>38</td><td>262</td><td>INV20260409001</td>
+                    <td><span class="x-status-badge x-status-badge--success">成功</span></td>
+                  </tr>
+                  <tr>
+                    <td>2026-04-08</td><td>B型肝炎</td><td>HBV-2026C01</td>
+                    <td>12</td><td>128</td><td>INV20260408002</td>
+                    <td><span class="x-status-badge x-status-badge--success">成功</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 4: 個人接種史查詢 -->
+      <div id="tab-history" class="x-tab-content" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">查詢 NIIS 個人接種紀錄</div>
+          <div class="x-card-body">
+            <div class="x-form-grid" style="max-width:500px;">
+              <label>身分證號</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" placeholder="輸入身分證號" value="A123456789" />
+              </div>
+              <label>出生日期</label>
+              <input class="x-input-input--date" type="date" value="2025-08-15" />
+            </div>
+            <div class="x-btn-group" style="max-width:500px;">
+              <button class="x-btn x-btn--md x-btn--primary">查詢 NIIS</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-info-banner x-info-banner--info">
+          NIIS 回傳結果：張小芳（A123***789），共 5 筆接種紀錄
+        </div>
+
+        <div class="x-card-container">
+          <div class="x-card-header">接種史查詢結果</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:160px;">疫苗名稱</th>
+                    <th style="width:80px;">劑次</th>
+                    <th style="width:120px;">施打日期</th>
+                    <th style="width:200px;">施打院所</th>
+                    <th style="width:120px;">批號</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>B型肝炎疫苗</td><td>第1劑</td><td>2025-08-15</td>
+                    <td>XX醫院</td><td>HBV-2025A01</td>
+                  </tr>
+                  <tr>
+                    <td>卡介苗(BCG)</td><td>第1劑</td><td>2025-08-16</td>
+                    <td>XX醫院</td><td>BCG-2025B01</td>
+                  </tr>
+                  <tr>
+                    <td>B型肝炎疫苗</td><td>第2劑</td><td>2025-12-15</td>
+                    <td>YY診所</td><td>HBV-2025C02</td>
+                  </tr>
+                  <tr>
+                    <td>五合一疫苗</td><td>第1劑</td><td>2025-10-15</td>
+                    <td>YY診所</td><td>DTP-2025D01</td>
+                  </tr>
+                  <tr>
+                    <td>五合一疫苗</td><td>第2劑</td><td>2025-12-15</td>
+                    <td>YY診所</td><td>DTP-2025D02</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: 上傳批次記錄 -->
+      <div id="tab-log" class="x-tab-content" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">上傳批次查詢</div>
+          <div class="x-card-body">
+            <div style="display:flex; gap:16px; align-items:center;">
+              <label class="x-input x-input--inline">
+                <span class="x-input-label">日期起</span>
+                <input class="x-input-input--date" type="date" value="2026-04-01" />
+              </label>
+              <label class="x-input x-input--inline">
+                <span class="x-input-label">日期迄</span>
+                <input class="x-input-input--date" type="date" value="2026-04-10" />
+              </label>
+              <label class="x-input x-input--inline">
+                <span class="x-input-label">上傳類型</span>
+                <select class="x-select-native x-select-native--md">
+                  <option value="">全部</option>
+                  <option value="R">施打紀錄</option>
+                  <option value="I">庫存</option>
+                </select>
+              </label>
+              <button class="x-btn x-btn--md x-btn--primary">查詢</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-card-container" style="margin-top:12px;">
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:300px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:140px;">批次編號</th>
+                    <th style="width:100px;">上傳日期</th>
+                    <th style="width:100px;">操作人員</th>
+                    <th style="width:100px;">上傳類型</th>
+                    <th style="width:60px;">筆數</th>
+                    <th style="width:60px;">成功</th>
+                    <th style="width:60px;">失敗</th>
+                    <th style="width:120px;">NIIS 回饋碼</th>
+                    <th style="width:80px;">狀態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>B202604100001</td><td>2026-04-10</td><td>李小華</td>
+                    <td>施打紀錄</td><td>8</td><td>8</td><td>0</td>
+                    <td>OK</td>
+                    <td><span class="x-status-badge x-status-badge--success">完成</span></td>
+                  </tr>
+                  <tr>
+                    <td>B202604090001</td><td>2026-04-09</td><td>李小華</td>
+                    <td>施打紀錄</td><td>15</td><td>13</td><td>2</td>
+                    <td>PARTIAL</td>
+                    <td><span class="x-status-badge x-status-badge--warning">部分失敗</span></td>
+                  </tr>
+                  <tr>
+                    <td>I202604090001</td><td>2026-04-09</td><td>王庫管</td>
+                    <td>庫存</td><td>3</td><td>3</td><td>0</td>
+                    <td>OK</td>
+                    <td><span class="x-status-badge x-status-badge--success">完成</span></td>
+                  </tr>
+                  <tr>
+                    <td>B202604080001</td><td>2026-04-08</td><td>李小華</td>
+                    <td>施打紀錄</td><td>22</td><td>22</td><td>0</td>
+                    <td>OK</td>
+                    <td><span class="x-status-badge x-status-badge--success">完成</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    function switchTab(name) {
+      document.querySelectorAll('.x-tab-item').forEach(t => t.classList.remove('x-tab-item--active'));
+      document.querySelectorAll('.x-tab-content').forEach(c => c.classList.remove('x-tab-content--active'));
+      event.target.classList.add('x-tab-item--active');
+      document.getElementById('tab-' + name).classList.add('x-tab-content--active');
+    }
+  </script>
+</body>
+</html>

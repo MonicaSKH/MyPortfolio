@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAC.Master - 疫苗基本資料與身份別維護</title>
+  <link rel="stylesheet" href="../../../.github/skills/ui-preview/references/xui-base.css">
+  <style>
+    .x-tab-bar { display: flex; gap: 0; border-bottom: 2px solid var(--xv-text--dividing-line); background: var(--xv-container--surface); }
+    .x-tab-item { padding: 10px 24px; cursor: pointer; font-weight: 600; font-size: 15px; color: var(--xv-text--medium-emphasis-text); border-bottom: 2px solid transparent; margin-bottom: -2px; background: none; border-top: none; border-left: none; border-right: none; font-family: inherit; }
+    .x-tab-item--active { color: var(--xv-status--primary); border-bottom-color: var(--xv-status--primary); }
+    .x-tab-content { display: none; }
+    .x-tab-content--active { display: block; }
+    .x-form-grid { display: grid; grid-template-columns: 140px 1fr 140px 1fr; gap: 12px 16px; align-items: center; }
+    .x-form-grid label { font-size: 14px; font-weight: 500; color: var(--xv-text--high-emphasis-text); text-align: right; white-space: nowrap; }
+    .x-form-grid .span-full { grid-column: 1 / -1; }
+    .x-card-container + .x-card-container { margin-top: 16px; }
+    .x-btn-group { display: flex; gap: 8px; justify-content: flex-end; padding: 12px 0; }
+    .x-status-badge { display: inline-flex; align-items: center; padding: 2px 10px; border-radius: 12px; font-size: 13px; font-weight: 600; }
+    .x-status-badge--active { background: rgba(9,122,31,0.12); color: var(--xv-status--success); }
+    .x-status-badge--inactive { background: rgba(191,46,58,0.12); color: var(--xv-status--error); }
+    .x-status-badge--warning { background: rgba(168,84,0,0.12); color: var(--xv-status--warning); }
+  </style>
+</head>
+<body>
+  <div class="x-page-layout">
+    <!-- Header -->
+    <div class="x-page-layout-header">
+      <span class="x-page-layout-header-title">VAC.Master 疫苗基本資料與身份別維護</span>
+      <div class="x-page-layout-header-item-group">
+        <button class="x-btn x-btn--sm x-btn--tertiary">重新整理</button>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="x-page-layout-body">
+      <!-- Tab Bar -->
+      <div class="x-tab-bar">
+        <button class="x-tab-item x-tab-item--active" onclick="switchTab('vaccine')">疫苗代碼維護</button>
+        <button class="x-tab-item" onclick="switchTab('batch')">批號維護</button>
+        <button class="x-tab-item" onclick="switchTab('identity')">公費身份別條件</button>
+      </div>
+
+      <!-- Tab 1: 疫苗代碼維護 -->
+      <div id="tab-vaccine" class="x-tab-content x-tab-content--active" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">疫苗代碼清單</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:260px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:100px;">疫苗代碼</th>
+                    <th style="width:200px;">疫苗名稱</th>
+                    <th style="width:100px;">CDC代碼</th>
+                    <th style="width:100px;">NIIS代碼</th>
+                    <th style="width:80px;">公費</th>
+                    <th style="width:80px;">狀態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="x-table-row--selected">
+                    <td>FLU-001</td><td>流感疫苗（四價）</td><td>FLU4V</td><td>N-FLU4</td>
+                    <td><span class="x-status-badge x-status-badge--active">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--active">啟用</span></td>
+                  </tr>
+                  <tr>
+                    <td>COV-003</td><td>COVID-19 追加劑（XBB.1.5）</td><td>COV19</td><td>N-COV3</td>
+                    <td><span class="x-status-badge x-status-badge--active">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--active">啟用</span></td>
+                  </tr>
+                  <tr>
+                    <td>HBV-001</td><td>B型肝炎疫苗</td><td>HEPB</td><td>N-HBV1</td>
+                    <td><span class="x-status-badge x-status-badge--active">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--active">啟用</span></td>
+                  </tr>
+                  <tr>
+                    <td>HPV-001</td><td>人類乳突病毒疫苗（9價）</td><td>HPV9V</td><td>N-HPV9</td>
+                    <td><span class="x-status-badge x-status-badge--active">公費</span></td>
+                    <td><span class="x-status-badge x-status-badge--inactive">停用</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-card-container" style="margin-top:16px;">
+          <div class="x-card-header">疫苗代碼詳細資訊</div>
+          <div class="x-card-body">
+            <div class="x-form-grid">
+              <label>疫苗代碼</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="FLU-001" />
+              </div>
+              <label>疫苗名稱</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="流感疫苗（四價）" />
+              </div>
+              <label>CDC代碼</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="FLU4V" />
+              </div>
+              <label>NIIS代碼</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="N-FLU4" />
+              </div>
+              <label>施打部位</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="">請選擇</option>
+                <option value="LA" selected>左上臂</option>
+                <option value="RA">右上臂</option>
+                <option value="LT">左大腿</option>
+                <option value="RT">右大腿</option>
+              </select>
+              <label>施打路徑</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="">請選擇</option>
+                <option value="IM" selected>肌肉注射(IM)</option>
+                <option value="SC">皮下注射(SC)</option>
+                <option value="ID">皮內注射(ID)</option>
+                <option value="PO">口服(PO)</option>
+              </select>
+              <label>標準劑量(mL)</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="0.5" />
+              </div>
+              <label>公費/自費</label>
+              <div style="display:flex; gap:16px; align-items:center;">
+                <label class="x-radio-button x-radio-button--md">
+                  <input type="radio" name="feeType" class="x-radio-input" checked />
+                  <span>公費</span>
+                </label>
+                <label class="x-radio-button x-radio-button--md">
+                  <input type="radio" name="feeType" class="x-radio-input" />
+                  <span>自費</span>
+                </label>
+              </div>
+              <label>狀態</label>
+              <div style="display:flex; gap:16px; align-items:center;">
+                <label class="x-radio-button x-radio-button--md">
+                  <input type="radio" name="status" class="x-radio-input" checked />
+                  <span>啟用</span>
+                </label>
+                <label class="x-radio-button x-radio-button--md">
+                  <input type="radio" name="status" class="x-radio-input" />
+                  <span>停用</span>
+                </label>
+              </div>
+            </div>
+            <div class="x-btn-group">
+              <button class="x-btn x-btn--md x-btn--tertiary">新增</button>
+              <button class="x-btn x-btn--md x-btn--primary">儲存</button>
+              <button class="x-btn x-btn--md x-btn--danger">停用</button>
+              <button class="x-btn x-btn--md x-btn--tertiary">取消</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: 批號維護 -->
+      <div id="tab-batch" class="x-tab-content" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">查詢條件</div>
+          <div class="x-card-body">
+            <div class="x-form-row">
+              <label class="x-input x-input--inline">
+                <span class="x-input-label">疫苗種類</span>
+                <select class="x-select-native x-select-native--md" style="min-width:200px;">
+                  <option value="">全部</option>
+                  <option value="FLU">流感疫苗（四價）</option>
+                  <option value="COV">COVID-19 追加劑</option>
+                  <option value="HBV">B型肝炎疫苗</option>
+                </select>
+              </label>
+              <label class="x-input x-input--inline">
+                <span class="x-input-label">批號狀態</span>
+                <select class="x-select-native x-select-native--md" style="min-width:120px;">
+                  <option value="">全部</option>
+                  <option value="N">正常</option>
+                  <option value="D">報廢</option>
+                </select>
+              </label>
+              <button class="x-btn x-btn--md x-btn--primary">查詢</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Warning banner for expiring batches -->
+        <div style="margin-top:12px; padding:10px 16px; background:rgba(168,84,0,0.1); border-left:4px solid var(--xv-status--warning); border-radius:4px; font-size:14px; color:var(--xv-status--warning); font-weight:600;">
+          [!] 批號 FLU-2026A03 將於 30 天內到期（2026-05-05），請儘速使用或安排報廢。
+        </div>
+
+        <div class="x-card-container" style="margin-top:12px;">
+          <div class="x-card-header">批號清單</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:220px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:160px;">疫苗名稱</th>
+                    <th style="width:140px;">批號</th>
+                    <th style="width:120px;">製造商</th>
+                    <th style="width:80px;">入庫量</th>
+                    <th style="width:80px;">消耗量</th>
+                    <th style="width:80px;">結存量</th>
+                    <th style="width:100px;">效期</th>
+                    <th style="width:80px;">狀態</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="x-table-row--selected">
+                    <td>流感疫苗（四價）</td><td>FLU-2026A03</td><td>國光生技</td>
+                    <td>500</td><td>320</td><td>180</td>
+                    <td><span class="x-status-badge x-status-badge--warning">2026-05-05</span></td>
+                    <td><span class="x-status-badge x-status-badge--active">正常</span></td>
+                  </tr>
+                  <tr>
+                    <td>流感疫苗（四價）</td><td>FLU-2026B01</td><td>賽諾菲</td>
+                    <td>300</td><td>45</td><td>255</td>
+                    <td>2026-12-31</td>
+                    <td><span class="x-status-badge x-status-badge--active">正常</span></td>
+                  </tr>
+                  <tr>
+                    <td>COVID-19 追加劑</td><td>COV-XBB-01</td><td>莫德納</td>
+                    <td>200</td><td>200</td><td>0</td>
+                    <td>2026-09-15</td>
+                    <td><span class="x-status-badge x-status-badge--inactive">報廢</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-card-container" style="margin-top:16px;">
+          <div class="x-card-header">批號詳細資訊</div>
+          <div class="x-card-body">
+            <div class="x-form-grid">
+              <label>疫苗種類</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="FLU" selected>流感疫苗（四價）</option>
+              </select>
+              <label>批號</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="FLU-2026A03" />
+              </div>
+              <label>製造商</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="國光生技" />
+              </div>
+              <label>入庫數量</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="500" />
+              </div>
+              <label>效期</label>
+              <input class="x-input-input--date" type="date" value="2026-05-05" />
+              <label>批號狀態</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="N" selected>正常</option>
+                <option value="D">報廢</option>
+              </select>
+              <label>報廢原因</label>
+              <div class="x-input-text-container x-input-text-container--standalone" style="grid-column: 2 / -1;">
+                <input class="x-input-input" type="text" placeholder="批號狀態為報廢時必填" />
+              </div>
+            </div>
+            <div class="x-btn-group">
+              <button class="x-btn x-btn--md x-btn--tertiary">新增批號</button>
+              <button class="x-btn x-btn--md x-btn--primary">儲存</button>
+              <button class="x-btn x-btn--md x-btn--danger">報廢</button>
+              <button class="x-btn x-btn--md x-btn--tertiary">取消</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 3: 公費身份別條件 -->
+      <div id="tab-identity" class="x-tab-content" style="padding-top:16px;">
+        <div class="x-card-container">
+          <div class="x-card-header">身份別條件清單</div>
+          <div class="x-card-body" style="padding:0;">
+            <div class="x-table-wrap" style="max-height:260px; overflow:auto;">
+              <table class="x-table-native">
+                <thead>
+                  <tr>
+                    <th style="width:160px;">疫苗名稱</th>
+                    <th style="width:180px;">身份別類型</th>
+                    <th style="width:80px;">年齡下限</th>
+                    <th style="width:80px;">年齡上限</th>
+                    <th style="width:60px;">單位</th>
+                    <th style="width:80px;">次數上限</th>
+                    <th style="width:100px;">最短間隔</th>
+                    <th style="width:100px;">生效日</th>
+                    <th style="width:100px;">失效日</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="x-table-row--selected">
+                    <td>流感疫苗</td><td>65歲以上老人</td><td>65</td><td>--</td><td>歲</td>
+                    <td>1</td><td>--</td><td>2025-10-01</td><td>2026-03-31</td>
+                  </tr>
+                  <tr>
+                    <td>流感疫苗</td><td>6個月至6歲嬰幼兒</td><td>6</td><td>72</td><td>月齡</td>
+                    <td>2</td><td>28天</td><td>2025-10-01</td><td>2026-03-31</td>
+                  </tr>
+                  <tr>
+                    <td>流感疫苗</td><td>孕婦</td><td>--</td><td>--</td><td>歲</td>
+                    <td>1</td><td>--</td><td>2025-10-01</td><td>2026-03-31</td>
+                  </tr>
+                  <tr>
+                    <td>B型肝炎疫苗</td><td>出生嬰兒</td><td>0</td><td>12</td><td>月齡</td>
+                    <td>3</td><td>30天</td><td>2020-01-01</td><td>2099-12-31</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="x-card-container" style="margin-top:16px;">
+          <div class="x-card-header">身份別條件編輯</div>
+          <div class="x-card-body">
+            <div class="x-form-grid">
+              <label>疫苗種類</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="">請選擇</option>
+                <option value="FLU" selected>流感疫苗（四價）</option>
+                <option value="COV">COVID-19 追加劑</option>
+                <option value="HBV">B型肝炎疫苗</option>
+              </select>
+              <label>身份別類型</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="">請選擇</option>
+                <option value="E65" selected>65歲以上老人</option>
+                <option value="I06">6個月至6歲嬰幼兒</option>
+                <option value="PRG">孕婦</option>
+                <option value="CHR">特定慢性病患</option>
+                <option value="MED">醫事人員</option>
+              </select>
+              <label>年齡下限</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="65" />
+              </div>
+              <label>年齡上限</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" placeholder="不限填空" />
+              </div>
+              <label>年齡單位</label>
+              <select class="x-select-native x-select-native--md">
+                <option value="Y" selected>歲</option>
+                <option value="M">月齡</option>
+              </select>
+              <label>公費接種次數上限</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" value="1" />
+              </div>
+              <label>最短間隔天數</label>
+              <div class="x-input-text-container x-input-text-container--standalone">
+                <input class="x-input-input" type="text" placeholder="無間隔限制填空" />
+              </div>
+              <label>需特殊文件</label>
+              <label class="x-checkbox x-checkbox--md">
+                <input type="checkbox" class="x-checkbox-input" />
+                <span>需提供證明文件</span>
+              </label>
+              <label>生效日期</label>
+              <input class="x-input-input--date" type="date" value="2025-10-01" />
+              <label>失效日期</label>
+              <input class="x-input-input--date" type="date" value="2026-03-31" />
+            </div>
+            <div class="x-btn-group">
+              <button class="x-btn x-btn--md x-btn--tertiary">新增</button>
+              <button class="x-btn x-btn--md x-btn--primary">儲存</button>
+              <button class="x-btn x-btn--md x-btn--tertiary">取消</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(name) {
+      document.querySelectorAll('.x-tab-item').forEach(t => t.classList.remove('x-tab-item--active'));
+      document.querySelectorAll('.x-tab-content').forEach(c => c.classList.remove('x-tab-content--active'));
+      event.target.classList.add('x-tab-item--active');
+      document.getElementById('tab-' + name).classList.add('x-tab-content--active');
+    }
+  </script>
+</body>
+</html>

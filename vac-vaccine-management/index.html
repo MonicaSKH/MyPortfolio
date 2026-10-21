@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VAC 疫苗管理系統 — UI Demo 總覽</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: "Noto Sans TC", "Segoe UI", sans-serif; background: #f5f5f5; color: #333; }
+
+    .header {
+      background: linear-gradient(135deg, #1677ff 0%, #0958d9 100%);
+      color: #fff; padding: 32px 40px; text-align: center;
+    }
+    .header h1 { font-size: 28px; font-weight: 700; margin-bottom: 6px; }
+    .header p { font-size: 15px; color: rgba(255,255,255,0.75); }
+
+    .grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 24px; padding: 32px 40px; max-width: 1400px; margin: 0 auto;
+    }
+
+    .card {
+      background: #fff; border-radius: 12px; overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08); border: 1px solid #e8e8e8;
+      display: flex; flex-direction: column; transition: box-shadow 0.2s, transform 0.2s;
+    }
+    .card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateY(-2px); }
+
+    .card-head {
+      padding: 16px 20px; display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .card-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; flex-shrink: 0;
+    }
+    .card-icon--purple { background: rgba(114,46,209,0.1); }
+    .card-icon--blue   { background: rgba(22,119,255,0.1); }
+    .card-icon--green  { background: rgba(82,196,26,0.1); }
+    .card-icon--orange { background: rgba(250,140,22,0.1); }
+    .card-head-text h2 { font-size: 18px; font-weight: 700; margin-bottom: 2px; }
+    .card-head-text p  { font-size: 13px; color: #888; }
+
+    .card-badges { display: flex; gap: 6px; flex-wrap: wrap; padding: 10px 20px 0; }
+    .badge { font-size: 11px; padding: 2px 10px; border-radius: 10px; font-weight: 600; }
+    .badge--tab    { background: #e6f4ff; color: #0958d9; }
+    .badge--step   { background: #f6ffed; color: #389e0d; }
+    .badge--feat   { background: #fff7e6; color: #d46b08; }
+    .badge--interactive { background: #f9f0ff; color: #722ed1; }
+
+    .card-preview {
+      flex: 1; min-height: 300px; position: relative; margin: 12px 16px 16px;
+      border-radius: 8px; overflow: hidden; border: 1px solid #e8e8e8; background: #fafafa;
+    }
+    .card-preview iframe {
+      width: 200%; height: 200%;
+      transform: scale(0.5); transform-origin: 0 0;
+      border: none;
+    }
+
+    .card-actions {
+      padding: 0 20px 16px; display: flex; gap: 8px;
+    }
+    .btn {
+      padding: 8px 20px; border-radius: 6px; font-size: 14px;
+      font-weight: 600; cursor: pointer; border: 1px solid transparent;
+      text-decoration: none; text-align: center; transition: all 0.15s;
+    }
+    .btn--primary { background: #1677ff; color: #fff; border-color: #1677ff; }
+    .btn--primary:hover { background: #4096ff; border-color: #4096ff; }
+    .btn--outline { background: #fff; color: #333; border-color: #d9d9d9; }
+    .btn--outline:hover { border-color: #1677ff; color: #1677ff; }
+
+    .footer {
+      text-align: center; padding: 24px 40px; font-size: 13px; color: #aaa;
+      border-top: 1px solid #e8e8e8; margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>VAC 疫苗管理系統 — UI Demo</h1>
+  <p>從 PRD 規格產出的互動式 HTML UI Mockup（4 個模組）</p>
+</div>
+
+<div class="grid">
+
+  <!-- VAC.Master -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon card-icon--purple">&#128218;</div>
+      <div class="card-head-text">
+        <h2>VAC.Master</h2>
+        <p>疫苗基本資料與身份別維護</p>
+      </div>
+    </div>
+    <div class="card-badges">
+      <span class="badge badge--tab">3 Tabs</span>
+      <span class="badge badge--feat">疫苗代碼</span>
+      <span class="badge badge--feat">批號管理</span>
+      <span class="badge badge--feat">公費身份別</span>
+    </div>
+    <div class="card-preview">
+      <iframe src="VAC_Master.html" loading="lazy"></iframe>
+    </div>
+    <div class="card-actions">
+      <a class="btn btn--primary" href="VAC_Master.html" target="_blank">開啟完整頁面</a>
+    </div>
+  </div>
+
+  <!-- VAC.Administer -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon card-icon--blue">&#128137;</div>
+      <div class="card-head-text">
+        <h2>VAC.Administer</h2>
+        <p>疫苗施打作業（互動 Demo）</p>
+      </div>
+    </div>
+    <div class="card-badges">
+      <span class="badge badge--interactive">3 情境切換</span>
+      <span class="badge badge--step">5-Step Wizard</span>
+      <span class="badge badge--feat">兒童模式</span>
+      <span class="badge badge--feat">NIIS 欄位</span>
+    </div>
+    <div class="card-preview">
+      <iframe src="VAC_Administer.html" loading="lazy"></iframe>
+    </div>
+    <div class="card-actions">
+      <a class="btn btn--primary" href="VAC_Administer.html" target="_blank">開啟完整頁面</a>
+    </div>
+  </div>
+
+  <!-- VAC.Record -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon card-icon--green">&#128269;</div>
+      <div class="card-head-text">
+        <h2>VAC.Record</h2>
+        <p>施打紀錄查詢與補建</p>
+      </div>
+    </div>
+    <div class="card-badges">
+      <span class="badge badge--feat">多條件查詢</span>
+      <span class="badge badge--feat">狀態統計列</span>
+      <span class="badge badge--feat">明細面板</span>
+      <span class="badge badge--feat">異動稽核</span>
+    </div>
+    <div class="card-preview">
+      <iframe src="VAC_Record.html" loading="lazy"></iframe>
+    </div>
+    <div class="card-actions">
+      <a class="btn btn--primary" href="VAC_Record.html" target="_blank">開啟完整頁面</a>
+    </div>
+  </div>
+
+  <!-- VAC.NiisUpload -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon card-icon--orange">&#9729;</div>
+      <div class="card-head-text">
+        <h2>VAC.NiisUpload</h2>
+        <p>NIIS 上傳與回饋</p>
+      </div>
+    </div>
+    <div class="card-badges">
+      <span class="badge badge--tab">5 Tabs</span>
+      <span class="badge badge--feat">施打上傳</span>
+      <span class="badge badge--feat">預注回饋</span>
+      <span class="badge badge--feat">庫存上傳</span>
+      <span class="badge badge--feat">接種史查詢</span>
+    </div>
+    <div class="card-preview">
+      <iframe src="VAC_NiisUpload.html" loading="lazy"></iframe>
+    </div>
+    <div class="card-actions">
+      <a class="btn btn--primary" href="VAC_NiisUpload.html" target="_blank">開啟完整頁面</a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  Generated from PRD specs using ui-preview skill &middot; VAC 疫苗管理系統 &middot; 2026-04-10
+</div>
+
+</body>
+</html>

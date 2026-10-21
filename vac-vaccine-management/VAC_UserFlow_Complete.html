@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>疫苗管理系統（VAC）- 完整使用者流程圖</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    height: 100%;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+  }
+
+  /* Full-screen pan/zoom stage */
+  .stage {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    cursor: grab;
+    background:
+      linear-gradient(90deg, rgba(0,0,0,0.035) 1px, transparent 1px) 0 0 / 24px 24px,
+      linear-gradient(0deg, rgba(0,0,0,0.035) 1px, transparent 1px) 0 0 / 24px 24px,
+      #f8fafc;
+  }
+  .stage.dragging { cursor: grabbing; }
+  .stage-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+    background: #fff;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.12);
+    border-radius: 12px;
+    padding: 28px 36px;
+  }
+  .stage-inner svg { display: block; }
+
+  /* Floating top bar (overlay, does not push the diagram down) */
+  .topbar {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    z-index: 30;
+    background: rgba(30,41,59,0.92);
+    backdrop-filter: blur(8px);
+    color: #f8fafc;
+    padding: 10px 18px;
+    pointer-events: none;
+  }
+  .topbar h1 { font-size: 15px; margin: 0 0 2px; font-weight: 700; }
+  .topbar p { margin: 0; color: #94a3b8; font-size: 11px; }
+
+  .legend-bar {
+    position: absolute;
+    left: 0; right: 0;
+    z-index: 30;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 18px;
+    font-size: 11.5px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    pointer-events: none;
+  }
+  .legend-item { display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+  .swatch { width: 12px; height: 12px; border-radius: 3px; display: inline-block; border: 1.5px solid; flex-shrink: 0; }
+  .sw-master { background: #eef6ff; border-color: #3b82f6; }
+  .sw-admin  { background: #eefcf3; border-color: #10b981; }
+  .sw-record { background: #fff7ed; border-color: #f59e0b; }
+  .sw-niis   { background: #faf5ff; border-color: #a855f7; }
+
+  /* Controls (clickable, above the stage) */
+  .controls {
+    position: absolute;
+    bottom: 18px; right: 18px;
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .controls button, .fullscreen-btn, .collapse-btn {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background: #fff;
+    color: #1e293b;
+    font-size: 19px;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  .controls button:active, .fullscreen-btn:active { background: #f1f5f9; }
+  .zoom-pct {
+    width: 42px; height: 28px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: #64748b; background: #fff;
+    border-radius: 10px; border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+  .fullscreen-btn {
+    position: absolute;
+    top: 10px; right: 16px;
+    z-index: 40;
+    font-size: 16px;
+  }
+  .collapse-btn {
+    position: absolute;
+    top: 10px; right: 66px;
+    z-index: 40;
+    font-size: 13px;
+    width: 42px;
+  }
+
+  .hint {
+    position: absolute;
+    z-index: 30;
+    left: 18px;
+    font-size: 11px;
+    color: #94a3b8;
+    background: rgba(255,255,255,0.85);
+    padding: 4px 10px;
+    border-radius: 6px;
+    pointer-events: none;
+  }
+
+  /* Handoff panel: collapsible, floats over the stage */
+  .handoff-panel {
+    position: absolute;
+    left: 16px; bottom: 16px;
+    z-index: 35;
+    width: 360px;
+    max-width: calc(100vw - 32px);
+    max-height: 38vh;
+    overflow: auto;
+    background: rgba(255,255,255,0.97);
+    border-radius: 12px;
+    padding: 14px 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+    font-size: 12px;
+  }
+  .handoff-panel h2 {
+    font-size: 13px; margin: 0 0 8px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .handoff-panel h2 button {
+    border: none; background: none; cursor: pointer; font-size: 13px; color: #94a3b8;
+  }
+  .handoff-panel table { width: 100%; border-collapse: collapse; }
+  .handoff-panel th { text-align: left; background: #f1f5f9; padding: 5px 8px; color: #475569; font-size: 11px; }
+  .handoff-panel td { padding: 6px 8px; border-bottom: 1px solid #e2e8f0; vertical-align: top; line-height: 1.5; }
+  .handoff-panel tr:last-child td { border-bottom: none; }
+  .handoff-toggle {
+    position: absolute;
+    left: 16px; bottom: 16px;
+    z-index: 35;
+    display: none;
+  }
+  .handoff-panel.collapsed { display: none; }
+  .handoff-panel.collapsed ~ .handoff-toggle { display: block; }
+
+  @media (max-width: 640px) {
+    .topbar h1 { font-size: 13px; }
+    .topbar p { font-size: 10px; }
+    .legend-bar { font-size: 10.5px; padding: 6px 14px; gap: 7px; }
+    .handoff-panel { width: calc(100vw - 32px); max-height: 32vh; }
+    .collapse-btn { right: 60px; width: 38px; height: 38px; }
+    .fullscreen-btn { width: 38px; height: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="stage" id="stage">
+  <div class="stage-inner" id="stageInner">
+    <div class="mermaid" id="mermaidSrc">
+flowchart TD
+    subgraph M["VAC.Master　前置作業（系統管理員 / 庫管人員）"]
+        M1["管理員維護疫苗代碼<br/>名稱 / CDC代碼 / NIIS代碼"] --> M2["設定公費身份別條件<br/>年齡 / 次數上限 / 間隔 / 生效日"]
+        M2 --> M3["庫管建立入庫批號<br/>批號 / 效期 / 數量"]
+        M3 --> M4{"效期 30 天內到期？"}
+        M4 -->|"是"| M5["系統顯示到期預警"]
+        M4 -->|"否"| M6["批號可於施打作業選用"]
+        M5 --> M6
+    end
+
+    subgraph A["VAC.Administer　施打當日"]
+        A0["診間：醫師開立疫苗醫令<br/>選擇疫苗種類"] --> A1["系統列出可用公費身份別清單"]
+        A1 --> A2["醫師確認身份別<br/>公費／自費"]
+        A2 --> A3["醫令建立<br/>狀態：待施打"]
+        A3 --> A4["施打站：護理師 Step1 病患識別"]
+        A4 --> A5{"識別方式？"}
+        A5 -->|"健保卡 / 身分證"| A6["Step2 帶出病患資料"]
+        A5 -->|"嬰幼兒無健保卡"| A7["輸入家長身分證+出生序+胎別<br/>查詢或建立病歷"]
+        A7 --> A6
+        A6 --> A8["Step3 列出待施打醫令<br/>疫苗 / 身份別 / 劑次"]
+        A8 --> A9["Step4 系統驗證<br/>公費次數上限 / 最短間隔"]
+        A9 -->|"驗證通過"| A10{"此疫苗有接種時程？"}
+        A10 -->|"是"| A11["顯示接種時程對照表<br/>本次劑次綠底標示"]
+        A10 -->|"否"| A12["Step4/5 施打資訊確認<br/>FEFO批號 / 部位 / 劑量"]
+        A11 --> A12
+        A9 -->|"驗證不過"| A13["顯示警示<br/>護理師確認繼續或取消"]
+        A13 -->|"繼續"| A12
+        A13 -->|"取消"| AZ["結束，不建立紀錄"]
+        A12 --> A14["按下確認施打完成"]
+        A14 --> A15["同時寫入：<br/>NIS醫令執行紀錄 + VAC施打紀錄"]
+        A15 --> A16["庫存自動扣減"]
+        A16 --> A17["可列印接種憑證"]
+    end
+
+    subgraph R["VAC.Record　紀錄管理"]
+        R1["查詢施打紀錄<br/>依病患 / 疫苗 / 日期 / 上傳狀態"] --> R2{"需要什麼操作？"}
+        R2 -->|"修改"| R3{"紀錄上傳狀態？"}
+        R3 -->|"未上傳 / 上傳失敗"| R4["開放全部可修改欄位"]
+        R3 -->|"已上傳 NIIS"| R5["僅部位 / 施打人員可修改"]
+        R4 --> R6["記錄異動軌跡並儲存"]
+        R5 --> R6
+        R2 -->|"補建"| R7["輸入病患 / 疫苗 / 批號<br/>手動輸入歷史施打日期"]
+        R7 --> R8["系統依施打當時條件判斷公費資格"]
+        R8 --> R9["加上「補建」標記並儲存"]
+        R2 -->|"刪除"| R10{"紀錄上傳狀態？"}
+        R10 -->|"未上傳"| R11["管理員授權後軟刪除"]
+        R10 -->|"已上傳 NIIS"| R12["需先於 NIIS 刪除<br/>才可在本系統刪除"]
+        R2 -->|"匯出"| R13["匯出 Excel 報表"]
+    end
+
+    subgraph N["VAC.NiisUpload　NIIS 上傳與回饋"]
+        N1["選擇上傳方式<br/>日期區間 / 逐筆勾選"] --> N2["系統列出未上傳紀錄清單"]
+        N2 --> N3["確認送出至 NIIS"]
+        N3 --> N4{"NIIS 回應？"}
+        N4 -->|"成功"| N5["標記為已上傳"]
+        N4 -->|"部分失敗"| N6["成功筆標記已上傳<br/>失敗筆標記失敗並顯示原因"]
+        N4 -->|"連線異常"| N7["維持未上傳<br/>提示重試"]
+        N6 --> N8["點選失敗紀錄"]
+        N9["下載預注結果"] --> N10{"全部通過？"}
+        N10 -->|"否"| N8
+        N10 -->|"是"| N11["上傳作業完成"]
+        N12["庫管：庫存消耗 / 結存上傳"] --> N13["系統自動彙整期間消耗量"]
+        N13 --> N14["確認後送出 NIIS"]
+        N15["查詢 NIIS 個人接種史"] --> N16["供施打前參考"]
+    end
+
+    M6 --> A0
+    A15 --> R1
+    A17 --> End1(["流程結束"])
+    R6 --> N1
+    R9 --> N1
+    N8 -.->|"跳轉修正"| R3
+    N5 --> End2(["流程結束"])
+    N11 --> End2
+    N16 -.->|"參考接種史"| A4
+
+    style M fill:#eef6ff,stroke:#3b82f6,stroke-width:1.5px
+    style A fill:#eefcf3,stroke:#10b981,stroke-width:1.5px
+    style R fill:#fff7ed,stroke:#f59e0b,stroke-width:1.5px
+    style N fill:#faf5ff,stroke:#a855f7,stroke-width:1.5px
+    </div>
+  </div>
+</div>
+
+<div class="topbar">
+  <h1>疫苗管理系統（VAC）完整使用者流程圖</h1>
+  <p>整合 VAC.Master / VAC.Administer / VAC.Record / VAC.NiisUpload 四模組，呈現端到端使用者流程</p>
+</div>
+
+<div class="legend-bar" id="legendBar">
+  <div class="legend-item"><span class="swatch sw-master"></span>VAC.Master 前置作業</div>
+  <div class="legend-item"><span class="swatch sw-admin"></span>VAC.Administer 施打當日</div>
+  <div class="legend-item"><span class="swatch sw-record"></span>VAC.Record 紀錄管理</div>
+  <div class="legend-item"><span class="swatch sw-niis"></span>VAC.NiisUpload NIIS 上傳與回饋</div>
+</div>
+
+<button class="collapse-btn" id="chromeToggle" title="隱藏/顯示標題列">隱藏</button>
+<button class="fullscreen-btn" id="fullscreenBtn" title="全螢幕">&#x26F6;</button>
+
+<div class="hint" id="hint" style="top: 58px;">拖曳平移・滾輪縮放・雙擊重設</div>
+
+<div class="controls">
+  <button id="zoomIn" title="放大">+</button>
+  <div class="zoom-pct" id="zoomPct">100%</div>
+  <button id="zoomOut" title="縮小">&minus;</button>
+  <button id="zoomFit" title="重設">&#8634;</button>
+</div>
+
+<div class="handoff-panel" id="handoffPanel">
+  <h2>模組交接點說明 <button id="handoffCollapse" title="收合">&times;</button></h2>
+  <table>
+    <thead><tr><th style="width:120px;">交接點</th><th>說明</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Master→Administer</strong></td><td>批號建立（無到期疑慮）後才可於施打站選用；身份別條件生效後即時反映於資格判斷</td></tr>
+      <tr><td><strong>Administer→Record</strong></td><td>每次施打完成即寫入施打紀錄，狀態預設「未上傳」，供後續查詢/修改/補建</td></tr>
+      <tr><td><strong>Record→NiisUpload</strong></td><td>紀錄確認無誤後，才會出現在 NIIS 上傳作業的「未上傳」清單中</td></tr>
+      <tr><td><strong>NiisUpload→Record</strong></td><td>上傳失敗或預注結果不符的紀錄，可直接跳轉 Record 修正後重新上傳</td></tr>
+      <tr><td><strong>NiisUpload→Administer</strong></td><td>護理師施打前可查詢病患 NIIS 全國接種史作為參考（非強制流程）</td></tr>
+    </tbody>
+  </table>
+</div>
+<button class="handoff-toggle" id="handoffToggle" title="顯示模組交接點說明">&#9432; 交接點說明</button>
+
+<script>
+  mermaid.initialize({ startOnLoad: false, theme: 'default', flowchart: { useMaxWidth: false, htmlLabels: true } });
+
+  var stage = document.getElementById('stage');
+  var inner = document.getElementById('stageInner');
+  var zoomPct = document.getElementById('zoomPct');
+
+  var scale = 1, minScale = 0.1, maxScale = 4;
+  var panX = 0, panY = 0;
+  var dragging = false, dragStartX = 0, dragStartY = 0, panStartX = 0, panStartY = 0;
+
+  function applyTransform() {
+    inner.style.transform = 'translate(' + panX + 'px,' + panY + 'px) scale(' + scale + ')';
+    zoomPct.textContent = Math.round(scale * 100) + '%';
+  }
+
+  function fitToStage() {
+    var stageRect = stage.getBoundingClientRect();
+    // Measure the inner content at scale=1 to get its natural size.
+    inner.style.transform = 'translate(0px,0px) scale(1)';
+    var naturalW = inner.offsetWidth;
+    var naturalH = inner.offsetHeight;
+    if (!naturalW || !naturalH) return;
+
+    var availW = stageRect.width - 48;
+    var availH = stageRect.height - 48;
+    var fitScale = Math.min(availW / naturalW, availH / naturalH, 1.5);
+    fitScale = Math.max(fitScale, minScale);
+
+    scale = fitScale;
+    panX = (stageRect.width - naturalW * scale) / 2;
+    panY = (stageRect.height - naturalH * scale) / 2;
+    applyTransform();
+  }
+
+  mermaid.run({ querySelector: '#mermaidSrc' }).then(function () {
+    requestAnimationFrame(function () {
+      requestAnimationFrame(fitToStage);
+    });
+  });
+
+  // --- Drag to pan ---
+  stage.addEventListener('mousedown', function (e) {
+    if (e.target.closest('button') || e.target.closest('.handoff-panel')) return;
+    dragging = true;
+    stage.classList.add('dragging');
+    dragStartX = e.clientX; dragStartY = e.clientY;
+    panStartX = panX; panStartY = panY;
+  });
+  window.addEventListener('mousemove', function (e) {
+    if (!dragging) return;
+    panX = panStartX + (e.clientX - dragStartX);
+    panY = panStartY + (e.clientY - dragStartY);
+    applyTransform();
+  });
+  window.addEventListener('mouseup', function () {
+    dragging = false;
+    stage.classList.remove('dragging');
+  });
+
+  // Touch support
+  var touchStartX = 0, touchStartY = 0, touchPanStartX = 0, touchPanStartY = 0;
+  var pinchStartDist = 0, pinchStartScale = 1;
+  stage.addEventListener('touchstart', function (e) {
+    if (e.touches.length === 1) {
+      touchStartX = e.touches[0].clientX; touchStartY = e.touches[0].clientY;
+      touchPanStartX = panX; touchPanStartY = panY;
+    } else if (e.touches.length === 2) {
+      pinchStartDist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      pinchStartScale = scale;
+    }
+  }, { passive: true });
+  stage.addEventListener('touchmove', function (e) {
+    if (e.touches.length === 1) {
+      panX = touchPanStartX + (e.touches[0].clientX - touchStartX);
+      panY = touchPanStartY + (e.touches[0].clientY - touchStartY);
+      applyTransform();
+    } else if (e.touches.length === 2) {
+      var dist = Math.hypot(
+        e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY
+      );
+      scale = Math.min(Math.max(pinchStartScale * (dist / pinchStartDist), minScale), maxScale);
+      applyTransform();
+    }
+  }, { passive: true });
+
+  // --- Wheel to zoom (around cursor position) ---
+  stage.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    var stageRect = stage.getBoundingClientRect();
+    var cx = e.clientX - stageRect.left;
+    var cy = e.clientY - stageRect.top;
+    var prevScale = scale;
+    var delta = -e.deltaY * 0.0015;
+    scale = Math.min(Math.max(scale * (1 + delta), minScale), maxScale);
+    // keep the point under the cursor fixed while zooming
+    panX = cx - ((cx - panX) / prevScale) * scale;
+    panY = cy - ((cy - panY) / prevScale) * scale;
+    applyTransform();
+  }, { passive: false });
+
+  stage.addEventListener('dblclick', fitToStage);
+
+  document.getElementById('zoomIn').addEventListener('click', function () {
+    var stageRect = stage.getBoundingClientRect();
+    var cx = stageRect.width / 2, cy = stageRect.height / 2;
+    var prevScale = scale;
+    scale = Math.min(scale * 1.25, maxScale);
+    panX = cx - ((cx - panX) / prevScale) * scale;
+    panY = cy - ((cy - panY) / prevScale) * scale;
+    applyTransform();
+  });
+  document.getElementById('zoomOut').addEventListener('click', function () {
+    var stageRect = stage.getBoundingClientRect();
+    var cx = stageRect.width / 2, cy = stageRect.height / 2;
+    var prevScale = scale;
+    scale = Math.max(scale / 1.25, minScale);
+    panX = cx - ((cx - panX) / prevScale) * scale;
+    panY = cy - ((cy - panY) / prevScale) * scale;
+    applyTransform();
+  });
+  document.getElementById('zoomFit').addEventListener('click', fitToStage);
+
+  window.addEventListener('resize', fitToStage);
+
+  // --- Fullscreen toggle ---
+  document.getElementById('fullscreenBtn').addEventListener('click', function () {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(function () {});
+    } else {
+      document.exitFullscreen();
+    }
+  });
+  document.addEventListener('fullscreenchange', function () {
+    setTimeout(fitToStage, 150);
+  });
+
+  // --- Collapse top chrome (title/legend) to maximize diagram space ---
+  var chromeHidden = false;
+  document.getElementById('chromeToggle').addEventListener('click', function () {
+    chromeHidden = !chromeHidden;
+    document.querySelector('.topbar').style.display = chromeHidden ? 'none' : '';
+    document.getElementById('legendBar').style.display = chromeHidden ? 'none' : '';
+    this.textContent = chromeHidden ? '顯示' : '隱藏';
+    setTimeout(fitToStage, 50);
+  });
+
+  // --- Collapse handoff panel ---
+  document.getElementById('handoffCollapse').addEventListener('click', function () {
+    document.getElementById('handoffPanel').classList.add('collapsed');
+  });
+  document.getElementById('handoffToggle').addEventListener('click', function () {
+    document.getElementById('handoffPanel').classList.remove('collapsed');
+  });
+
+  // Position legend bar right below topbar once topbar height is known.
+  requestAnimationFrame(function () {
+    var topbarH = document.querySelector('.topbar').offsetHeight;
+    document.getElementById('legendBar').style.top = topbarH + 'px';
+    document.getElementById('hint').style.top = (topbarH + document.getElementById('legendBar').offsetHeight + 10) + 'px';
+  });
+</script>
+</body>
+</html>
