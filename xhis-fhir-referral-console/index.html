@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>xHIS FHIR 轉診資料交換</title>
+<style>
+:root{
+  --bg:#FAF9F5;--panel:#FFFFFF;--panel2:#F5F4ED;--ink:#141413;--muted:#73726C;--faint:#9C9A92;
+  --line:rgba(31,30,29,.14);--accent:#D97757;--accent-ink:#FAF9F5;--ok:#558A42;--okbg:#DDE9D5;
+  --warn:#B5651D;--warnbg:#F6E3CF;--bad:#B3402A;--badbg:#F3D9D3;--info:#3F6E9A;--infobg:#DCE7F1;
+  --code:#141413;--codeink:#E8E6DC;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#1A1917;--panel:#242320;--panel2:#2C2B27;--ink:#F0EEE6;--muted:#A9A79E;--faint:#7E7C74;
+    --line:rgba(255,255,255,.12);--okbg:#2B3A25;--warnbg:#3D2F1E;--badbg:#42221B;--infobg:#22323F;--code:#0F0F0E;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1A1917;--panel:#242320;--panel2:#2C2B27;--ink:#F0EEE6;--muted:#A9A79E;--faint:#7E7C74;
+  --line:rgba(255,255,255,.12);--okbg:#2B3A25;--warnbg:#3D2F1E;--badbg:#42221B;--infobg:#22323F;--code:#0F0F0E;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,-apple-system,sans-serif;font-size:14px;line-height:1.55}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+button{font:inherit;color:inherit;cursor:pointer}
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+aside{background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;display:flex;flex-direction:column;gap:6px;position:sticky;top:0;height:100vh}
+.brand{font-weight:800;font-size:16px;padding:0 8px}
+.brand small{display:block;font-weight:600;font-size:11px;color:var(--accent);letter-spacing:.05em;text-transform:uppercase}
+.persp{margin:14px 0 8px;background:var(--panel2);border-radius:10px;padding:4px;display:grid;grid-template-columns:1fr 1fr;gap:4px}
+.persp button{border:0;background:transparent;padding:8px 6px;border-radius:7px;font-size:12px;font-weight:700;color:var(--muted)}
+.persp button.on{background:var(--ink);color:var(--bg)}
+.persp .role{display:block;font-size:10px;font-weight:600;opacity:.75}
+nav button{width:100%;text-align:left;border:0;background:transparent;padding:10px 12px;border-radius:9px;font-weight:600;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+nav button.on{background:var(--panel2);color:var(--ink)}
+nav .cnt{font-size:11px;background:var(--accent);color:var(--accent-ink);border-radius:99px;padding:0 7px}
+.user{margin-top:auto;font-size:12px;color:var(--muted);padding:10px 8px;border-top:1px solid var(--line)}
+main{padding:28px 32px 60px;max-width:1080px;width:100%}
+h1{font-size:22px;margin:0 0 4px}
+.sub{color:var(--muted);font-size:13px;margin-bottom:20px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:16px}
+.card-h{padding:12px 16px;background:var(--panel2);border-bottom:1px solid var(--line);font-weight:700;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.card-b{padding:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label.f{display:block;font-size:12px;color:var(--muted);font-weight:600;margin-bottom:5px}
+input,select{width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.btn{border:0;background:var(--accent);color:var(--accent-ink);padding:10px 20px;border-radius:9px;font-weight:700}
+.btn:disabled{background:var(--panel2);color:var(--faint);cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+.btn.sm{padding:6px 12px;font-size:12px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.right{justify-content:flex-end}
+.seg{display:inline-grid;grid-auto-flow:column;background:var(--panel2);border-radius:9px;padding:3px;gap:3px}
+.seg button{border:0;background:transparent;padding:7px 14px;border-radius:7px;font-weight:700;font-size:12.5px;color:var(--muted)}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.b-queued{background:var(--panel2);color:var(--muted)}.b-processing{background:var(--warnbg);color:var(--warn)}
+.b-completed{background:var(--okbg);color:var(--ok)}.b-failed{background:var(--badbg);color:var(--bad)}
+.b-conflict{background:var(--warnbg);color:var(--warn)}.b-import{background:var(--okbg);color:var(--ok)}.b-unmapped{background:var(--infobg);color:var(--info)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:11.5px;color:var(--muted);font-weight:700;padding:9px 14px;border-bottom:1px solid var(--line);background:var(--panel2)}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:0}
+tr.click{cursor:pointer}tr.click:hover td{background:var(--panel2)}
+.steps{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--faint);padding:6px 12px;border-radius:99px;background:var(--panel2)}
+.step i{font-style:normal;width:20px;height:20px;border-radius:99px;background:var(--line);display:inline-flex;align-items:center;justify-content:center;font-size:11px}
+.step.on{background:var(--ink);color:var(--bg)}.step.on i{background:var(--accent);color:var(--accent-ink)}
+.step.done{color:var(--ok)}.step.done i{background:var(--ok);color:#fff}
+.stat{border:1px solid var(--line);border-radius:12px;padding:14px;text-align:center}
+.stat b{display:block;font-size:26px}.stat span{font-size:11.5px;color:var(--muted)}
+.stat.hot{border-color:var(--accent)}.stat.hot b{color:var(--accent)}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:4px 10px;font-size:13px}.kv dt{color:var(--muted)}.kv dd{margin:0;font-weight:600}
+pre.code{margin:0;background:var(--code);color:var(--codeink);padding:14px 16px;border-radius:10px;font-size:12px;line-height:1.7;overflow:auto;max-height:420px}
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0}
+.side{border:1px solid var(--line);border-radius:10px;padding:12px 14px}
+.side h4{margin:0 0 6px;font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+.side .diff{background:var(--warnbg);border-radius:4px;padding:0 4px}
+.drop{border:1.5px dashed var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.file{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:var(--bg)}
+.file.on{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent) inset}
+.file input{width:auto}
+.note{background:var(--infobg);color:var(--info);border-radius:10px;padding:10px 14px;font-size:12.5px}
+.spin{display:inline-block;width:13px;height:13px;border-radius:99px;border:2px solid var(--line);border-top-color:var(--accent);animation:sp .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.bar{height:6px;background:var(--panel2);border-radius:99px;overflow:hidden;min-width:90px}.bar i{display:block;height:100%;background:var(--accent);transition:width .5s}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px;z-index:20}
+.modal{background:var(--panel);border-radius:14px;max-width:720px;width:100%;max-height:86vh;overflow:auto;border:1px solid var(--line)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;font-size:13px;z-index:30}
+.scroll-x{overflow-x:auto}
+@media (max-width:820px){
+  .app{grid-template-columns:1fr}
+  aside{position:static;height:auto;flex-direction:row;flex-wrap:wrap;align-items:center;border-right:0;border-bottom:1px solid var(--line)}
+  .persp{margin:0}.user{display:none}nav{display:flex;gap:4px}nav button{width:auto}
+  main{padding:20px 16px 50px}.grid2,.compare{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="brand"><small>xHIS</small>FHIR 轉診資料交換</div>
+    <div class="persp" id="persp"></div>
+    <nav id="nav"></nav>
+    <div class="user" id="user"></div>
+  </aside>
+  <main id="main"></main>
+</div>
+<div id="layer"></div>
+
+<script>
+/* ---------- 範例資料:陳小明轉診案例 ---------- */
+const PATIENT = {chartNo:"N123456",idNo:"A123456789",name:"陳小明",gender:"M",birth:"750315",phone:"0912345678",email:"chenxm@example.com",address:"台北市士林區文林路123號"};
+const ENCOUNTERS = [
+  {id:"E20260920001",status:"Finished",doctor:"D0056",subject:"GI",subjectName:"腸胃科",start:"2026-09-20T09:00:00+08:00",end:"2026-09-20T09:45:00+08:00"},
+  {id:"E20260812007",status:"Finished",doctor:"D0031",subject:"IM",subjectName:"內科",start:"2026-08-12T14:10:00+08:00",end:"2026-08-12T14:38:00+08:00"}
+];
+const STATUS_MAP={Registered:"planned",Arrived:"arrived",Consulting:"in-progress",UnderExam:"in-progress",Finished:"finished",Paid:"finished",Closed:"finished",Cancelled:"cancelled"};
+const LOCAL_PATIENT={chartNo:"T998877",name:"陳小明",idNo:"A123456789",phone:"0912-345-678",address:"台北市士林區文林路 123 號 4 樓"};
+
+function buildBundle(encIds){
+  const p=PATIENT, y=+p.birth.slice(0,p.birth.length-4)+1911;
+  const patient={resourceType:"Patient",identifier:[{type:{text:"MR"},value:p.chartNo},{type:{text:"NI"},value:p.idNo}],name:[{text:p.name}],gender:p.gender==="M"?"male":"female",birthDate:`${y}-${p.birth.slice(-4,-2)}-${p.birth.slice(-2)}`,telecom:[{system:"phone",value:p.phone},{system:"email",value:p.email}],address:[{text:p.address}]};
+  const encs=ENCOUNTERS.filter(e=>encIds.includes(e.id)).map(e=>({resourceType:"Encounter",identifier:[{value:e.id}],status:STATUS_MAP[e.status],class:"AMB",subject:{reference:"Patient/"+p.chartNo},participant:[{individual:{reference:"Practitioner/"+e.doctor}}],serviceType:{coding:[{code:e.subject}]},period:{start:e.start,end:e.end}}));
+  return {resourceType:"Bundle",type:"collection",entry:[patient,...encs].map(r=>({resource:r}))};
+}
+
+/* ---------- 狀態 ---------- */
+const S={
+  persp:"B", view:"import",
+  exportJobs:[{id:"EXP-88290",chartNo:"N123456",encIds:["E20260812007"],status:"completed",progress:100,createdAt:"2026-08-12 15:02"}],
+  expForm:{chartNo:"N123456",encIds:["E20260920001"]},
+  importJobs:[
+    {id:"IMP-40102",status:"completed",hospital:"馬偕醫院",total:5,success:5,skipped:0,fail:0,by:"王小華",createdAt:"2026-09-03 10:15",details:[{type:"Patient",success:2,skipped:0},{type:"Encounter",success:3,skipped:0}]},
+    {id:"IMP-40155",status:"completed",hospital:"亞東醫院",total:4,success:2,skipped:2,fail:0,by:"李美玲",createdAt:"2026-09-11 16:40",details:[{type:"Patient",success:1,skipped:1,reason:"conflict_skip"},{type:"Encounter",success:1,skipped:1,reason:"unmapped"}]},
+    {id:"IMP-40180",status:"failed",hospital:"國泰醫院",total:3,success:0,skipped:0,fail:3,by:"王小華",createdAt:"2026-09-15 09:05",details:[]}
+  ],
+  imp:{step:1,sourceType:"file",fileId:null,hospital:"新光醫院",fhirVersion:"R4",by:"王小華",endpointUrl:"https://fhir.skh.org.tw/fhir",resourceType:"Encounter",filterDate:"2026-09-01",preview:null,resolution:"keep_local",phase:"idle",result:null,jobId:null},
+  hist:{status:"",q:""}
+};
+let nextExp=88291,nextImp=40213;
+
+/* ---------- 小工具 ---------- */
+const $=s=>document.querySelector(s);
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const badge=s=>`<span class="badge b-${s}">${s}</span>`;
+function toast(msg){const t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2200);}
+function now(){const d=new Date(),p=n=>String(n).padStart(2,"0");return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`;}
+function completedExports(){return S.exportJobs.filter(j=>j.status==="completed");}
+
+/* ---------- 版面:側欄 ---------- */
+function renderShell(){
+  $("#persp").innerHTML=`<button class="${S.persp==="A"?"on":""}" data-a="persp" data-v="A">新光醫院<span class="role">A · 來源</span></button><button class="${S.persp==="B"?"on":""}" data-a="persp" data-v="B">臺大醫院<span class="role">B · 接收</span></button>`;
+  const items=S.persp==="A"?[["export","匯出 Export"],["exphist","匯出工作"]]:[["import","匯入 Import"],["history","匯入紀錄"]];
+  const running=S.exportJobs.filter(j=>j.status!=="completed").length;
+  $("#nav").innerHTML=items.map(([k,l])=>`<button class="${S.view===k?"on":""}" data-a="view" data-v="${k}">${l}${k==="exphist"&&running?`<span class="cnt">${running}</span>`:""}</button>`).join("");
+  $("#user").textContent=S.persp==="A"?"新光醫院 · 病歷室":"臺大醫院 · 王小華(病歷室)";
+}
+
+/* ---------- A:Export ---------- */
+function viewExport(){
+  const f=S.expForm;
+  return `<h1>匯出 FHIR Bundle</h1><div class="sub">依 Mapping 規則把病人資料轉成 FHIR R4 Bundle · 非同步工作</div>
+  <div class="card"><div class="card-h">1 · 選擇病人</div><div class="card-b">
+    <div class="grid2"><div><label class="f">病歷號 chartNo</label><input value="${esc(f.chartNo)}" disabled></div><div><label class="f">FHIR 版本</label><input value="R4" disabled></div></div>
+    <dl class="kv" style="margin-top:14px"><dt>姓名</dt><dd>${PATIENT.name}</dd><dt>身分證號</dt><dd class="mono">${PATIENT.idNo}</dd><dt>出生日期</dt><dd>民國 ${PATIENT.birth.slice(0,2)} 年 ${+PATIENT.birth.slice(2,4)} 月 ${+PATIENT.birth.slice(4)} 日 → <span class="mono">1986-03-15</span></dd></dl>
+  </div></div>
+  <div class="card"><div class="card-h">2 · 選擇就診紀錄 Encounter</div><table><thead><tr><th></th><th>encounterId</th><th>科別</th><th>registStatus → status</th><th>class</th></tr></thead><tbody>
+  ${ENCOUNTERS.map(e=>`<tr><td><input type="checkbox" data-a="enc" data-v="${e.id}" ${f.encIds.includes(e.id)?"checked":""} style="width:auto"></td><td class="mono">${e.id}</td><td>${e.subjectName}</td><td><span class="mono">${e.status}</span> → <span class="mono">${STATUS_MAP[e.status]}</span></td><td><span class="badge b-import">AMB(已補上)</span></td></tr>`).join("")}
+  </tbody></table></div>
+  <div class="card"><div class="card-h">3 · Bundle 預覽</div><div class="card-b"><pre class="code mono">${esc(JSON.stringify(buildBundle(f.encIds),null,2))}</pre></div></div>
+  <div class="row right"><button class="btn" data-a="startExport" ${f.encIds.length?"":"disabled"}>建立匯出工作</button></div>`;
+}
+function viewExpHist(){
+  return `<h1>匯出工作</h1><div class="sub">FHIR.Export · queued → processing → completed</div>
+  <div class="card scroll-x"><table><thead><tr><th>jobId</th><th>病歷號</th><th>筆數</th><th>狀態</th><th>進度</th><th>建立時間</th><th></th></tr></thead><tbody>
+  ${S.exportJobs.slice().reverse().map(j=>`<tr><td class="mono">${j.id}</td><td class="mono">${j.chartNo}</td><td>${j.encIds.length+1} 個 Resource</td><td>${badge(j.status)}</td><td><div class="bar"><i style="width:${j.progress}%"></i></div></td><td>${j.createdAt}</td><td>${j.status==="completed"?`<button class="btn ghost sm" data-a="viewBundle" data-v="${j.id}">檢視 Bundle</button>`:""}</td></tr>`).join("")}
+  </tbody></table></div>
+  <div class="note">匯出完成後,Bundle 隨轉診單交付臺大醫院。切換左上角「臺大醫院」視角,即可在 Import 選到這份檔案。</div>`;
+}
+
+/* ---------- B:Import ---------- */
+function stepper(n){
+  const L=["來源","預覽","衝突決策","結果"];
+  return `<div class="steps">${L.map((l,i)=>`<div class="step ${n===i+1?"on":n>i+1?"done":""}"><i>${n>i+1?"✓":i+1}</i>${l}</div>`).join("")}</div>`;
+}
+function viewImport(){
+  const m=S.imp;
+  if(m.step===1){
+    const files=completedExports();
+    return `<h1>匯入外部 FHIR 資料</h1><div class="sub">FHIR.Import · 兩階段確認:先預覽、後寫入</div>${stepper(1)}
+    <div class="card"><div class="card-h">資料來源</div><div class="card-b">
+      <div class="seg" style="margin-bottom:14px"><button class="${m.sourceType==="file"?"on":""}" data-a="srcType" data-v="file">檔案 file</button><button class="${m.sourceType==="endpoint"?"on":""}" data-a="srcType" data-v="endpoint">API 端點 endpoint</button></div>
+      ${m.sourceType==="file"?`<div class="drop"><div style="font-size:12px;color:var(--muted)">收到的轉診 Bundle(Base64 編碼後送出 fileContent)</div>
+        ${files.length?files.slice().reverse().map(j=>`<label class="file ${m.fileId===j.id?"on":""}"><input type="radio" name="f" data-a="pickFile" data-v="${j.id}" ${m.fileId===j.id?"checked":""}><div><b class="mono">${j.id}.json</b><div style="font-size:12px;color:var(--muted)">病歷號 ${j.chartNo} · ${j.encIds.length} 筆 Encounter · ${j.createdAt}</div></div></label>`).join(""):`<div style="color:var(--muted)">尚無檔案</div>`}
+      </div>`:`<div class="grid2"><div style="grid-column:1/-1"><label class="f">endpointUrl(對方 FHIR Base URL)</label><input id="epUrl" value="${esc(m.endpointUrl)}"></div>
+        <div><label class="f">resourceType</label><select id="epRes"><option ${m.resourceType==="Encounter"?"selected":""}>Encounter</option><option ${m.resourceType==="Patient"?"selected":""}>Patient</option></select></div>
+        <div><label class="f">filterDate(起)</label><input id="epDate" type="date" value="${m.filterDate}"></div></div>`}
+      <div class="grid2" style="margin-top:16px"><div><label class="f">sourceHospitalName</label><input id="hosp" value="${esc(m.hospital)}"></div><div><label class="f">requestedBy</label><input id="by" value="${esc(m.by)}"></div></div>
+    </div></div>
+    <div class="row right"><button class="btn" data-a="createImport" ${m.sourceType==="file"&&!m.fileId?"disabled":""}>驗證並預覽(尚未寫入)</button></div>`;
+  }
+  if(m.step===2){
+    const p=m.preview;
+    return `<h1>預覽結果</h1><div class="sub">資料庫尚未有任何異動 · importJobId <span class="mono">${m.jobId}</span></div>${stepper(2)}
+    <div class="grid2" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px">
+      <div class="stat"><b>${p.importable}</b><span>importableCount 可匯入</span></div>
+      <div class="stat hot"><b>${p.conflict}</b><span>conflictCount 衝突</span></div>
+      <div class="stat"><b>${p.unmapped}</b><span>unmappedCount 無對應</span></div></div>
+    <div class="card scroll-x"><table><thead><tr><th>Resource</th><th>識別</th><th>結果</th><th>說明</th></tr></thead><tbody>
+      <tr><td>Patient</td><td class="mono">${PATIENT.chartNo}</td><td>${badge("conflict")}</td><td>身分證號 ${PATIENT.idNo} 已存在於本院(病歷號 ${LOCAL_PATIENT.chartNo})</td></tr>
+      ${p.encs.map(e=>`<tr><td>Encounter</td><td class="mono">${e}</td><td>${badge("import")}</td><td>無衝突,確認後新增</td></tr>`).join("")}
+    </tbody></table></div>
+    <div class="row right"><button class="btn ghost" data-a="backTo" data-v="1">返回</button><button class="btn" data-a="toStep" data-v="3">處理衝突 →</button></div>`;
+  }
+  if(m.step===3){
+    const opts=[["keep_local","保留本院","不動本院資料"],["overwrite","用來源覆蓋","以新光資料更新本院"],["skip","略過","本次不匯入此筆"]];
+    return `<h1>衝突決策</h1><div class="sub">針對每一筆衝突決定處理方式</div>${stepper(3)}
+    <div class="card"><div class="card-h">Patient/${PATIENT.chartNo}<span class="badge b-conflict">conflict · resolution: ${m.resolution==="pending"?"pending":m.resolution}</span></div><div class="card-b">
+      <div style="font-size:13px"><b>conflictReason:</b>身分證號 <span class="mono">${PATIENT.idNo}</span> 已存在於本院病歷,可能為同一病人。</div>
+      <div class="compare">
+        <div class="side"><h4>來源:新光醫院</h4><dl class="kv"><dt>病歷號</dt><dd class="mono">${PATIENT.chartNo}</dd><dt>姓名</dt><dd>${PATIENT.name}</dd><dt>電話</dt><dd><span class="diff">${PATIENT.phone}</span></dd><dt>地址</dt><dd><span class="diff">${PATIENT.address}</span></dd></dl></div>
+        <div class="side"><h4>本院既有:臺大醫院</h4><dl class="kv"><dt>病歷號</dt><dd class="mono">${LOCAL_PATIENT.chartNo}</dd><dt>姓名</dt><dd>${LOCAL_PATIENT.name}</dd><dt>電話</dt><dd><span class="diff">${LOCAL_PATIENT.phone}</span></dd><dt>地址</dt><dd><span class="diff">${LOCAL_PATIENT.address}</span></dd></dl></div>
+      </div>
+      <div class="seg" style="display:grid;grid-template-columns:repeat(3,1fr)">${opts.map(([k,l])=>`<button class="${m.resolution===k?"on":""}" data-a="resolve" data-v="${k}">${l}<div style="font-size:10.5px;font-weight:500;opacity:.7">${k}</div></button>`).join("")}</div>
+      <div class="note" style="margin-top:12px">${m.resolution==="keep_local"?"本院資料較完整(有樓層),建議保留。Encounter 將 Reference 到本院既有 Patient。":m.resolution==="overwrite"?"將以新光醫院資料更新本院 Patient,樓層資訊可能遺失。":"Patient 不匯入;Encounter 仍會新增並掛在本院既有 Patient 下。"}</div>
+    </div></div>
+    <div class="row right"><button class="btn ghost" data-a="backTo" data-v="2">返回</button><button class="btn" data-a="doUpdate">確認匯入(update)</button></div>`;
+  }
+  const r=m.result;
+  return `<h1>匯入結果</h1><div class="sub">importJobId <span class="mono">${m.jobId}</span></div>${stepper(m.phase==="done"?5:4)}
+  ${m.phase==="running"?`<div class="card"><div class="card-b" style="text-align:center;padding:36px"><span class="spin"></span>update 已送出 · result.status: <b>processing</b><div style="color:var(--muted);font-size:12.5px;margin-top:6px">資料量大時不會立即完成,之後以 load 查詢最終結果</div></div></div>`
+  :`<div class="row" style="margin-bottom:14px">${badge("completed")}<span style="color:var(--muted);font-size:12.5px">FHIR.Import.load</span></div>
+  <div class="grid2" style="grid-template-columns:repeat(3,1fr);margin-bottom:16px"><div class="stat"><b style="color:var(--ok)">${r.success}</b><span>successCount</span></div><div class="stat"><b>${r.skipped}</b><span>skippedCount</span></div><div class="stat"><b>0</b><span>failCount</span></div></div>
+  <div class="card scroll-x"><table><thead><tr><th>resourceType</th><th>successCount</th><th>skippedCount</th><th>skipReason</th></tr></thead><tbody>${r.details.map(d=>`<tr><td>${d.type}</td><td>${d.success}</td><td>${d.skipped}</td><td class="mono">${d.reason||"—"}</td></tr>`).join("")}</tbody></table></div>
+  <div class="note">陳小明這次門診紀錄已寫入臺大醫院系統,並 Reference 到本院 Patient/${LOCAL_PATIENT.chartNo}${m.resolution==="overwrite"?"(已以來源資料更新)":""}。</div>
+  <div class="row right" style="margin-top:14px"><button class="btn ghost" data-a="toHistory">查看匯入紀錄</button><button class="btn" data-a="newImport">再匯入一筆</button></div>`}`;
+}
+function viewHistory(){
+  return `<h1>匯入紀錄</h1><div class="sub">FHIR.Import.search · 列表只回摘要,點列查看詳情(load)</div>
+  <div class="row" style="margin-bottom:14px"><select id="hs" style="max-width:170px"><option value="">全部狀態</option>${["completed","processing","failed"].map(s=>`<option ${S.hist.status===s?"selected":""}>${s}</option>`).join("")}</select><input id="hq" placeholder="搜尋來源院所…" value="${esc(S.hist.q)}" style="max-width:260px"></div>
+  <div class="card scroll-x"><table><thead><tr><th>importJobId</th><th>來源院所</th><th>狀態</th><th>成功 / 總數</th><th>經辦</th><th>建立時間</th></tr></thead><tbody id="hbody">${histRows()}</tbody></table></div>`;
+}
+function histRows(){
+  const rows=S.importJobs.filter(j=>(!S.hist.status||j.status===S.hist.status)&&(!S.hist.q||j.hospital.includes(S.hist.q))).slice().reverse();
+  return rows.length?rows.map(j=>`<tr class="click" data-a="openJob" data-v="${j.id}"><td class="mono">${j.id}</td><td>${j.hospital}</td><td>${badge(j.status)}</td><td>${j.success} / ${j.total}</td><td>${j.by}</td><td>${j.createdAt}</td></tr>`).join(""):`<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:26px">沒有符合的紀錄</td></tr>`;
+}
+
+/* ---------- 渲染 ---------- */
+function render(){
+  renderShell();
+  const v=S.view;
+  $("#main").innerHTML=v==="export"?viewExport():v==="exphist"?viewExpHist():v==="import"?viewImport():viewHistory();
+}
+
+/* ---------- 動作 ---------- */
+function readImportForm(){
+  const m=S.imp,g=id=>document.getElementById(id);
+  if(g("hosp"))m.hospital=g("hosp").value;if(g("by"))m.by=g("by").value;
+  if(g("epUrl"))m.endpointUrl=g("epUrl").value;if(g("epRes"))m.resourceType=g("epRes").value;if(g("epDate"))m.filterDate=g("epDate").value;
+}
+function runExport(job){
+  setTimeout(()=>{job.status="processing";job.progress=45;refreshIf("exphist","export");},700);
+  setTimeout(()=>{job.progress=80;refreshIf("exphist");},1500);
+  setTimeout(()=>{job.status="completed";job.progress=100;refreshIf("exphist","export");toast(job.id+" 匯出完成");},2300);
+}
+function refreshIf(){if(S.persp==="A")render();else renderShell();}
+function freshImp(){return {step:1,sourceType:"file",fileId:null,hospital:"新光醫院",fhirVersion:"R4",by:"王小華",endpointUrl:"https://fhir.skh.org.tw/fhir",resourceType:"Encounter",filterDate:"2026-09-01",preview:null,resolution:"keep_local",phase:"idle",result:null,jobId:null};}
+
+document.addEventListener("click",e=>{
+  const t=e.target.closest("[data-a]");if(!t)return;
+  const a=t.dataset.a,v=t.dataset.v,m=S.imp;
+  if(a==="persp"){S.persp=v;S.view=v==="A"?"export":"import";}
+  else if(a==="view"){readImportForm();S.view=v;}
+  else if(a==="enc"){const ids=S.expForm.encIds;const i=ids.indexOf(v);i>=0?ids.splice(i,1):ids.push(v);}
+  else if(a==="startExport"){
+    const job={id:"EXP-"+(nextExp++),chartNo:S.expForm.chartNo,encIds:S.expForm.encIds.slice(),status:"queued",progress:10,createdAt:now()};
+    S.exportJobs.push(job);S.view="exphist";runExport(job);toast("已建立匯出工作 "+job.id);
+  }
+  else if(a==="viewBundle"){const j=S.exportJobs.find(x=>x.id===v);showModal(`${j.id}.json`,JSON.stringify(buildBundle(j.encIds),null,2));return;}
+  else if(a==="srcType"){readImportForm();m.sourceType=v;}
+  else if(a==="pickFile"){m.fileId=v;}
+  else if(a==="createImport"){
+    readImportForm();
+    const src=m.sourceType==="file"?S.exportJobs.find(j=>j.id===m.fileId):null;
+    const encs=src?src.encIds:["E20260920001"];
+    m.preview={importable:encs.length,conflict:1,unmapped:0,encs};
+    m.jobId="IMP-"+nextImp;m.step=2;
+  }
+  else if(a==="toStep"){m.step=+v;}
+  else if(a==="backTo"){m.step=+v;}
+  else if(a==="resolve"){m.resolution=v;}
+  else if(a==="doUpdate"){
+    m.step=4;m.phase="running";
+    setTimeout(()=>{
+      const enc=m.preview.encs.length,pSkip=m.resolution!=="overwrite";
+      const details=[{type:"Patient",success:pSkip?0:1,skipped:pSkip?1:0,reason:pSkip?"conflict_skip":null},{type:"Encounter",success:enc,skipped:0}];
+      m.result={success:details.reduce((s,d)=>s+d.success,0),skipped:details.reduce((s,d)=>s+d.skipped,0),details};
+      m.phase="done";
+      S.importJobs.push({id:m.jobId,status:"completed",hospital:m.hospital,total:enc+1,success:m.result.success,skipped:m.result.skipped,fail:0,by:m.by,createdAt:now(),details});
+      nextImp++;render();
+    },1500);
+  }
+  else if(a==="toHistory"){S.view="history";}
+  else if(a==="newImport"){S.imp=freshImp();}
+  else if(a==="openJob"){
+    const j=S.importJobs.find(x=>x.id===v);
+    showModal(`${j.id} · ${j.hospital}`,null,`<div class="row" style="margin-bottom:12px">${badge(j.status)}<span style="color:var(--muted)">${j.by} · ${j.createdAt}</span></div>
+    <div class="grid2" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px"><div class="stat"><b style="color:var(--ok)">${j.success}</b><span>successCount</span></div><div class="stat"><b>${j.skipped}</b><span>skippedCount</span></div><div class="stat"><b>${j.fail}</b><span>failCount</span></div></div>
+    ${j.details.length?`<table><thead><tr><th>resourceType</th><th>成功</th><th>略過</th><th>skipReason</th></tr></thead><tbody>${j.details.map(d=>`<tr><td>${d.type}</td><td>${d.success}</td><td>${d.skipped}</td><td class="mono">${d.reason||"—"}</td></tr>`).join("")}</tbody></table>`:`<div style="color:var(--muted)">此工作失敗,沒有明細。</div>`}`);
+    return;
+  }
+  else if(a==="closeModal"){if(t.classList.contains("overlay")&&e.target!==t)return;$("#layer").innerHTML="";return;}
+  render();
+});
+document.addEventListener("change",e=>{
+  if(e.target.id==="hs"){S.hist.status=e.target.value;$("#hbody").innerHTML=histRows();}
+});
+document.addEventListener("input",e=>{
+  if(e.target.id==="hq"){S.hist.q=e.target.value;$("#hbody").innerHTML=histRows();}
+});
+function showModal(title,code,html){
+  $("#layer").innerHTML=`<div class="overlay" data-a="closeModal"><div class="modal"><div class="card-h">${esc(title)}<button class="btn ghost sm" data-a="closeModal">關閉</button></div><div class="card-b">${code?`<pre class="code mono">${esc(code)}</pre>`:html}</div></div></div>`;
+}
+render();
+</script>
+</body>
+</html>
