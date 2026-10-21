@@ -1,0 +1,1737 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCH 孕產婦與兒童健康管理 - UI Preview</title>
+<style>
+/*
+ * xUI Base CSS for WinForms Preview
+ * Extracted & adapted from xhis-xui Vue component library
+ * This file is embedded in generated HTML previews.
+ * Source: references/xhis-xui/src/
+ */
+
+/* ============================================
+   1. CSS VARIABLES (from base-light.css + font.css)
+   ============================================ */
+:root {
+  /* Container */
+  --xv-container--background: rgb(217, 217, 219);
+  --xv-container--surface: rgb(242, 242, 242);
+  --xv-container--tinted-surface: rgb(242, 242, 242);
+  --xv-container--surface-hovered: rgba(26, 26, 26, 0.12);
+  --xv-container--surface-pressed: rgba(26, 26, 26, 0.2);
+  --xv-container--surface-active: rgba(109, 174, 237, 0.5);
+  --xv-container--surface-active-hovered: rgba(109, 174, 237, 0.7);
+  --xv-container--surface-active-pressed: rgba(109, 174, 237, 0.86);
+  --xv-container--area: rgba(26, 26, 26, 0.16);
+  --xv-container--area-hovered: rgba(26, 26, 26, 0.22);
+  --xv-container--area-pressed: rgba(26, 26, 26, 0.3);
+  --xv-container--area-active: rgba(109, 174, 237, 0.6);
+  --xv-container--disabled-background: rgba(26, 26, 26, 0.09);
+  --xv-container--mask: rgba(26, 26, 26, 0.35);
+
+  /* Text */
+  --xv-text--high-emphasis-text: rgb(26, 26, 26);
+  --xv-text--medium-emphasis-text: rgba(26, 26, 26, 0.7);
+  --xv-text--low-emphasis-text: rgba(26, 26, 26, 0.55);
+  --xv-text--placeholder-text: rgba(26, 26, 26, 0.45);
+  --xv-text--disabled-text: rgba(26, 26, 26, 0.35);
+  --xv-text--dividing-line: rgba(26, 26, 26, 0.3);
+  --xv-text--on-background-text: rgb(242, 242, 242);
+
+  /* Status */
+  --xv-status--primary: rgb(0, 103, 204);
+  --xv-status--primary-on-surface: rgb(0, 87, 173);
+  --xv-status--error: rgb(191, 46, 58);
+  --xv-status--warning: rgb(168, 84, 0);
+  --xv-status--success: rgb(9, 122, 31);
+
+  /* Primary palette (from base-light.css) */
+  --xv-primary--50: rgb(222, 237, 252);
+  --xv-primary--100: rgb(181, 214, 247);
+  --xv-primary--200: rgb(139, 193, 247);
+  --xv-primary--300: rgb(109, 174, 237);
+  --xv-primary--400: rgb(47, 143, 235);
+  --xv-primary--500: rgb(22, 121, 217);
+  --xv-primary--600: rgb(0, 103, 204);
+  --xv-primary--700: rgb(0, 87, 173);
+  --xv-primary--800: rgb(0, 63, 125);
+  --xv-primary--900: rgb(3, 34, 65);
+
+  /* Red palette (from base-light.css) */
+  --xv-red--50: rgb(250, 227, 229);
+  --xv-red--100: rgb(250, 200, 204);
+  --xv-red--200: rgb(245, 149, 157);
+  --xv-red--300: rgb(245, 120, 130);
+  --xv-red--400: rgb(232, 86, 98);
+  --xv-red--500: rgb(212, 63, 76);
+  --xv-red--600: rgb(191, 46, 58);
+  --xv-red--700: rgb(181, 24, 37);
+  --xv-red--800: rgb(135, 16, 26);
+  --xv-red--900: rgb(71, 0, 5);
+
+  /* Orange palette */
+  --xv-orange--50: #FFF3E0;
+  --xv-orange--100: #FFDFB0;
+  --xv-orange--200: #FFCB80;
+  --xv-orange--300: #FFB750;
+  --xv-orange--400: #FFA320;
+  --xv-orange--500: #A85400;
+  --xv-orange--600: #8F4800;
+  --xv-orange--700: #763C00;
+  --xv-orange--800: #5D3000;
+  --xv-orange--900: #442400;
+
+  /* Neutral palette */
+  --xv-neutral--50: #F5F5F5;
+  --xv-neutral--100: #E0E0E0;
+  --xv-neutral--200: #CCCCCC;
+  --xv-neutral--300: #B8B8B8;
+  --xv-neutral--400: #A3A3A3;
+  --xv-neutral--500: #7A7A7A;
+  --xv-neutral--600: #666666;
+  --xv-neutral--700: #525252;
+  --xv-neutral--800: #3D3D3D;
+  --xv-neutral--900: #292929;
+
+  --xv-blackandwhite--white: #FFFFFF;
+  --xv-blackandwhite--black: #000000;
+
+  /* Typography */
+  --xv-font-size-delta: 0px;
+
+  --xv-headline--headline-lg--font-size: calc(36px + var(--xv-font-size-delta));
+  --xv-headline--headline-lg--font-weight: 700;
+  --xv-headline--headline-lg--line-height: 1.25;
+
+  --xv-title--title-lg--font-size: calc(24px + var(--xv-font-size-delta));
+  --xv-title--title-lg--font-weight: 600;
+  --xv-title--title-lg--line-height: 1.35;
+
+  --xv-title--title-md--font-size: calc(20px + var(--xv-font-size-delta));
+  --xv-title--title-md--font-weight: 600;
+  --xv-title--title-md--line-height: 1.4;
+
+  --xv-title--title-sm--font-size: calc(18px + var(--xv-font-size-delta));
+  --xv-title--title-sm--font-weight: 600;
+  --xv-title--title-sm--line-height: 1.45;
+
+  --xv-body--body-lg--font-size: calc(18px + var(--xv-font-size-delta));
+  --xv-body--body-lg--font-weight: 500;
+  --xv-body--body-lg--line-height: 1.5;
+
+  --xv-body--body-md--font-size: calc(16px + var(--xv-font-size-delta));
+  --xv-body--body-md--font-weight: 500;
+  --xv-body--body-md--line-height: 1.5;
+
+  --xv-body--body-sm--font-size: calc(14px + var(--xv-font-size-delta));
+  --xv-body--body-sm--font-weight: 500;
+  --xv-body--body-sm--line-height: 1.5;
+
+  --xv-label--label-lg--font-size: calc(18px + var(--xv-font-size-delta));
+  --xv-label--label-lg--font-weight: 600;
+  --xv-label--label-lg--line-height: 1.5;
+
+  --xv-label--label-md--font-size: calc(16px + var(--xv-font-size-delta));
+  --xv-label--label-md--font-weight: 600;
+  --xv-label--label-md--line-height: 1.5;
+
+  --xv-label--label-sm--font-size: calc(14px + var(--xv-font-size-delta));
+  --xv-label--label-sm--font-weight: 600;
+  --xv-label--label-sm--line-height: 1.5;
+}
+
+/* ============================================
+   2. GLOBAL RESET & BASE
+   ============================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans TC', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  line-height: var(--xv-body--body-md--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  background-color: var(--xv-container--background);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   3. PAGE LAYOUT (from XPageLayout.vue)
+   ============================================ */
+.x-page-layout {
+  display: grid;
+  grid-template-areas:
+    'header'
+    'body'
+    'footer';
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--xv-container--background);
+}
+
+.x-page-layout-header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  padding: 16px 24px;
+  gap: 32px;
+  background-color: var(--xv-container--surface);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+.x-page-layout-header-title {
+  font-size: var(--xv-title--title-lg--font-size);
+  font-weight: var(--xv-title--title-lg--font-weight);
+  line-height: var(--xv-title--title-lg--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  white-space: nowrap;
+}
+
+.x-page-layout-header-item-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.x-page-layout-body {
+  grid-area: body;
+  width: 100%;
+  height: 100%;
+  padding: 16px 24px;
+  overflow: auto;
+}
+
+.x-page-layout-footer {
+  grid-area: footer;
+  padding: 16px 24px;
+  background-color: var(--xv-container--surface);
+  border-top: 1px solid var(--xv-text--dividing-line);
+}
+
+/* ============================================
+   4. CARD CONTAINER (from XCard.vue)
+   ============================================ */
+.x-card-container {
+  display: grid;
+  grid-template-areas:
+    'header'
+    'body'
+    'footer';
+  grid-template-rows: auto 1fr auto;
+  background-color: var(--xv-container--surface);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.x-card-header {
+  grid-area: header;
+  padding: 16px 24px;
+  font-size: var(--xv-title--title-sm--font-size);
+  font-weight: var(--xv-title--title-sm--font-weight);
+  line-height: var(--xv-title--title-sm--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+.x-card-body {
+  grid-area: body;
+  position: relative;
+  overflow: auto;
+  padding: 16px 24px;
+}
+
+.x-card-footer {
+  grid-area: footer;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+/* ============================================
+   5. DOCK LAYOUT SYSTEM (WinForms Dock → CSS)
+   ============================================ */
+.x-dock-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.x-dock-container--row {
+  flex-direction: row;
+}
+
+.x-dock-top {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.x-dock-bottom {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.x-dock-left {
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.x-dock-right {
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.x-dock-fill {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+
+.x-dock-middle {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ============================================
+   6. ABSOLUTE POSITIONED CONTAINER
+   ============================================ */
+.x-abs-container {
+  position: relative;
+  width: 100%;
+  background-color: var(--xv-container--surface);
+}
+
+/* ============================================
+   7. FORM ROW
+   ============================================ */
+.x-form-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+/* ============================================
+   8. LABEL (adapted from xUI text styles)
+   ============================================ */
+.x-label {
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  line-height: var(--xv-body--body-md--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  white-space: nowrap;
+}
+
+.x-label--primary {
+  color: var(--xv-status--primary);
+}
+
+.x-label--danger {
+  color: var(--xv-status--error);
+}
+
+.x-label--warning {
+  color: var(--xv-status--warning);
+}
+
+.x-label--value {
+  color: var(--xv-text--medium-emphasis-text);
+}
+
+/* ============================================
+   9. BUTTON (from XButton.vue)
+   ============================================ */
+.x-btn {
+  --x-btn-h: 40px;
+  --x-btn-p-h: 24px;
+  --x-btn-color: var(--xv-text--high-emphasis-text);
+  --x-btn-bg: var(--xv-container--area);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--x-btn-h);
+  padding: 0 var(--x-btn-p-h);
+  border: none;
+  border-radius: 8px;
+  background-color: var(--x-btn-bg);
+  color: var(--x-btn-color);
+  font-size: var(--xv-label--label-md--font-size);
+  font-weight: var(--xv-label--label-md--font-weight);
+  line-height: var(--xv-label--label-md--line-height);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.x-btn:hover {
+  background-color: var(--xv-container--area-hovered);
+}
+
+.x-btn:active {
+  background-color: var(--xv-container--area-pressed);
+}
+
+.x-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(124, 124, 124, 0.47);
+}
+
+.x-btn--sm {
+  --x-btn-h: 32px;
+  --x-btn-p-h: 16px;
+  font-size: var(--xv-label--label-sm--font-size);
+}
+
+.x-btn--lg {
+  --x-btn-h: 48px;
+  --x-btn-p-h: 32px;
+  font-size: var(--xv-label--label-lg--font-size);
+}
+
+.x-btn--primary {
+  --x-btn-bg: var(--xv-status--primary);
+  --x-btn-color: var(--xv-text--on-background-text);
+}
+.x-btn--primary:hover {
+  background-color: var(--xv-primary--600);
+}
+.x-btn--primary:active {
+  background-color: var(--xv-primary--700);
+}
+
+.x-btn--danger {
+  --x-btn-bg: var(--xv-status--error);
+  --x-btn-color: var(--xv-text--on-background-text);
+}
+.x-btn--danger:hover {
+  background-color: var(--xv-red--600);
+}
+.x-btn--danger:active {
+  background-color: var(--xv-red--700);
+}
+
+.x-btn--warning {
+  --x-btn-bg: var(--xv-orange--500);
+  --x-btn-color: var(--xv-text--on-background-text);
+}
+.x-btn--warning:hover {
+  background-color: var(--xv-orange--600);
+}
+.x-btn--warning:active {
+  background-color: var(--xv-orange--700);
+}
+
+.x-btn--tertiary {
+  --x-btn-bg: var(--xv-container--area);
+  --x-btn-color: var(--xv-text--high-emphasis-text);
+}
+.x-btn--tertiary:hover {
+  background-color: var(--xv-container--area-hovered);
+}
+.x-btn--tertiary:active {
+  background-color: var(--xv-container--area-pressed);
+}
+
+.x-btn--outline {
+  background-color: transparent;
+  border: 1px solid var(--xv-text--dividing-line);
+}
+.x-btn--outline:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+
+.x-btn--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ============================================
+   10. INPUT TEXT (from XInputText.vue)
+   ============================================ */
+.x-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.x-input--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.x-input-label {
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  white-space: nowrap;
+}
+
+.x-input-text-container {
+  --x-input-height: 40px;
+  --x-input-bd-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  min-height: var(--x-input-height);
+  padding: 0 8px;
+  border: solid 1px var(--xv-text--dividing-line);
+  border-radius: var(--x-input-bd-radius);
+  background-color: var(--xv-container--surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.x-input-text-container:hover {
+  border-color: var(--xv-text--placeholder-text);
+}
+
+.x-input-text-container:focus-within {
+  border-color: var(--xv-status--primary);
+  box-shadow: 0 0 1px 2px rgba(0, 103, 204, 0.2);
+}
+
+.x-input-text-container--standalone {
+  /* standalone: no wrapping x-input label */
+}
+
+.x-input-text-container--multiline {
+  align-items: flex-start;
+  padding: 8px;
+}
+
+.x-input-text-container--error {
+  border-color: var(--xv-status--error);
+}
+.x-input-text-container--error:focus-within {
+  box-shadow: 0 0 1px 2px rgba(191, 46, 58, 0.2);
+}
+
+.x-input-text-container--disabled {
+  background-color: var(--xv-container--disabled-background);
+  border-color: var(--xv-text--disabled-text);
+  pointer-events: none;
+}
+
+.x-input-text-container--sm {
+  --x-input-height: 32px;
+  --x-input-bd-radius: 6px;
+}
+
+.x-input-input {
+  width: 100%;
+  height: 100%;
+  min-height: calc(var(--x-input-height, 40px) - 2px);
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  caret-color: var(--xv-status--primary);
+}
+
+.x-input-input::placeholder {
+  color: var(--xv-text--placeholder-text);
+}
+
+textarea.x-input-input {
+  min-height: auto;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ============================================
+   11. SELECT / COMBOBOX (native, styled as xUI)
+   ============================================ */
+.x-select-native {
+  --x-select-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--x-select-height);
+  padding: 0 8px;
+  border: solid 1px var(--xv-text--dividing-line);
+  border-radius: 8px;
+  background-color: var(--xv-container--surface);
+  font-family: inherit;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  cursor: pointer;
+  transition: background-color 0.1s, border-color 0.15s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(26,26,26,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 32px;
+}
+
+.x-select-native:hover {
+  border-color: var(--xv-text--placeholder-text);
+}
+
+.x-select-native:focus {
+  outline: none;
+  border-color: var(--xv-status--primary);
+  box-shadow: 0 0 1px 2px rgba(0, 103, 204, 0.2);
+}
+
+.x-select-native--sm {
+  --x-select-height: 32px;
+  font-size: var(--xv-body--body-sm--font-size);
+  border-radius: 6px;
+}
+
+.x-select-native--md {
+  --x-select-height: 40px;
+}
+
+/* ============================================
+   12. CHECKBOX (from XCheckbox.vue)
+   ============================================ */
+.x-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+}
+
+.x-checkbox-input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 2px solid var(--xv-text--medium-emphasis-text);
+  border-radius: 2px;
+  background-color: var(--xv-container--surface);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: background-color 0.1s, box-shadow 0.1s;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.x-checkbox-input:checked {
+  background-color: var(--xv-status--primary);
+  border-color: var(--xv-status--primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+}
+
+.x-checkbox-input:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+.x-checkbox-input:checked:hover {
+  background-color: var(--xv-primary--600);
+}
+
+.x-checkbox-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0px 2px white, 0 0 0px 4px rgba(0, 0, 0, 0.3);
+}
+
+.x-checkbox--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ============================================
+   13. RADIO BUTTON (from XRadioButton.vue)
+   ============================================ */
+.x-radio-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+}
+
+.x-radio-input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 2px solid var(--xv-text--medium-emphasis-text);
+  border-radius: 50%;
+  background-color: var(--xv-container--surface);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: background-color 0.1s, box-shadow 0.1s;
+  flex-shrink: 0;
+}
+
+.x-radio-input:checked {
+  border-color: var(--xv-status--primary);
+  background-color: var(--xv-status--primary);
+  box-shadow: inset 0 0 0 3px var(--xv-container--surface);
+}
+
+.x-radio-input:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+.x-radio-input:checked:hover {
+  background-color: var(--xv-primary--600);
+}
+
+.x-radio-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0px 2px white, 0 0 0px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   14. TABLE (from XTable.scss)
+   ============================================ */
+.x-table-wrap {
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--xv-container--surface);
+  border-radius: 8px;
+}
+
+.x-table-native {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--xv-container--surface);
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  line-height: var(--xv-body--body-md--line-height);
+}
+
+.x-table-native thead th {
+  position: sticky;
+  top: 0;
+  height: 40px;
+  padding: 0 16px;
+  text-align: left;
+  font-weight: 500;
+  color: var(--xv-text--medium-emphasis-text);
+  background-color: var(--xv-container--surface);
+  border-bottom: solid 1px var(--xv-text--dividing-line);
+  white-space: nowrap;
+}
+
+.x-table-native thead th:first-child {
+  padding-left: 8px;
+}
+
+.x-table-native tbody td {
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: solid 1px var(--xv-text--dividing-line);
+  color: var(--xv-text--high-emphasis-text);
+  vertical-align: middle;
+}
+
+.x-table-native tbody td:first-child {
+  padding-left: 8px;
+}
+
+.x-table-native tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.x-table-native tbody tr:hover td {
+  background-color: var(--xv-container--surface-hovered);
+}
+
+.x-table-native tbody tr.x-table-row--selected td {
+  background-color: var(--xv-container--surface-active);
+}
+
+/* ============================================
+   15. PANEL (plain container)
+   ============================================ */
+.x-panel {
+  background-color: var(--xv-container--surface);
+  border-radius: 8px;
+}
+
+/* ============================================
+   16. TOOLBAR
+   ============================================ */
+.x-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background-color: var(--xv-container--surface);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+/* ============================================
+   17. MENU STRIP
+   ============================================ */
+.x-menu-strip {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 8px;
+  gap: 0;
+  background-color: var(--xv-container--surface);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+.x-menu-item {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--xv-body--body-sm--font-size);
+  font-weight: var(--xv-body--body-sm--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  cursor: pointer;
+}
+
+.x-menu-item:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+
+/* ============================================
+   18. SCROLLBAR (from xhis-xui shared)
+   ============================================ */
+.x-scroll-bar::-webkit-scrollbar,
+.x-page-layout-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.x-scroll-bar::-webkit-scrollbar-thumb,
+.x-page-layout-body::-webkit-scrollbar-thumb {
+  background-color: rgba(26, 26, 26, 0.25);
+  border-radius: 3px;
+}
+
+.x-scroll-bar::-webkit-scrollbar-track,
+.x-page-layout-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============================================
+   19. UTILITY: POSITIONING HELPERS
+   ============================================ */
+
+/* For absolutely positioned controls within a relative container */
+.x-abs-control {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Inline label + input pair (within absolute container) */
+.x-inline-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================
+   20. DATE INPUT (for DateTimePicker)
+   ============================================ */
+.x-input-input--date {
+  min-height: 38px;
+  padding: 0 8px;
+  border: solid 1px var(--xv-text--dividing-line);
+  border-radius: 8px;
+  background-color: var(--xv-container--surface);
+  font-family: inherit;
+  font-size: var(--xv-body--body-md--font-size);
+  color: var(--xv-text--high-emphasis-text);
+}
+
+.x-input-input--date:focus {
+  outline: none;
+  border-color: var(--xv-status--primary);
+  box-shadow: 0 0 1px 2px rgba(0, 103, 204, 0.2);
+}
+
+</style>
+<style>
+/* ===== MCH prototype custom styles (layout glue + status tags) ===== */
+body { background-color: #eef1f5; margin: 0; }
+.x-page-layout-body { padding: 0; overflow: hidden; }
+.shell { display: flex; height: 100%; min-height: 0; }
+.nav { width: 208px; flex-shrink: 0; background: var(--xv-container--surface); border-right: 1px solid var(--xv-text--dividing-line); padding: 12px 0; overflow: auto; }
+.nav-group { padding: 10px 20px 4px; font-size: 12px; color: var(--xv-text--low-emphasis-text); letter-spacing: 1px; }
+.nav-item { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; cursor: pointer; font-size: 14px; color: var(--xv-text--high-emphasis-text); border-left: 3px solid transparent; }
+.nav-item:hover { background: var(--xv-container--surface-hovered); }
+.nav-item.active { background: var(--xv-primary--50); border-left-color: var(--xv-status--primary); color: var(--xv-primary--700); font-weight: 600; }
+.nav-count { background: var(--xv-red--600); color: #fff; border-radius: 10px; font-size: 12px; padding: 0 7px; line-height: 18px; }
+.main { flex: 1; min-width: 0; overflow: auto; padding: 16px 24px 32px; }
+.proto-note { font-size: 12px; color: var(--xv-text--low-emphasis-text); background: var(--xv-orange--50); border: 1px solid var(--xv-orange--100); border-radius: 6px; padding: 6px 12px; margin-bottom: 12px; }
+.page-title { font-size: 20px; font-weight: 600; margin: 0 0 12px; display: flex; align-items: center; gap: 12px; }
+.page-title small { font-size: 13px; font-weight: 400; color: var(--xv-text--low-emphasis-text); }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; background: var(--xv-container--surface); padding: 10px 16px; border-radius: 8px; margin-bottom: 12px; }
+.bar .grow { flex: 1; }
+.bar label { font-size: 13px; color: var(--xv-text--medium-emphasis-text); display: flex; align-items: center; gap: 6px; }
+.bar select, .bar input[type=text], .field select, .field input, .field textarea { font: inherit; font-size: 14px; padding: 5px 8px; border: 1px solid var(--xv-text--dividing-line); border-radius: 4px; background: #fff; min-height: 30px; box-sizing: border-box; }
+.stats { display: flex; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
+.stat { flex: 1; min-width: 140px; background: var(--xv-container--surface); border-radius: 8px; padding: 12px 16px; cursor: pointer; border-left: 4px solid var(--xv-text--dividing-line); }
+.stat b { display: block; font-size: 26px; line-height: 1.2; }
+.stat span { font-size: 13px; color: var(--xv-text--medium-emphasis-text); }
+.stat--red { border-left-color: var(--xv-status--error); } .stat--red b { color: var(--xv-status--error); }
+.stat--warn { border-left-color: var(--xv-orange--400); } .stat--warn b { color: var(--xv-status--warning); }
+.stat--blue { border-left-color: var(--xv-status--primary); }
+.stat.on { outline: 2px solid var(--xv-status--primary); }
+.card { background: var(--xv-container--surface); border-radius: 8px; margin-bottom: 16px; overflow: hidden; }
+.card-h { padding: 12px 20px; font-size: 15px; font-weight: 600; border-bottom: 1px solid var(--xv-text--dividing-line); display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+.card-h small { font-weight: 400; font-size: 12px; color: var(--xv-text--low-emphasis-text); }
+.card-b { padding: 12px 20px; }
+.card .x-table-wrap { height: auto; border-radius: 0; }
+.card .x-table-native tbody td { height: 44px; }
+.tbl-scroll { overflow: auto; }
+.tag { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; line-height: 20px; white-space: nowrap; }
+.tag--danger { background: var(--xv-red--50); color: var(--xv-red--700); }
+.tag--urgent { background: var(--xv-red--600); color: #fff; }
+.tag--warn { background: var(--xv-orange--50); color: var(--xv-orange--500); }
+.tag--ok { background: rgba(9,122,31,.1); color: var(--xv-status--success); }
+.tag--info { background: var(--xv-primary--50); color: var(--xv-primary--700); }
+.tag--mute { background: rgba(26,26,26,.08); color: var(--xv-text--medium-emphasis-text); }
+.link { color: var(--xv-status--primary-on-surface); cursor: pointer; text-decoration: none; }
+.link:hover { text-decoration: underline; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.patient-header { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 24px; background: var(--xv-container--surface); border-radius: 8px; border-left: 4px solid var(--xv-status--primary); padding: 12px 20px; margin-bottom: 16px; }
+.patient-header .nm { font-size: 20px; font-weight: 600; }
+.patient-header .kv { font-size: 13px; color: var(--xv-text--medium-emphasis-text); }
+.patient-header .kv b { color: var(--xv-text--high-emphasis-text); font-weight: 600; }
+.banner { border-radius: 6px; padding: 8px 14px; margin-bottom: 12px; font-size: 13px; }
+.banner--warn { background: var(--xv-orange--50); border: 1px solid var(--xv-orange--200); color: var(--xv-orange--600); }
+.banner--danger { background: var(--xv-red--50); border: 1px solid var(--xv-red--200); color: var(--xv-red--700); }
+.banner--info { background: var(--xv-primary--50); border: 1px solid var(--xv-primary--100); color: var(--xv-primary--800); }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.kvtable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.kvtable td { padding: 7px 0; border-bottom: 1px dashed var(--xv-text--dividing-line); vertical-align: middle; }
+.kvtable td:first-child { width: 150px; color: var(--xv-text--medium-emphasis-text); }
+.field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.field > span { font-size: 13px; color: var(--xv-text--medium-emphasis-text); }
+.field .req { color: var(--xv-status--error); margin-left: 2px; }
+.field textarea { min-height: 60px; resize: vertical; }
+.field.err input, .field.err select, .field.err textarea { border-color: var(--xv-status--error); }
+.form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0 16px; }
+.inline-opts { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; }
+.inline-opts label { display: flex; align-items: center; gap: 4px; }
+.errs { background: var(--xv-red--50); border: 1px solid var(--xv-red--200); color: var(--xv-red--700); border-radius: 6px; padding: 8px 14px; font-size: 13px; margin-bottom: 10px; }
+.errs ul { margin: 4px 0 0 18px; padding: 0; }
+.warns { background: var(--xv-orange--50); border: 1px solid var(--xv-orange--200); color: var(--xv-orange--600); border-radius: 6px; padding: 8px 14px; font-size: 13px; margin-bottom: 10px; }
+.modal-mask { position: fixed; inset: 0; background: var(--xv-container--mask); display: flex; align-items: flex-start; justify-content: center; padding-top: 6vh; z-index: 50; overflow: auto; }
+.modal { background: var(--xv-container--surface); border-radius: 10px; width: 640px; max-width: 94vw; box-shadow: 0 8px 32px rgba(0,0,0,.3); margin-bottom: 6vh; }
+.modal-h { padding: 14px 20px; font-size: 16px; font-weight: 600; border-bottom: 1px solid var(--xv-text--dividing-line); }
+.modal-b { padding: 16px 20px; max-height: 66vh; overflow: auto; }
+.modal-f { padding: 12px 20px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid var(--xv-text--dividing-line); }
+.toast { position: fixed; right: 24px; bottom: 24px; background: var(--xv-neutral--900, #222); color: #fff; padding: 10px 16px; border-radius: 6px; font-size: 14px; z-index: 80; max-width: 420px; box-shadow: 0 4px 16px rgba(0,0,0,.3); }
+.hbar { height: 10px; background: rgba(26,26,26,.1); border-radius: 5px; overflow: hidden; min-width: 160px; }
+.hbar i { display: block; height: 100%; background: var(--xv-status--primary); }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) 380px; gap: 16px; align-items: start; }
+@media (max-width: 1100px) { .split { grid-template-columns: 1fr; } }
+.fetus { border: 1px solid var(--xv-text--dividing-line); border-radius: 8px; padding: 10px 14px; margin-bottom: 10px; background: #fff; }
+.fetus h4 { margin: 0 0 8px; font-size: 14px; }
+.muted { color: var(--xv-text--low-emphasis-text); font-size: 13px; }
+.sm-btn { font-size: 12px; }
+.domtabs { display: flex; gap: 8px; margin-right: 12px; }
+.domtabs .x-btn { min-width: 120px; }
+.domtabs .nav-count { margin-left: 6px; }
+td .btn-row { flex-wrap: nowrap; }
+</style>
+</head>
+<body>
+<div class="x-page-layout">
+  <div class="x-page-layout-header">
+    <span class="x-page-layout-header-title">孕產婦與兒童健康管理（MCH）</span>
+    <div class="x-page-layout-header-item-group">
+      <div id="domtabs" class="domtabs"></div>
+      <span class="x-label">系統日期 2026/10/20（原型固定）</span>
+      <span class="x-label x-label--primary">林護理師（公衛護理師）</span>
+    </div>
+  </div>
+  <div class="x-page-layout-body">
+    <div class="shell">
+      <div class="nav" id="nav"></div>
+      <div class="main" id="main"></div>
+    </div>
+  </div>
+</div>
+<div id="overlay"></div>
+<div id="toast-host"></div>
+
+<script>
+(function(){
+'use strict';
+/* ================= 基礎工具 ================= */
+const TODAY = new Date(2026, 9, 20, 12, 0);
+function D(y,m,d,h,mi){ return new Date(y, m-1, d, h||0, mi||0); }
+function addDays(dt,n){ const x=new Date(dt); x.setDate(x.getDate()+n); return x; }
+function addMonths(dt,n){ const x=new Date(dt); x.setMonth(x.getMonth()+n); return x; }
+const p2 = n => String(n).padStart(2,'0');
+function fd(dt){ return dt ? dt.getFullYear()+'/'+p2(dt.getMonth()+1)+'/'+p2(dt.getDate()) : '--'; }
+function fdt(dt){ return dt ? fd(dt)+' '+p2(dt.getHours())+':'+p2(dt.getMinutes()) : '--'; }
+function dayDiff(a,b){ return Math.round((Date.UTC(a.getFullYear(),a.getMonth(),a.getDate()) - Date.UTC(b.getFullYear(),b.getMonth(),b.getDate()))/86400000); }
+function toInputDate(dt){ return dt.getFullYear()+'-'+p2(dt.getMonth()+1)+'-'+p2(dt.getDate()); }
+function toInputDT(dt){ return toInputDate(dt)+'T'+p2(dt.getHours())+':'+p2(dt.getMinutes()); }
+function parseIn(s){ return s ? new Date(s.length<=10 ? s+'T00:00' : s) : null; }
+const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const tag = (t,c) => '<span class="tag tag--'+c+'">'+esc(t)+'</span>';
+const $ = s => document.querySelector(s);
+
+/* ================= 示意資料 ================= */
+const PRE_W = [8,12,16,20,24,28,30,32,34,36,37,38,39,40];
+const S = { dom:'preg', page:'overdue', caseId:null, f:{type:'',state:'',nurse:'',kw:'',pri:''}, rf:{type:'',kw:'',risk:''}, audit:[], visits:[], nid:100, vac:{}, contacts:{} };
+
+S.cases = [
+ { id:'P01', type:'preg', name:'陳佳玲', pid:'A223456781', phone:'0912-345-678', nurse:'林護理師', edd:D(2027,1,12), hbsag:'-', hbeag:'-', gbs:null, gbsDate:null, viral:null, risks:[], res:{}, pvDone:5, extraDone:['US1','US2','EDU1'] },
+ { id:'P02', type:'preg', name:'林小雯', pid:'B234567890', phone:'0933-222-111', nurse:'陳護理師', edd:D(2027,3,2), hbsag:null, hbeag:null, gbs:null, risks:[], res:{}, pvDone:2, extraDone:['US1','EDU1'] },
+ { id:'P03', type:'preg', name:'黃美惠', pid:'F245678901', phone:'0955-666-777', nurse:'林護理師', edd:D(2026,11,10), hbsag:'+', hbeag:'+', viral:1200000, gbs:'+', gbsDate:D(2026,10,8), risks:[{reason:'妊娠高血壓',from:D(2026,8,20),status:'追蹤中'}], res:{}, pvDone:9, extraDone:['US1','US2','ANEM','GDM','EDU1','EDU2'] },
+ { id:'P04', type:'preg', name:'王雅婷', pid:'H256789012', phone:'0922-111-333', nurse:'林護理師', edd:D(2026,10,5), hbsag:'+', hbeag:'-', viral:80000, gbs:'-', gbsDate:D(2026,9,12), risks:[], res:{}, pvDone:14, extraDone:['US1','US2','US3','ANEM','GDM','GBS','EDU1','EDU2'], delivery:{dt:D(2026,10,2,8,30), weeks:39, days:2, method:'VAG', count:1, hosp:'示意醫院', fetus:[{no:1,outcome:'LIVE',childId:'C01'}]} },
+ { id:'P05', type:'preg', name:'劉芷涵', pid:'D228888888', phone:'0988-123-456', nurse:'陳護理師', edd:D(2026,10,22), hbsag:'+', hbeag:'-', gbs:'-', gbsDate:D(2026,9,25), risks:[], res:{}, pvDone:12, extraDone:['US1','US2','US3','ANEM','GDM','GBS','EDU1','EDU2'] },
+ { id:'P06', type:'preg', name:'張淑芬', pid:'E269012345', phone:'0966-555-888', nurse:'陳護理師', edd:D(2026,10,10), hbsag:'+', hbeag:'+', gbs:'+', gbsDate:D(2026,9,1), risks:[{reason:'妊娠糖尿病',from:D(2026,6,1),status:'追蹤中'}], res:{}, pvDone:14, extraDone:['US1','US2','US3','ANEM','GDM','GBS','EDU1','EDU2'], delivery:{dt:D(2026,10,8,14,10), weeks:38, days:5, method:'CS', count:1, hosp:'示意醫院', fetus:[{no:1,outcome:'LIVE',childId:'C04'}]} },
+ { id:'C01', type:'child', name:'王寶寶（王雅婷之女）', pid:'', phone:'0922-111-333', nurse:'林護理師', birth:D(2026,10,2,8,30), sex:'F', pregId:'P04', birthOrder:1, special:false, hbigAt:D(2026,10,2,10,0), res:{}, pvDone:0, devDone:0, nbDone:['NB4'], referrals:[] },
+ { id:'C02', type:'child', name:'趙小恩', pid:'Z300000001', phone:'0911-000-222', nurse:'陳護理師', birth:D(2025,10,25,9,15), sex:'M', pregId:null, ext:{pid:'A111111111', hbsag:'+', gbs:'-'}, birthOrder:null, special:false, hbigAt:D(2025,10,25,12,0), res:{}, pvDone:3, devDone:1, nbDone:['NB1','NB2','NB3','NB4','NB5'], referrals:[], gbsConfirmedAt:D(2025,10,26) },
+ { id:'C03', type:'child', name:'劉（新生兒，名冊匯入）', pid:'', phone:'0988-123-456', nurse:'陳護理師', birth:D(2026,10,18,6,20), sex:'F', pregId:null, motherPid:'D228888888', birthOrder:1, imported:true, special:false, res:{}, pvDone:0, devDone:0, nbDone:[], referrals:[] },
+ { id:'C04', type:'child', name:'張寶寶（張淑芬之子）', pid:'', phone:'0966-555-888', nurse:'陳護理師', birth:D(2026,10,8,14,10), sex:'M', pregId:'P06', birthOrder:1, special:false, hbigAt:null, res:{}, pvDone:0, devDone:0, nbDone:['NB4'], referrals:[] },
+ { id:'C05', type:'child', name:'張小安', pid:'C312345678', phone:'0910-777-999', nurse:'林護理師', birth:D(2026,2,10,10,0), sex:'M', pregId:null, ext:{pid:'B222222222', hbsag:'-', gbs:'-'}, birthOrder:null, special:false, res:{ PV2:{state:'void',reason:'超過適用月齡'} }, pvDone:3, devDone:0, nbDone:['NB1','NB2','NB3','NB4','NB5'], referrals:[], gbsConfirmedAt:D(2026,2,12) },
+ { id:'C06', type:'child', name:'吳小宇', pid:'D323456789', phone:'0933-888-000', nurse:'陳護理師', birth:D(2024,3,15,7,40), sex:'M', pregId:null, ext:{pid:'C333333333', hbsag:'-', gbs:'-'}, birthOrder:null, special:true, res:{}, pvDone:6, devDone:3, nbDone:['NB1','NB2','NB3','NB4','NB5'], referrals:[{id:'R1', reason:'發展篩檢第 3 次需轉介', domains:['語言認知'], unit:'', status:'待轉介', date:D(2026,9,20), note:''}], gbsConfirmedAt:D(2024,3,18) },
+ { id:'C07', type:'child', name:'孫小宸（遷入）', pid:'', phone:'0977-246-810', nurse:'林護理師', birth:D(2026,10,16,4,5), sex:'M', pregId:null, ext:{pid:'E244444444', hbsag:null, gbs:null}, birthOrder:null, special:false, res:{}, pvDone:0, devDone:0, nbDone:['NB4'], referrals:[] }
+];
+S.rules = [
+ {code:'PV_PREG', name:'產檢 14 次（依孕週）', target:'孕產婦', base:'預產期（EDD）反推 LMP', from:'目標週', to:'下次目標週前一日', amt:'340 / 403 / 735', eff:'2021/07/01', stat:'生效中'},
+ {code:'US', name:'一般超音波 3 次', target:'孕產婦', base:'LMP', from:'第 8 週', to:'第 16 週（第 1 次）', amt:'550', eff:'2021/07/01', stat:'生效中'},
+ {code:'GDM', name:'妊娠糖尿病篩檢', target:'孕產婦', base:'LMP', from:'第 24 週', to:'第 28 週', amt:'194', eff:'2021/07/01', stat:'生效中'},
+ {code:'GBS', name:'產前乙型鏈球菌篩檢', target:'孕產婦', base:'LMP', from:'第 35 週', to:'第 37 週', amt:'500', eff:'2021/07/01', stat:'生效中'},
+ {code:'PP', name:'產後健康照護 2 次', target:'孕產婦', base:'生產日', from:'產後 0 天', to:'產後 1 / 3 個月', amt:'--', eff:'2021/07/01', stat:'生效中'},
+ {code:'PV_CHILD', name:'兒童預防保健 9 次', target:'兒童', base:'出生日', from:'出生後 2 週', to:'未滿 7 歲', amt:'--', eff:'2026/01/01', stat:'生效中'},
+ {code:'DEV', name:'兒童發展篩檢 6 次', target:'兒童', base:'出生日', from:'6 個月', to:'未滿 7 歲', amt:'--', eff:'2026/01/01', stat:'生效中'},
+ {code:'C_GBS_CONFIRM', name:'確認母親 GBS 結果', target:'兒童', base:'出生日', from:'0 天', to:'14 天', amt:'--', eff:'2026/10/20', stat:'生效中'},
+ {code:'C_MOTHER_HBV_UNKNOWN', name:'母親 HBsAg 未知需補登', target:'兒童', base:'出生日', from:'0 天', to:'3 天', amt:'--', eff:'2026/10/20', stat:'生效中'},
+ {code:'C_HBIG', name:'HBIG 24 小時內接種（查證期限）', target:'兒童', base:'出生時間', from:'0 天', to:'7 天', amt:'--', eff:'2026/10/20', stat:'生效中'},
+ {code:'C_HBV_TEST12M', name:'滿 12 個月追驗 HBsAg / anti-HBs', target:'兒童', base:'出生日', from:'12 個月', to:'15 個月', amt:'--', eff:'2026/10/20', stat:'生效中'}
+];
+S.visits = [
+ {id:'V1', caseId:'P04', type:'產後訪視', date:D(2026,10,9), cond:'產婦恢復良好，哺乳順利', act:'衛教乳房護理', next:D(2026,10,23)},
+ {id:'V2', caseId:'C01', type:'新生兒訪視', date:D(2026,10,9), cond:'體重增加正常，黃疸輕微', act:'衛教黃疸觀察', next:D(2026,10,25)}
+];
+S.audit.push({t:D(2026,10,20,9,12), who:'林護理師', cid:'P03', act:'開啟個案（含母親檢驗欄位）'});
+S.audit.push({t:D(2026,10,20,9,40), who:'陳護理師', cid:'C04', act:'開啟個案（含母親檢驗欄位）'});
+
+/* ================= 資料處理 ================= */
+const byId = id => S.cases.find(c => c.id === id);
+
+/* ================= 生長測量與生長曲線（示意曲線） ================= */
+const GT = [0,1,2,3,4,6,9,12,18,24,36,48,60,72,84];
+const GREF = {
+  M:{ wt:[3.3,4.5,5.6,6.4,7.0,7.9,8.9,9.6,10.9,12.2,14.3,16.3,18.3,20.5,23.0],
+      head:[34.5,37.3,39.1,40.5,41.6,43.3,45.0,46.1,47.4,48.3,49.5,50.3,50.9,51.4,51.8],
+      lenB:{x:[0,1,2,3,4,6,9,12,18,24], y:[49.9,54.7,58.4,61.4,63.9,67.6,72.0,75.7,82.3,87.8]},
+      lenA:{x:[24,36,48,60,72,84], y:[87.1,96.1,103.3,110.0,116.0,121.7]} },
+  F:{ wt:[3.2,4.2,5.1,5.8,6.4,7.3,8.2,8.9,10.2,11.5,13.9,16.1,18.2,20.2,22.4],
+      head:[33.9,36.5,38.3,39.5,40.6,42.2,43.8,44.9,46.2,47.2,48.5,49.4,50.0,50.5,51.0],
+      lenB:{x:[0,1,2,3,4,6,9,12,18,24], y:[49.1,53.7,57.1,59.8,62.1,65.7,70.1,74.0,80.7,86.4]},
+      lenA:{x:[24,36,48,60,72,84], y:[85.7,95.1,102.7,109.4,115.1,120.8]} }
+};
+const GM = {wt:{n:'體重',u:'kg'}, len:{n:'身長／身高',u:'cm'}, head:{n:'頭圍',u:'cm'}};
+const PZ = [[3,-1.88],[15,-1.04],[50,0],[85,1.04],[97,1.88]];
+function interp(xs, ys, m){ if (m<=xs[0]) return ys[0]; for (let i=1;i<xs.length;i++) if (m<=xs[i]) return ys[i-1]+(ys[i]-ys[i-1])*(m-xs[i-1])/(xs[i]-xs[i-1]); return ys[ys.length-1]; }
+function gsex(c){ return c.sex==='F' ? 'F' : 'M'; }
+function gMed(sex,k,m){ const R=GREF[sex]; if (k==='len') { const s = m<24 ? R.lenB : R.lenA; return interp(s.x, s.y, m); } return interp(GT, R[k], m); }
+function gSd(k,m,med){ if (k==='wt') return med*0.12; if (k==='len') return 1.9+0.031*m; return 1.2+0.0125*Math.min(m,24)+0.002*Math.max(0,m-24); }
+function gAt(sex,k,m,z){ const med=gMed(sex,k,m); return k==='wt' ? med*(1+z*0.12) : med+z*gSd(k,m,med); }
+function gZ(sex,k,m,v){ const med=gMed(sex,k,m); return k==='wt' ? (v/med-1)/0.12 : (v-med)/gSd(k,m,med); }
+function ncdf(z){ const t=1/(1+0.2316419*Math.abs(z)); const d=0.3989423*Math.exp(-z*z/2); let p=d*t*(0.3193815+t*(-0.3565638+t*(1.781478+t*(-1.821256+t*1.330274)))); return z>0 ? 1-p : p; }
+function gPct(sex,k,m,v){ return ncdf(gZ(sex,k,m,v))*100; }
+function ageMF(dt,c){ return Math.max(0, dayDiff(dt,c.birth)/30.4375); }
+function band(p){ return p<3?0:p<15?1:p<50?2:p<85?3:p<=97?4:5; }
+function pTag(p){ const r=Math.max(1,Math.min(99,Math.round(p))); const cls = (p<3||p>97)?'danger':((p<15||p>85)?'warn':'mute'); return tag('P'+r+(p<3?' 低於P3':(p>97?' 超過P97':'')),cls); }
+function ageAtText(c,dt){ const d=dayDiff(dt,c.birth); if (d<=0) return '出生'; const mo=(dt.getFullYear()-c.birth.getFullYear())*12+dt.getMonth()-c.birth.getMonth()-(dt.getDate()<c.birth.getDate()?1:0); if (mo<1) return d+' 天'; return mo>=24 ? Math.floor(mo/12)+' 歲 '+(mo%12)+' 個月' : mo+' 個月'; }
+function addGrowth(c, rec){ c.growth=c.growth||[]; c.growth=c.growth.filter(x=>dayDiff(x.date,rec.date)!==0); c.growth.push(rec); c.growth.sort((a,b)=>a.date-b.date); }
+function growthRange(errs, len, wt, head){
+  if (len!=='' && !(parseFloat(len)>=30 && parseFloat(len)<=150)) errs.push('身長 / 身高須介於 30~150 cm');
+  if (wt!=='' && !(parseFloat(wt)>=0.5 && parseFloat(wt)<=50)) errs.push('體重須介於 0.5~50 kg');
+  if (head!=='' && !(parseFloat(head)>=25 && parseFloat(head)<=60)) errs.push('頭圍須介於 25~60 cm');
+}
+function previewText(c, dt, len, wt, head){
+  if (!dt) return '請先輸入日期';
+  const m=ageMF(dt,c), sx=gsex(c), out=[];
+  [['len',len],['wt',wt],['head',head]].forEach(function(x){ const v=parseFloat(x[1]); if (v>0) { const p=gPct(sx,x[0],m,v); out.push(GM[x[0]].n+' '+v+' '+GM[x[0]].u+' → '+(p<3?'低於第 3 百分位（建議醫師評估）':(p>97?'超過第 97 百分位（建議醫師評估）':'第 '+Math.max(1,Math.round(p))+' 百分位'))); } });
+  return out.length ? out.join('　｜　') : '輸入身長、體重、頭圍後，顯示百分位（對照生長曲線）';
+}
+function bindPreview(c, dateId, ids, boxId){
+  const f=function(){ const el=document.getElementById(boxId); if (el) el.textContent = previewText(c, parseIn(g(dateId)), g(ids[0]), g(ids[1]), g(ids[2])); };
+  [dateId].concat(ids).forEach(id=>{ const e=document.getElementById(id); if (e) e.addEventListener('input', f); }); f();
+}
+function seedGrowth(){
+  const z = (c,ages,zw,zl,zh,src) => { c.growth=[]; ages.forEach((m,i)=>{ const dt=addDays(c.birth, Math.round(m*30.4375)); if (dt>TODAY) return; const sx=gsex(c); c.growth.push({date:dt, wt:Math.round(gAt(sx,'wt',m,zw[i])*100)/100, len:Math.round(gAt(sx,'len',m,zl[i])*10)/10, head:Math.round(gAt(sx,'head',m,zh[i])*10)/10, src:i===0?'出生':src}); }); };
+  z(byId('C02'), [0,2,4,6,9], [0.1,0.3,0.4,0.2,0.0], [0,0.2,0.3,0.2,0.1], [0,0.1,0.2,0.2,0.3], '兒童預防保健');
+  z(byId('C05'), [0,1.5,3,5,7], [0,-0.4,-0.6,-0.9,-2.3], [0,-0.3,-0.5,-0.7,-0.9], [0,0,0,-0.1,-0.2], '兒童預防保健');
+  z(byId('C06'), [0,2,4,6,9,12,18,24,30], [0.5,0.5,0.6,0.5,0.4,0.5,0.6,0.5,0.5], [-0.8,-0.8,-0.7,-0.8,-0.7,-0.6,-0.6,-0.5,-0.5], [0.8,0.9,1.0,1.0,1.1,1.1,1.2,1.2,1.2], '兒童預防保健');
+  byId('C01').growth=[{date:byId('C01').birth, wt:3.05, len:50, head:33, src:'出生'}];
+  byId('C04').growth=[{date:byId('C04').birth, wt:3.4, len:51, head:34, src:'出生'}];
+  byId('C07').growth=[{date:byId('C07').birth, wt:3.2, len:50, head:34, src:'出生'}];
+}
+
+function lmpOf(c){ return addDays(c.edd, -280); }
+function weeksOf(c, at){ const n = dayDiff(at||TODAY, lmpOf(c)); return {w:Math.floor(n/7), d:((n%7)+7)%7, n:n}; }
+function ageText(c){
+  if (c.type==='preg') { if (c.delivery) return '產後 '+dayDiff(TODAY, c.delivery.dt)+' 天'; const w=weeksOf(c); return '孕 '+w.w+' 週 '+w.d+' 天'; }
+  const mo = (TODAY.getFullYear()-c.birth.getFullYear())*12 + TODAY.getMonth()-c.birth.getMonth() - (TODAY.getDate()<c.birth.getDate()?1:0);
+  if (mo < 3) return dayDiff(TODAY, c.birth)+' 天';
+  return mo>=24 ? Math.floor(mo/12)+' 歲 '+(mo%12)+' 個月' : mo+' 個月';
+}
+function motherRisk(c){
+  if (c.pregId) { const m = byId(c.pregId); return {linked:true, hbsag:m.hbsag, gbs:m.gbs, gbsDate:m.gbsDate, mother:m}; }
+  if (c.ext) return {linked:false, hbsag:c.ext.hbsag, gbs:c.ext.gbs, ext:true};
+  return null;
+}
+const CAT_PV = ['出生後 2 週至 2 個月','2 至 4 個月','4 至 6 個月','6 個月至 1 歲','1 歲至 1 歲半','1 歲半至 2 歲','2 至 3 歲','3 至 5 歲','5 歲至未滿 7 歲'];
+const PV_M = [[0,2],[2,4],[4,6],[6,12],[12,18],[18,24],[24,36],[36,60],[60,84]];
+const DEV_M = [[6,10,'量表 A/B（6~9、9~12 個月）'],[10,18,'量表 B/C/D（9~12、12~15、15 個月~1 歲 6 個月）'],[18,24,'1 歲 6 個月至 2 歲量表'],[24,36,'2 至 3 歲量表'],[36,60,'3~4 歲 / 4~5 歲量表'],[60,84,'5 至未滿 7 歲量表']];
+const PRE_EXTRA = [
+ {id:'US1',n:'第 1 次超音波（第 8~16 週）',f:8,t:17,cat:'超音波與檢驗'},{id:'US2',n:'第 2 次超音波（第 20 週前後）',f:19,t:23,cat:'超音波與檢驗'},{id:'US3',n:'第 3 次超音波（第 32 週後）',f:32,t:41,cat:'超音波與檢驗'},
+ {id:'ANEM',n:'貧血檢驗（第 24~28 週）',f:24,t:29,cat:'超音波與檢驗'},{id:'GDM',n:'妊娠糖尿病篩檢（第 24~28 週）',f:24,t:29,cat:'超音波與檢驗'},{id:'GBS',n:'產前乙型鏈球菌篩檢（第 35~37 週）',f:35,t:38,cat:'超音波與檢驗'},
+ {id:'EDU1',n:'產前健康照護衛教第 1 次（確認懷孕至未滿 17 週）',f:0,t:17,cat:'超音波與檢驗'},{id:'EDU2',n:'產前健康照護衛教第 2 次（第 29 週以上）',f:29,t:41,cat:'超音波與檢驗'}
+];
+const NB = [
+ {id:'NB1',n:'新生兒先天性代謝異常篩檢（初檢）',fn:b=>addDays(b,2),tn:b=>addMonths(b,1)},
+ {id:'NB2',n:'新生兒聽力篩檢',fn:b=>b,tn:b=>addMonths(b,3)},
+ {id:'NB3',n:'髖關節篩檢（無補助）',fn:b=>b,tn:b=>addMonths(b,6)},
+ {id:'NB4',n:'大便卡篩檢第 1 次（無補助）',fn:b=>b,tn:b=>addDays(b,7)},
+ {id:'NB5',n:'大便卡篩檢第 2 次（無補助）',fn:b=>addDays(b,28),tn:b=>addDays(addMonths(b,1),7)}
+];
+function markDone(c, id, at, data){ c.res[id] = c.res[id] || {state:'done', date:at, data:data||{}}; }
+
+function genItems(c){
+  const out = [];
+  const add = o => { o.res = o.res || c.res[o.id] || null; out.push(o); return o; };
+  if (c.type === 'preg') {
+    const lmp = lmpOf(c), wk = w => addDays(lmp, w*7);
+    PRE_W.forEach((w,i) => {
+      const nxt = i < PRE_W.length-1 ? PRE_W[i+1] : 42;
+      if (c.pvDone > i) markDone(c, 'PV'+(i+1), addDays(wk(w),2));
+      add({id:'PV'+(i+1), cat:'產檢', name:'第 '+(i+1)+' 次產檢（第 '+w+' 週）', start:wk(w), end:addDays(wk(nxt),-1), pri:'NORMAL', kind:'pv', no:i+1, target:w});
+    });
+    PRE_EXTRA.forEach(x => {
+      if ((c.extraDone||[]).indexOf(x.id) >= 0) markDone(c, x.id, addDays(wk(x.f),3));
+      add({id:x.id, cat:x.cat, name:x.n, start:wk(x.f), end:addDays(wk(x.t),-1), pri:'NORMAL', kind:'lab'});
+    });
+    if (c.delivery) {
+      const dv = c.delivery.dt;
+      add({id:'PP1', cat:'產後健康照護', name:'產後健康照護第 1 次（產後 1 個月內，建議 1~2 週）', start:dv, end:addDays(addMonths(dv,1),-1), pri:'NORMAL', kind:'pp', no:1});
+      add({id:'PP2', cat:'產後健康照護', name:'產後健康照護第 2 次（產後 3 個月內，建議 6~8 週）', start:dv, end:addDays(addMonths(dv,3),-1), pri:'NORMAL', kind:'pp', no:2});
+      out.forEach(o => { if (!o.res && o.cat !== '產後健康照護') o.forced = {k:'skip', t:'免做', cls:'mute', why:'已生產'}; });
+    }
+    return out;
+  }
+  /* 兒童 */
+  const b = c.birth;
+  PV_M.forEach((m,i) => {
+    const st = i===0 ? addDays(b,14) : addMonths(b,m[0]);
+    if (c.pvDone > i) markDone(c, 'PV'+(i+1), addDays(st,3));
+    add({id:'PV'+(i+1), cat:'兒童預防保健', name:'第 '+(i+1)+' 次兒童預防保健（'+CAT_PV[i]+'）', start:st, end:addDays(addMonths(b,m[1]),-1), pri:'NORMAL', kind:'cpv', no:i+1});
+  });
+  DEV_M.forEach((m,i) => {
+    if (c.devDone > i) markDone(c, 'DV'+(i+1), addDays(addMonths(b,m[0]),5), {result:'通過'});
+    add({id:'DV'+(i+1), cat:'兒童發展篩檢', name:'第 '+(i+1)+' 次發展篩檢（'+m[2]+'）', start:addMonths(b,m[0]), end:addDays(addMonths(b,m[1]),-1), pri:'NORMAL', kind:'dev', no:i+1});
+  });
+  NB.forEach(x => {
+    if ((c.nbDone||[]).indexOf(x.id) >= 0) markDone(c, x.id, addDays(b,3));
+    add({id:x.id, cat:'新生兒篩檢', name:x.n, start:x.fn(b), end:addDays(x.tn(b),-1), pri:'NORMAL', kind:'nb'});
+  });
+  const mr = motherRisk(c);
+  c.seen = c.seen || {};
+  if (mr) {
+    if (c.gbsConfirmedAt) markDone(c, 'GBSC', c.gbsConfirmedAt);
+    add({id:'GBSC', cat:'母子串接', name:'確認母親 GBS 結果', start:b, end:addDays(b,13), pri:'NORMAL', kind:'link'});
+    const unk = mr.hbsag == null;
+    if (unk) c.seen.HBVUNK = true;
+    if (c.seen.HBVUNK) {
+      const it = add({id:'HBVUNK', cat:'母子串接', name:'母親 HBsAg 結果未知，需補登', start:b, end:addDays(b,2), pri:'URGENT', kind:'link'});
+      if (!unk) { it.res = {state:'done', date:TODAY}; }
+    }
+    const pos = mr.hbsag === '+';
+    if (pos) { c.seen.HBIG = true; c.seen.HBV12 = true; }
+    if (c.seen.HBIG) {
+      const it = add({id:'HBIG', cat:'母子串接', name:'HBIG 24 小時內接種（查證期限出生後 7 天）', start:b, end:addDays(b,6), pri:'URGENT', kind:'link'});
+      if (!pos && !it.res) it.forced = {k:'skip', t:'免做', cls:'mute', why:'母親結果更正'};
+      else if (c.hbigAt) { it.res = {state:'done', date:c.hbigAt}; it.late = (c.hbigAt - b) > 86400000; }
+      else if (S.vac[c.id]) it.forced = {k:'unk', t:'無法取得接種紀錄', cls:'warn'};
+    }
+    if (c.seen.HBV12) {
+      const it = add({id:'HBV12', cat:'母子串接', name:'滿 12 個月追驗 HBsAg / anti-HBs', start:addMonths(b,12), end:addDays(addMonths(b,15),-1), pri:'NORMAL', kind:'link'});
+      if ((c.hbvTests||[]).length) it.res = {state:'done', date:c.hbvTests[0].date};
+      else if (!pos) it.forced = {k:'skip', t:'免做', cls:'mute', why:'母親結果更正'};
+    }
+  }
+  (c.hbvFollow||[]).forEach(f => add({id:f.id, cat:'母子串接', name:f.name, start:f.start, end:f.end, pri:'NORMAL', kind:'link', res:f.done?{state:'done',date:TODAY}:null}));
+  return out;
+}
+function statusOf(it){
+  if (it.res && it.res.state==='done') return {k:'done', t:'已完成', cls:'ok'};
+  if (it.res && it.res.state==='void') return {k:'void', t:'作廢', cls:'mute', why:it.res.reason};
+  if (it.res && it.res.state==='skip') return {k:'skip', t:'免做', cls:'mute', why:it.res.reason};
+  if (it.forced) return it.forced;
+  const t = dayDiff(TODAY, it.start), e = dayDiff(it.end, TODAY);
+  if (t < 0) return {k:'future', t:'未到期', cls:'mute'};
+  if (e < 0) return {k:'over', t:'已逾期 '+(-e)+' 天', cls:'danger', days:-e};
+  if (e <= 14) return {k:'soon', t:'即將逾期（剩 '+e+' 天）', cls:'warn', days:e};
+  return {k:'open', t:'可執行', cls:'info'};
+}
+function allWork(){
+  const L = [];
+  S.cases.forEach(c => {
+    if (c.closed) return;
+    genItems(c).forEach(it => L.push({c:c, it:it, st:statusOf(it)}));
+    (c.referrals||[]).forEach(r => { if (r.status==='待轉介') { const it={id:'REF'+r.id, cat:'轉介', name:'轉介待處理：'+r.reason, start:r.date, end:addDays(r.date,14), pri:'NORMAL'}; L.push({c:c, it:it, st:statusOf(it)}); } });
+  });
+  return L;
+}
+function lastContact(c){ const a = S.contacts[c.id]; return a && a.length ? fd(a[a.length-1].date)+' '+a[a.length-1].result : '--'; }
+function audit(c, act){ S.audit.push({t:new Date(), who:'林護理師', cid:c.id, act:act}); }
+
+seedGrowth();
+
+/* ================= UI 小工具 ================= */
+function toast(msg){ const t=document.createElement('div'); t.className='toast'; t.textContent=msg; $('#toast-host').appendChild(t); setTimeout(()=>t.remove(), 3600); }
+function fld(label, html, req, id){ return '<div class="field" data-f="'+(id||'')+'"><span>'+esc(label)+(req?'<i class="req">*</i>':'')+'</span>'+html+'</div>'; }
+function inp(id, val, type, ph){ return '<input id="'+id+'" type="'+(type||'text')+'" value="'+esc(val==null?'':val)+'" placeholder="'+esc(ph||'')+'">'; }
+function sel(id, opts, val){ return '<select id="'+id+'">'+opts.map(o=>{ const v=Array.isArray(o)?o[0]:o, t=Array.isArray(o)?o[1]:o; return '<option value="'+esc(v)+'"'+(String(v)===String(val)?' selected':'')+'>'+esc(t)+'</option>'; }).join('')+'</select>'; }
+function chk(name, items, vals){ return '<div class="inline-opts">'+items.map(i=>'<label><input type="checkbox" name="'+name+'" value="'+esc(i)+'"'+((vals||[]).indexOf(i)>=0?' checked':'')+'>'+esc(i)+'</label>').join('')+'</div>'; }
+function rad(name, items, val){ return '<div class="inline-opts">'+items.map(i=>'<label><input type="radio" name="'+name+'" value="'+esc(i)+'"'+(i===val?' checked':'')+'>'+esc(i)+'</label>').join('')+'</div>'; }
+function vals(name){ return Array.prototype.map.call(document.querySelectorAll('input[name="'+name+'"]:checked'), x=>x.value); }
+function val(name){ const e=document.querySelector('input[name="'+name+'"]:checked'); return e?e.value:''; }
+function g(id){ const e=document.getElementById(id); return e?e.value:''; }
+
+let modalSave = null;
+function openModal(title, body, save, saveText, wide){
+  modalSave = save;
+  $('#overlay').innerHTML = '<div class="modal-mask"><div class="modal"'+(wide?' style="width:860px"':'')+'><div class="modal-h">'+esc(title)+'</div><div class="modal-b"><div id="m-msg"></div>'+body+'</div><div class="modal-f"><button class="x-btn x-btn--md x-btn--tertiary" data-act="mclose">取消</button>'+(save?'<button class="x-btn x-btn--md x-btn--primary" data-act="msave">'+esc(saveText||'儲存')+'</button>':'')+'</div></div></div>';
+}
+function closeModal(){ $('#overlay').innerHTML=''; modalSave=null; }
+function showMsg(errs, warns){
+  const m = $('#m-msg'); if (!m) return;
+  m.innerHTML = (errs&&errs.length ? '<div class="errs">無法儲存，請修正下列項目：<ul>'+errs.map(e=>'<li>'+esc(e)+'</li>').join('')+'</ul></div>' : '') + (warns&&warns.length ? '<div class="warns">'+warns.map(esc).join('<br>')+'</div>' : '');
+}
+
+/* ================= 導覽 ================= */
+const DOMN = {preg:'孕產婦', child:'兒童'};
+function nav(){
+  const wc = d => allWork().filter(x => x.c.type===d && (x.st.k==='over' || x.st.k==='soon')).length;
+  const w = wc(S.dom);
+  const items = S.dom==='preg' ? [
+    {g:'孕產婦工作'},{k:'overdue',t:'到期與逾期名單',n:w},{k:'roster',t:'孕產婦名冊'},{k:'delivery',t:'生產結果登錄'},{k:'visit',t:'產後 / 高風險訪視'},
+    {g:'報表'},{k:'report',t:'完成率與逾期統計'},
+    {g:'維護'},{k:'rules',t:'規則表維護'},{k:'audit',t:'操作稽核紀錄'}
+  ] : [
+    {g:'兒童工作'},{k:'overdue',t:'到期與逾期名單',n:w},{k:'roster',t:'兒童名冊'},{k:'visit',t:'新生兒訪視'},
+    {g:'報表'},{k:'report',t:'完成率與逾期統計'},
+    {g:'維護'},{k:'rules',t:'規則表維護'},{k:'audit',t:'操作稽核紀錄'}
+  ];
+  $('#nav').innerHTML = items.map(i => i.g
+    ? '<div class="nav-group">'+i.g+'</div>'
+    : '<div class="nav-item'+(S.page===i.k||(S.page==='case'&&i.k==='roster')?' active':'')+'" data-act="go" data-p="'+i.k+'"><span>'+i.t+'</span>'+(i.n?'<span class="nav-count">'+i.n+'</span>':'')+'</div>').join('');
+  $('#domtabs').innerHTML = ['preg','child'].map(d => '<button class="x-btn x-btn--md '+(S.dom===d?'x-btn--primary':'x-btn--tertiary')+'" data-act="dom" data-v="'+d+'">'+DOMN[d]+(wc(d)?'<span class="nav-count">'+wc(d)+'</span>':'')+'</button>').join('');
+}
+function go(p, cid){ S.page = p; if (cid) { S.caseId = cid; const cc = byId(cid); if (cc) S.dom = cc.type; } if (p==='delivery') S.dom = 'preg'; render(); $('#main').scrollTop = 0; }
+
+/* ================= 頁面：到期與逾期名單 ================= */
+function pageOverdue(){
+  const all = allWork().filter(x => x.c.type===S.dom && (x.st.k==='over' || x.st.k==='soon'));
+  const f = S.f;
+  let L = all.filter(x => (!f.state || x.st.k===f.state) && (!f.nurse || x.c.nurse===f.nurse) && (!f.pri || x.it.pri===f.pri) && (!f.kw || (x.c.name+x.it.name+x.c.pid).indexOf(f.kw)>=0));
+  L.sort((a,b) => (a.it.pri==='URGENT'?0:1)-(b.it.pri==='URGENT'?0:1) || (a.st.k==='over'?0:1)-(b.st.k==='over'?0:1) || (b.st.days||0)-(a.st.days||0));
+  const nOver = all.filter(x=>x.st.k==='over').length, nSoon = all.filter(x=>x.st.k==='soon').length, nUrg = all.filter(x=>x.it.pri==='URGENT'&&x.st.k==='over').length;
+  return '<div class="proto-note">互動原型：右上方分頁可切換「孕產婦」與「兒童」，兩邊的名冊、逾期名單、訪視、報表、規則表各自獨立；資料為示意，系統日期固定為 2026/10/20；各項目區間為示意值，實際以規則表參數為準（PRD 2.8）。點「開啟個案」可進入個案頁，點統計卡可快速篩選。</div>'
+  + '<h2 class="page-title">到期與逾期名單 — '+DOMN[S.dom]+'<small>US-03 / Phase 1</small></h2>'
+  + '<div class="stats"><div class="stat stat--red'+(f.pri==='URGENT'?' on':'')+'" data-act="qf" data-k="pri" data-v="URGENT"><b>'+nUrg+'</b><span>緊急逾期'+(S.dom==='child'?'（HBIG、母親 B 肝未知）':'')+'</span></div>'
+  + '<div class="stat stat--red'+(f.state==='over'?' on':'')+'" data-act="qf" data-k="state" data-v="over"><b>'+nOver+'</b><span>已逾期</span></div>'
+  + '<div class="stat stat--warn'+(f.state==='soon'?' on':'')+'" data-act="qf" data-k="state" data-v="soon"><b>'+nSoon+'</b><span>即將逾期（14 天內，參數）</span></div>'
+  + '<div class="stat stat--blue" data-act="qf" data-k="clear"><b>'+S.cases.filter(c=>!c.closed&&c.type===S.dom).length+'</b><span>追蹤中個案（點此清除篩選）</span></div></div>'
+  + '<div class="bar">'
+  + '<label>狀態'+sel('f-state',[['','全部'],['over','已逾期'],['soon','即將逾期']],f.state)+'</label>'
+  + '<label>負責護理師'+sel('f-nurse',['','林護理師','陳護理師'].map(x=>[x,x||'全部']),f.nurse)+'</label>'
+  + '<label>搜尋<input type="text" id="f-kw" value="'+esc(f.kw)+'" placeholder="姓名 / 項目"></label><span class="grow"></span><span class="muted">共 '+L.length+' 筆</span></div>'
+  + '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>優先序</th><th>個案</th><th>項目</th><th>區間</th><th>狀態</th><th>負責</th><th>上次聯絡</th><th>操作</th></tr></thead><tbody>'
+  + (L.length ? L.map(x => '<tr><td>'+(x.it.pri==='URGENT'?tag('緊急','urgent'):tag('一般','mute'))+'</td><td><a class="link" data-act="case" data-id="'+x.c.id+'">'+esc(x.c.name)+'</a></td><td>'+esc(x.it.name)+'</td><td>'+fd(x.it.start)+' ~ '+fd(x.it.end)+'</td><td>'+tag(x.st.t,x.st.cls)+'</td><td>'+esc(x.c.nurse)+'</td><td>'+esc(lastContact(x.c))+'</td><td><div class="btn-row"><button class="x-btn x-btn--sm x-btn--tertiary" data-act="case" data-id="'+x.c.id+'">開啟個案</button><button class="x-btn x-btn--sm x-btn--tertiary" data-act="contact" data-id="'+x.c.id+'">記錄聯絡</button></div></td></tr>').join('') : '<tr><td colspan="8" style="text-align:center;color:var(--xv-text--low-emphasis-text)">目前沒有符合條件的項目</td></tr>')
+  + '</tbody></table></div>';
+}
+
+/* ================= 頁面：個案名冊 ================= */
+function nextItem(c){
+  const w = genItems(c).map(it=>({it:it, st:statusOf(it)})).filter(x=>['over','soon','open','future'].indexOf(x.st.k)>=0);
+  w.sort((a,b)=>a.it.start-b.it.start);
+  const first = w.find(x=>x.st.k==='over') || w.find(x=>x.st.k==='soon') || w.find(x=>x.st.k==='open') || w[0];
+  return first ? '<span>'+esc(first.it.name.replace(/（.*）/,''))+'</span> '+tag(first.st.t.replace(/（.*）/,''), first.st.cls) : '--';
+}
+function riskTags(c){
+  const r = [];
+  if (c.type==='preg') (c.risks||[]).forEach(x => r.push(tag('高風險：'+x.reason,'danger')));
+  else { const mr = motherRisk(c); if (mr && mr.hbsag==='+') r.push(tag('母親 B 肝帶原','warn')); if (mr && mr.hbsag==null) r.push(tag('母親 HBsAg 未知','danger')); if ((c.referrals||[]).some(x=>x.status!=='已結案')) r.push(tag('轉介追蹤中','info')); }
+  return r.join(' ') || '--';
+}
+function pageRoster(){
+  const f = S.rf, pg = S.dom==='preg';
+  const L = S.cases.filter(c => c.type===S.dom && (!f.risk || riskTags(c)!=='--') && (!f.kw || (c.name+c.pid+c.phone).indexOf(f.kw)>=0));
+  const mom = c => { const mr = motherRisk(c); return !mr ? tag('未連結','warn') : (mr.linked ? '<a class="link" data-act="case" data-id="'+mr.mother.id+'">'+esc(mr.mother.name)+'</a>' : tag('轄區外','mute')); };
+  return '<h2 class="page-title">'+(pg?'孕產婦名冊':'兒童名冊')+'<small>'+(pg?'US-01':'US-02')+' / Phase 1</small></h2>'
+  + '<div class="bar"><label><input type="checkbox" id="r-risk"'+(f.risk?' checked':'')+'>僅顯示有風險標記</label><label>搜尋<input type="text" id="r-kw" value="'+esc(f.kw)+'" placeholder="姓名 / 身分證 / 電話"></label><span class="grow"></span><span class="muted">共 '+L.length+' 人</span><button class="x-btn x-btn--md x-btn--primary" data-act="newcase">+ 新增'+(pg?'孕產婦':'兒童')+'</button></div>'
+  + '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>姓名</th><th>身分證</th>'+(pg?'<th>預產期</th><th>孕週 / 產後</th>':'<th>出生日</th><th>月齡</th><th>母親</th>')+'<th>風險標記</th><th>下一個應做項目</th><th>負責</th><th>狀態</th></tr></thead><tbody>'
+  + L.map(c => '<tr><td><a class="link" data-act="case" data-id="'+c.id+'">'+esc(c.name)+'</a></td><td>'+(c.pid?esc(c.pid):'<span class="muted">（尚未取得）</span>')+'</td>'+(pg?'<td>'+fd(c.edd)+'</td><td>'+esc(ageText(c))+'</td>':'<td>'+fd(c.birth)+'</td><td>'+esc(ageText(c))+'</td><td>'+mom(c)+'</td>')+'<td>'+riskTags(c)+'</td><td>'+nextItem(c)+'</td><td>'+esc(c.nurse)+'</td><td>'+(c.closed?tag('已結案','mute'):tag('追蹤中','ok'))+'</td></tr>').join('')
+  + '</tbody></table></div>';
+}
+function newCaseModal(){
+  openModal('新增'+DOMN[S.dom]+'個案', '<div class="form-grid">'
+    + fld('姓名', inp('nc-name'), true, 'nc-name') + fld('身分證字號（新生兒可空白）', inp('nc-pid'), false, 'nc-pid') + fld('聯絡電話', inp('nc-phone'), true, 'nc-phone')
+    + fld(S.dom==='preg'?'預產期':'出生日期', inp('nc-date','','date'), true, 'nc-date')
+    + (S.dom==='child' ? fld('身分別（影響牙齒塗氟等區間）', sel('nc-sp',[['0','一般'],['1','低收入戶 / 身心障礙 / 原住民族地區 / 偏遠離島']],'0'), false) : '')
+    + fld('負責護理師', sel('nc-nurse',['林護理師','陳護理師'],'林護理師'), true)
+    + '</div><div class="muted">儲存後，系統依規則表自動產生 14 次產檢 / 9 次預防保健等應做項目的建議區間（US-01、US-02）。</div>',
+  function(){
+    const errs=[], warns=[]; const type = S.dom;
+    if (!g('nc-name').trim()) errs.push('請輸入姓名');
+    if (!g('nc-phone').trim()) errs.push('請輸入聯絡電話');
+    const dt = parseIn(g('nc-date')); if (!dt) errs.push('請輸入日期');
+    const pid = g('nc-pid').trim();
+    if (pid && S.cases.some(c=>c.pid===pid && !c.closed && c.type===type)) errs.push('此身分證字號已有追蹤中的個案，不可重複建立');
+    if (type==='child' && dt && dt > TODAY) errs.push('出生日期不可晚於今日');
+    if (type==='child' && dt && dayDiff(TODAY, dt) > 7*365) errs.push('年滿 7 歲者不產生兒童預防保健項目');
+    if (type==='preg' && dt && dayDiff(TODAY, addDays(dt,-280)) > 42*7) warns.push('預產期早於今日 2 週以上，請確認日期是否正確。');
+    if (errs.length || (warns.length && !modalSave.confirmed)) { showMsg(errs, warns.length&&!errs.length ? warns.concat(['再按一次「儲存」確認建立。']) : warns); if (!errs.length) modalSave.confirmed = true; return; }
+    const id = (type==='preg'?'P':'C')+(++S.nid);
+    const c = type==='preg' ? {id:id,type:'preg',name:g('nc-name'),pid:pid,phone:g('nc-phone'),nurse:g('nc-nurse'),edd:dt,hbsag:null,hbeag:null,gbs:null,risks:[],res:{},pvDone:0} : {id:id,type:'child',name:g('nc-name'),pid:pid,phone:g('nc-phone'),nurse:g('nc-nurse'),birth:dt,sex:'U',pregId:null,ext:null,birthOrder:null,special:g('nc-sp')==='1',res:{},pvDone:0,devDone:0,nbDone:[],referrals:[]};
+    S.cases.push(c); closeModal(); toast('已建立個案，系統產生 '+genItems(c).length+' 個應做項目'); go('case', id);
+  });
+}
+
+/* ================= 頁面：個案詳情 ================= */
+function pageCase(){
+  const c = byId(S.caseId); if (!c) return '<p>找不到個案</p>';
+  return c.type==='preg' ? casePreg(c) : caseChild(c);
+}
+function header(c){
+  const mr = c.type==='child' ? motherRisk(c) : null;
+  let kv = '';
+  if (c.type==='preg') kv = '<span class="kv">預產期 <b>'+fd(c.edd)+'</b></span><span class="kv">'+(c.delivery?'生產日 <b>'+fdt(c.delivery.dt)+'</b>':'目前 <b>'+ageText(c)+'</b>')+'</span>';
+  else kv = '<span class="kv">出生時間 <b>'+fdt(c.birth)+'</b></span><span class="kv">月齡 <b>'+ageText(c)+'</b></span><span class="kv">身分證 <b>'+(c.pid||'（尚未取得）')+'</b></span>';
+  return '<div class="patient-header"><span class="nm">'+esc(c.name)+'</span>'+tag(c.type==='preg'?'孕產婦':'兒童','info')+kv+'<span class="kv">電話 <b>'+esc(c.phone)+'</b></span><span class="kv">負責 <b>'+esc(c.nurse)+'</b></span><span style="flex:1"></span>'+riskTags(c)+'<button class="x-btn x-btn--sm x-btn--tertiary" data-act="contact" data-id="'+c.id+'">記錄聯絡</button></div>';
+}
+function itemRows(c, list, opts){
+  opts = opts||{};
+  return list.map(it => { const st = statusOf(it); const done = st.k==='done';
+    return '<tr><td>'+esc(it.name)+(it.late?' '+tag('逾時','danger'):'')+'</td><td>'+fd(it.start)+' ~ '+fd(it.end)+'</td><td>'+tag(st.t,st.cls)+(st.why?' <span class="muted">'+esc(st.why)+'</span>':'')+'</td><td>'+(done?fd(it.res.date):'--')+'</td><td><div class="btn-row">'
+      + (done ? '<button class="x-btn x-btn--sm x-btn--tertiary" data-act="item" data-id="'+c.id+'" data-it="'+it.id+'">檢視</button>' : (st.k==='skip'||st.k==='void'?'':'<button class="x-btn x-btn--sm x-btn--primary" data-act="item" data-id="'+c.id+'" data-it="'+it.id+'">'+(opts.btn||'登錄結果')+'</button>'))
+      + (!done && st.k==='over' && opts.void ? '<button class="x-btn x-btn--sm x-btn--tertiary" data-act="void" data-id="'+c.id+'" data-it="'+it.id+'">標示作廢</button>' : '')
+      + '</div></td></tr>'; }).join('');
+}
+const ITH = '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>項目</th><th>建議區間</th><th>狀態</th><th>完成日</th><th>操作</th></tr></thead><tbody>';
+function casePreg(c){
+  const items = genItems(c);
+  const kids = S.cases.filter(k => k.pregId===c.id);
+  let h = header(c);
+  if (!c.delivery) h += '<div class="bar"><button class="x-btn x-btn--md x-btn--primary" data-act="godelivery" data-id="'+c.id+'">生產結果登錄</button><span class="muted">孕婦生產後，一次建立寶寶個案並產生母子串接追蹤項目（2.11）</span></div>';
+  else h += '<div class="banner banner--info">已生產：'+fdt(c.delivery.dt)+'，'+c.delivery.weeks+' 週 '+c.delivery.days+' 天，'+({VAG:'陰道生產',CS:'剖腹產',FORCEPS:'產鉗',VACUUM:'真空吸引',OTHER:'其他'}[c.delivery.method])+'，胎數 '+c.delivery.count+'。未完成的產檢項目已改為免做。 寶寶：'+kids.map(k=>'<a class="link" data-act="case" data-id="'+k.id+'">'+esc(k.name)+'</a>').join('、')+'</div>';
+  if (!c.delivery) h += '<div class="card"><div class="card-h"><span>產檢時程（14 次）<small>孕週區間為示意，由規則表參數維護</small></span></div>'+ITH+itemRows(c, items.filter(i=>i.kind==='pv'))+'</tbody></table></div></div>';
+  else h += '<div class="card"><div class="card-h"><span>產後健康照護（2 次）</span></div>'+ITH+itemRows(c, items.filter(i=>i.kind==='pp'))+'</tbody></table></div></div>';
+  if (!c.delivery) h += '<div class="card"><div class="card-h"><span>超音波與檢驗項目</span></div>'+ITH+itemRows(c, items.filter(i=>i.kind==='lab'))+'</tbody></table></div></div>';
+  h += '<div class="grid2"><div class="card"><div class="card-h"><span>母親檢驗結果（手動登錄）</span><small>xHIS 無法取得檢驗數值，由護理師依手冊抄錄</small></div><div class="card-b">'
+    + '<table class="kvtable"><tr><td>HBsAg</td><td>'+sel('m-hbsag',[['','未知'],['+','陽性 (+)'],['-','陰性 (-)']],c.hbsag||'')+'</td></tr>'
+    + '<tr><td>HBeAg</td><td>'+sel('m-hbeag',[['','未知'],['+','陽性 (+)'],['-','陰性 (-)']],c.hbeag||'')+'</td></tr>'
+    + '<tr><td>B 肝病毒量 (IU/mL)</td><td>'+inp('m-viral',c.viral,'number')+'</td></tr>'
+    + '<tr><td>GBS 篩檢</td><td>'+sel('m-gbs',[['','未知'],['+','陽性 (+)'],['-','陰性 (-)']],c.gbs||'')+'</td></tr>'
+    + '<tr><td>GBS 檢查日期</td><td>'+inp('m-gbsd',c.gbsDate?toInputDate(c.gbsDate):'','date')+'</td></tr></table>'
+    + '<div class="btn-row" style="margin-top:10px"><button class="x-btn x-btn--md x-btn--primary" data-act="savemother" data-id="'+c.id+'">儲存檢驗結果</button></div>'
+    + (kids.length ? '<div class="muted" style="margin-top:8px">儲存後，系統會重算已連結寶寶（'+kids.length+' 位）的追蹤項目（3.5）。</div>' : '') + '</div></div>'
+    + '<div class="card"><div class="card-h"><span>高風險追蹤</span><button class="x-btn x-btn--sm x-btn--tertiary" data-act="addrisk" data-id="'+c.id+'">+ 新增高風險標記</button></div><div class="card-b">'
+    + ((c.risks||[]).length ? '<table class="kvtable">'+c.risks.map((r,i)=>'<tr><td>'+esc(r.reason)+'</td><td>起 '+fd(r.from)+'　'+tag(r.status,r.status==='追蹤中'?'danger':(r.status==='待確認'?'warn':'mute'))+(r.status!=='已結案'?' <a class="link" data-act="closerisk" data-id="'+c.id+'" data-i="'+i+'">結案</a>':'')+'</td></tr>').join('')+'</table>' : '<span class="muted">目前沒有高風險標記</span>')
+    + '</div></div></div>';
+  return h;
+}
+
+function growthChart(c){
+  const k=S.gm||'wt', sx=gsex(c), G=(c.growth||[]).filter(x=>x[k]!=null);
+  const curM=ageMF(TODAY,c); const R = S.gr==='36'?36 : (S.gr==='84'?84 : (curM<=30?36:84));
+  const Y = {wt:[0,R<=36?18:30], len:[40,R<=36?110:135], head:[30,56]}[k];
+  const W=760,H=340,ml=50,mr=46,mt=14,mb=36;
+  const X=m=>ml+m/R*(W-ml-mr), Yp=v=>H-mb-(v-Y[0])/(Y[1]-Y[0])*(H-mt-mb);
+  let s='<svg viewBox="0 0 '+W+' '+H+'" width="100%" style="background:#fff;border-radius:6px;max-width:900px">';
+  const nY=5; for (let i=0;i<=nY;i++){ const v=Y[0]+(Y[1]-Y[0])*i/nY; s+='<line x1="'+ml+'" x2="'+(W-mr)+'" y1="'+Yp(v)+'" y2="'+Yp(v)+'" stroke="#e3e6ea"/><text x="'+(ml-6)+'" y="'+(Yp(v)+4)+'" font-size="11" text-anchor="end" fill="#5b6470">'+Math.round(v)+'</text>'; }
+  const step=R<=36?3:12; for (let m=0;m<=R;m+=step){ s+='<line x1="'+X(m)+'" x2="'+X(m)+'" y1="'+mt+'" y2="'+(H-mb)+'" stroke="#eef0f3"/><text x="'+X(m)+'" y="'+(H-mb+16)+'" font-size="11" text-anchor="middle" fill="#5b6470">'+(R<=36?(m===0?'出生':m+'月'):(m===0?'出生':(m/12)+'歲'))+'</text>'; }
+  s+='<text x="12" y="'+(mt+8)+'" font-size="11" fill="#5b6470">'+GM[k].u+'</text>';
+  const segs = k==='len' ? [[0,Math.min(24,R)],[24,R]] : [[0,R]];
+  PZ.forEach(function(pz){ segs.forEach(function(sg){ if (sg[1]<=sg[0]) return; let d=''; for (let i=0;i<=40;i++){ const m=sg[0]+(sg[1]-sg[0])*i/40; const mm = (k==='len' && sg[0]===24 && i===0) ? 24 : (k==='len'&&sg[1]===24&&i===40?23.999:m); d+=(i?'L':'M')+X(m).toFixed(1)+','+Yp(gAt(sx,k,mm,pz[1])).toFixed(1); } s+='<path d="'+d+'" fill="none" stroke="'+(pz[0]===50?'#3f4a57':'#9aa5b1')+'" stroke-width="'+(pz[0]===50?2:1.2)+'"'+(pz[0]===3||pz[0]===97?' stroke-dasharray="5 3"':'')+'/>'; }); const ye=Yp(gAt(sx,k,R,pz[1])); s+='<text x="'+(W-mr+4)+'" y="'+(ye+4)+'" font-size="11" fill="#5b6470">P'+pz[0]+'</text>'; });
+  if (k==='len' && R>=24) s+='<text x="'+(X(24)+4)+'" y="'+(mt+10)+'" font-size="10" fill="#8a94a0">2 歲前量身長（躺），2 歲後量身高（站），曲線在此落差</text>';
+  const pts = G.filter(x=>ageMF(x.date,c)<=R);
+  let d=''; pts.forEach((x,i)=>{ d+=(i?'L':'M')+X(ageMF(x.date,c)).toFixed(1)+','+Yp(x[k]).toFixed(1); });
+  if (pts.length>1) s+='<path d="'+d+'" fill="none" stroke="#0067cc" stroke-width="2"/>';
+  pts.forEach(x=>{ const m=ageMF(x.date,c), p=gPct(sx,k,m,x[k]), bad=p<3||p>97; s+='<circle cx="'+X(m).toFixed(1)+'" cy="'+Yp(x[k]).toFixed(1)+'" r="5" fill="'+(bad?'#bf2e3a':'#0067cc')+'" stroke="#fff" stroke-width="1.5"><title>'+fd(x.date)+'　'+GM[k].n+' '+x[k]+' '+GM[k].u+'　第 '+Math.max(1,Math.round(p))+' 百分位</title></circle>'; });
+  return s+'</svg>';
+}
+function growthCard(c){
+  const G=(c.growth||[]).slice().sort((a,b)=>a.date-b.date), sx=gsex(c), k=S.gm||'wt';
+  const bandOf=(x,key,prev)=>{ const p=gPct(sx,key,ageMF(x.date,c),x[key]); return band(p); };
+  const warns=[];
+  const cell=(x,i,key)=>{ if (x[key]==null) return '--'; const p=gPct(sx,key,ageMF(x.date,c),x[key]); let t=x[key]+' '+pTag(p); const pr=G.slice(0,i).reverse().find(y=>y[key]!=null); if (pr && Math.abs(band(p)-band(gPct(sx,key,ageMF(pr.date,c),pr[key])))>=2) { t+=' '+tag('走勢跨 2 區間','danger'); if (i===G.length-1) warns.push(GM[key].n+'走勢較上次跨越 2 個曲線區間'); } if (i===G.length-1 && (p<3||p>97)) warns.push(GM[key].n+(p<3?'低於第 3 百分位':'超過第 97 百分位')); return t; };
+  const rows = G.map((x,i)=>'<tr><td>'+fd(x.date)+'</td><td>'+ageAtText(c,x.date)+'</td><td>'+cell(x,i,'len')+'</td><td>'+cell(x,i,'wt')+'</td><td>'+cell(x,i,'head')+'</td><td>'+(x.len&&x.wt?(x.wt/((x.len/100)*(x.len/100))).toFixed(1):'--')+'</td><td>'+esc(x.src||'')+'</td></tr>').join('');
+  const btn=(act,v,cur,t)=>'<button class="x-btn x-btn--sm '+(cur===v?'x-btn--primary':'x-btn--tertiary')+'" data-act="'+act+'" data-v="'+v+'">'+t+'</button>';
+  return '<div class="card"><div class="card-h"><span>生長測量與生長曲線<small>身長 / 身高、體重、頭圍；曲線性別：'+(c.sex==='F'?'女孩':(c.sex==='M'?'男孩':'未知，暫以男孩曲線顯示'))+'</small></span><button class="x-btn x-btn--sm x-btn--primary" data-act="addgrowth" data-id="'+c.id+'">+ 新增測量</button></div>'
+   + (warns.length ? '<div class="card-b" style="padding-bottom:0"><div class="banner banner--danger">最新一次測量：'+esc(warns.join('；'))+'。依手冊建議，請醫師評估檢查（P3~P97 屬正常範圍）。</div></div>' : '')
+   + (G.length ? '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>檢查日期</th><th>年齡</th><th>身長 / 身高 (cm)</th><th>體重 (kg)</th><th>頭圍 (cm)</th><th>BMI</th><th>來源</th></tr></thead><tbody>'+rows+'</tbody></table></div>' : '<div class="card-b muted">尚無生長測量紀錄，請按「新增測量」或於登錄兒童預防保健時輸入</div>')
+   + '<div class="card-b"><div class="btn-row" style="margin-bottom:8px;align-items:center">'+btn('gm','wt',k,'體重')+btn('gm','len',k,'身長 / 身高')+btn('gm','head',k,'頭圍')+'<span style="width:16px"></span>'+btn('gr','auto',S.gr||'auto','自動範圍')+btn('gr','36',S.gr||'auto','0~3 歲')+btn('gr','84',S.gr||'auto','0~7 歲')+'</div>'+growthChart(c)
+   + '<div class="muted" style="margin-top:6px">曲線為 P3 / P15 / P50 / P85 / P97（原型為示意曲線；正式版採國健署兒童生長曲線：0~5 歲 WHO、5~7 歲陳偉德 2010）。紅點表示超出 P3~P97。</div></div></div>';
+}
+function growthModal(c){
+  openModal('新增生長測量：'+c.name, '<div class="form-grid">'+fld('測量日期',inp('g-date',toInputDate(TODAY),'date'),true,'g-date')+fld('身長 / 身高 (cm)（2 歲前量身長，2 歲後量身高）',inp('g-len','','number'),true,'g-len')+fld('體重 (kg)',inp('g-wt','','number'),true,'g-wt')+fld('頭圍 (cm)'+(ageMF(TODAY,c)>=36?'（3 歲後可不量）':''),inp('g-head','','number'),ageMF(TODAY,c)<36,'g-head')+'</div><div id="g-pct" class="banner banner--info"></div>',
+  function(){
+    const errs=[], dt=parseIn(g('g-date'));
+    if (!dt) errs.push('請輸入測量日期'); else { if (dt>TODAY) errs.push('測量日期不可晚於今日'); if (dt<c.birth && dayDiff(dt,c.birth)<0) errs.push('測量日期不可早於出生日'); }
+    if (g('g-len')==='') errs.push('請輸入身長 / 身高'); if (g('g-wt')==='') errs.push('請輸入體重'); if (dt && ageMF(dt,c)<36 && g('g-head')==='') errs.push('3 歲前請輸入頭圍');
+    growthRange(errs, g('g-len'), g('g-wt'), g('g-head'));
+    if (errs.length) return showMsg(errs);
+    const dup = (c.growth||[]).some(x=>dayDiff(x.date,dt)===0);
+    if (dup && !modalSave.confirmed) { modalSave.confirmed=true; return showMsg([], ['此日期已有測量紀錄，儲存會覆蓋原紀錄。再按一次「儲存」確認。']); }
+    addGrowth(c,{date:dt, len:parseFloat(g('g-len')), wt:parseFloat(g('g-wt')), head:g('g-head')===''?null:parseFloat(g('g-head')), src:'手動新增測量'});
+    audit(c,'新增生長測量'); closeModal(); toast('已儲存生長測量'); render();
+  });
+  bindPreview(c,'g-date',['g-len','g-wt','g-head'],'g-pct');
+}
+
+function caseChild(c){
+  const items = genItems(c), mr = motherRisk(c);
+  const by = k => items.filter(i=>i.kind===k);
+  let h = header(c);
+  if (!mr) h += '<div class="banner banner--warn">此兒童尚未連結母親孕期檔，也未登錄轄區外母親資料，母子串接規則（GBS、B 肝）尚未啟動。'+(c.imported?'此為名冊匯入的新生兒，請於母親「生產結果登錄」時比對連結（3.6）。 <button class="x-btn x-btn--sm x-btn--primary" data-act="go" data-p="delivery">前往生產結果登錄</button>':'')+'</div>';
+  if (mr) {
+    const hb = items.find(i=>i.id==='HBIG'), hv = items.find(i=>i.id==='HBV12'), gb = items.find(i=>i.id==='GBSC'), un = items.find(i=>i.id==='HBVUNK');
+    h += '<div class="card"><div class="card-h"><span>母親風險帶入（母子串接）</span><small>來源：'+(mr.linked?'母親 <a class="link" data-act="case" data-id="'+mr.mother.id+'">'+esc(mr.mother.name)+'</a> 孕期檔':'轄區外母親（手動登錄）')+'</small></div><div class="card-b">'
+    + (mr.hbsag==null ? '<div class="banner banner--danger">母親 HBsAg 結果未知，會影響 HBIG 判斷，須盡快補登（規則 R-L02，優先序緊急）。</div>' : '')
+    + '<table class="kvtable"><tr><td>母親 HBsAg</td><td>'+(mr.linked? (mr.hbsag==null?tag('未知','danger'):tag(mr.hbsag==='+'?'陽性 (+)':'陰性 (-)',mr.hbsag==='+'?'warn':'ok'))+' <span class="muted">（於母親個案頁維護）</span>' : sel('x-hbsag',[['','未知'],['+','陽性 (+)'],['-','陰性 (-)']],mr.hbsag||''))+'</td></tr>'
+    + '<tr><td>母親 GBS</td><td>'+(mr.linked? (mr.gbs==null?tag('未知','mute'):tag(mr.gbs==='+'?'陽性 (+)':'陰性 (-)',mr.gbs==='+'?'warn':'ok'))+(mr.gbsDate?' <span class="muted">檢查日 '+fd(mr.gbsDate)+'</span>':'') : sel('x-gbs',[['','未知'],['+','陽性 (+)'],['-','陰性 (-)']],mr.gbs||''))+'</td></tr>'
+    + (!mr.linked ? '<tr><td>轄區外母親身分證</td><td>'+inp('x-mpid',c.ext.pid)+' <button class="x-btn x-btn--sm x-btn--primary" data-act="saveext" data-id="'+c.id+'">儲存</button></td></tr>' : '')
+    + '<tr><td>GBS 確認（出生紀錄）</td><td>'+(c.gbsConfirmedAt ? tag('已確認 '+fd(c.gbsConfirmedAt),'ok')+' <span class="muted">確認人員 '+esc(c.gbsBy||'林護理師')+'</span>' : '<button class="x-btn x-btn--sm x-btn--primary" data-act="gbsconfirm" data-id="'+c.id+'">已確認母親 GBS 結果</button> <span class="muted">'+(mr.gbs==null?'母親 GBS 結果未登錄時不可確認':'確認期限 '+fd(gb.end))+'</span>')+'</td></tr>';
+    if (hb) { const hs = statusOf(hb);
+      h += '';
+      var hbRow = '<tr><td>HBIG（24 小時內）</td><td>'+tag(hs.t,hs.cls)+(hb.late?' '+tag('逾時','danger'):'')
+        + '<div class="muted" style="margin-top:4px">出生時間 '+fdt(c.birth)+'　HBIG 接種時間 '+(S.vac[c.id]?'無法取得（VAC 查詢失敗）':fdt(c.hbigAt))+(c.hbigAt&&!S.vac[c.id]?'　相差 '+((c.hbigAt-c.birth)/3600000).toFixed(1)+' 小時':'')+'</div>'
+        + '<div class="btn-row" style="margin-top:6px"><label class="muted"><input type="checkbox" data-act="vacfail" data-id="'+c.id+'"'+(S.vac[c.id]?' checked':'')+'> 模擬 VAC 查詢失敗</label>'
+        + (!c.hbigAt ? '<input type="datetime-local" id="x-hbig" style="font-size:13px"><button class="x-btn x-btn--sm x-btn--tertiary" data-act="hbigmanual" data-id="'+c.id+'">手動登錄接種時間</button>' : '')+'</div></td></tr>';
+    }
+    h += (hb ? hbRow : '') + (hv ? '<tr><td>滿 12 個月追驗</td><td>'+tag(statusOf(hv).t,statusOf(hv).cls)+' <span class="muted">'+fd(hv.start)+' ~ '+fd(hv.end)+'</span> <button class="x-btn x-btn--sm x-btn--primary" data-act="hbvtest" data-id="'+c.id+'">登錄追驗結果</button>'
+      + ((c.hbvTests||[]).length ? '<div class="muted" style="margin-top:4px">'+c.hbvTests.map(t=>fd(t.date)+' HBsAg '+t.hbsag+' / anti-HBs '+t.anti+'　處置：'+esc(t.plan)).join('<br>')+'</div>' : '')+'</td></tr>' : '')
+      + '</table></div></div>';
+    if ((c.hbvFollow||[]).length) h += '<div class="card"><div class="card-h"><span>B 肝追驗後續項目</span><small>依手冊建議，醫師確認後產生；完成判定看 VAC</small></div>'+ITH+itemRows(c, items.filter(i=>(c.hbvFollow||[]).some(f=>f.id===i.id)),{btn:'標示完成'})+'</tbody></table></div></div>';
+  }
+  h += growthCard(c);
+  h += '<div class="card"><div class="card-h"><span>兒童預防保健（9 次）</span><small>超過適用月齡的次數不得再使用</small></div>'+ITH+itemRows(c, by('cpv'),{void:true})+'</tbody></table></div></div>';
+  h += '<div class="card"><div class="card-h"><span>兒童發展篩檢（6 次）</span><small>需轉介時須填疑似異常面向，並自動建立轉介紀錄</small></div>'+ITH+itemRows(c, by('dev'))+'</tbody></table></div></div>';
+  h += '<div class="card"><div class="card-h"><span>新生兒篩檢</span></div>'+ITH+itemRows(c, by('nb'))+'</tbody></table></div></div>';
+  h += '<div class="card"><div class="card-h"><span>轉介紀錄</span><small>本版不串接外部早療系統，僅記錄與追蹤狀態</small></div>'+((c.referrals||[]).length ? '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>建立日</th><th>原因</th><th>疑似異常面向</th><th>轉介單位</th><th>狀態</th><th>操作</th></tr></thead><tbody>'+c.referrals.map(r=>'<tr><td>'+fd(r.date)+'</td><td>'+esc(r.reason)+'</td><td>'+esc((r.domains||[]).join('、')||'--')+'</td><td>'+esc(r.unit||'--')+'</td><td>'+tag(r.status,r.status==='待轉介'?'warn':(r.status==='已轉介'?'info':'mute'))+(r.status==='待轉介'&&dayDiff(TODAY,r.date)>14?' '+tag('逾期','danger'):'')+'</td><td><button class="x-btn x-btn--sm x-btn--tertiary" data-act="refupd" data-id="'+c.id+'" data-r="'+r.id+'">更新狀態</button></td></tr>').join('')+'</tbody></table></div>' : '<div class="card-b muted">目前沒有轉介紀錄</div>')+'</div>';
+  return h;
+}
+
+/* ---- 項目登錄 modal ---- */
+function itemModal(c, itId){
+  const it = genItems(c).find(i=>i.id===itId); if (!it) return;
+  const st = statusOf(it);
+  if (st.k==='done') { const d=it.res.data||{}; openModal('檢視：'+it.name, '<table class="kvtable"><tr><td>完成日</td><td>'+fd(it.res.date)+'</td></tr>'+Object.keys(d).map(k=>'<tr><td>'+esc(k)+'</td><td>'+esc(Array.isArray(d[k])?d[k].join('、'):d[k])+'</td></tr>').join('')+'</table>', null); return; }
+  let body = '', check;
+  const dField = fld('檢查日期', inp('i-date', toInputDate(TODAY), 'date'), true, 'i-date');
+  if (it.kind==='pv') {
+    body = '<div class="form-grid">'+dField+fld('孕週（依日期自動計算）','<input id="i-wk" disabled value="">')+fld('體重 (kg)',inp('i-wt','','number'),true,'i-wt')+fld('血壓 收縮 / 舒張',inp('i-bp','','text','例：118/76'),true,'i-bp')+fld('胎心音',sel('i-fhr',['正常','異常','未測']),false)+fld('尿蛋白',sel('i-up',['-','+/-','1+','2+']),false)+fld('尿糖',sel('i-ug',['-','+/-','1+','2+']),false)+'</div>'+fld('追蹤處置',chk('i-flag',['需追蹤','需轉介']),false)+fld('備註','<textarea id="i-note"></textarea>');
+    check = function(errs, warns){ const dt=parseIn(g('i-date')); if(!dt) return; if (dt < lmpOf(c)) errs.push('檢查日期不可早於 LMP（'+fd(lmpOf(c))+'）'); if (dt > TODAY) errs.push('檢查日期不可晚於今日'); const w=weeksOf(c,dt); if (dt>=lmpOf(c)&&(dt<it.start||dt>it.end)) warns.push('孕週 '+w.w+' 週 '+w.d+' 天不在建議區間（'+fd(it.start)+' ~ '+fd(it.end)+'），仍可儲存，系統會標示異常。'); };
+  } else if (it.kind==='pp') {
+    const first = it.no===1;
+    body = '<div class="form-grid">'+dField+fld('產後天數（自動）','<input id="i-pd" disabled>')+fld('身高 (cm)',inp('i-h','','number'),true,'i-h')+fld('體重 (kg)',inp('i-w','','number'),true,'i-w')+fld('BMI（自動）','<input id="i-bmi" disabled>')+'</div>'
+      + fld('已提供諮詢 / 轉介項目', chk('i-pp', first?['戒菸','高血壓','其他慢性疾病']:['健康體位','飲食營養','運動','高血壓','其他慢性疾病']))
+      + '<div class="card" style="background:#fff"><div class="card-h">愛丁堡產後憂鬱量表</div><div class="card-b"><div class="form-grid">'+fld('總分',inp('i-eds','','number'),false,'i-eds')+fld('第 10 題分數',inp('i-eds10','','number'),false,'i-eds10')+'</div>'+fld('轉介',rad('i-edref',['是','否'],'否'))+'<label style="font-size:14px"><input type="checkbox" id="i-noself"> 個案未自評</label></div></div>';
+    check = function(errs){ const dt=parseIn(g('i-date')); if (dt && dt>TODAY) errs.push('服務日期不可晚於今日'); if (dt && dt<c.delivery.dt) errs.push('服務日期不可早於生產日'); if (!document.getElementById('i-noself').checked && g('i-eds')==='') errs.push('請輸入愛丁堡量表總分，或勾選「個案未自評」'); };
+  } else if (it.kind==='cpv') {
+    body = '<div class="form-grid">'+dField+fld('身長 / 身高 (cm)',inp('i-h','','number'),true,'i-h')+fld('體重 (kg)',inp('i-w','','number'),true,'i-w')+fld('頭圍 (cm)'+(it.no<=7?'':'（第 8 次起可不量）'),inp('i-hc','','number'),it.no<=7,'i-hc')+fld('健康評估',sel('i-hr',[['0','0 無明顯異常'],['1','1 需注意或異常項目']]))+fld('身體檢查建議',sel('i-br',[['0','0 無'],['1','1 建議定期追蹤'],['2','2 建議轉介進一步檢查']]))+'</div><div id="i-pct" class="banner banner--info"></div>'+fld('家長紀錄與衛教',chk('i-edu',['無須加強衛教','口腔清潔 / 視力保健','預防事故傷害','親子共讀']));
+    check = function(errs){ const dt=parseIn(g('i-date')); if (dt && dt>TODAY) errs.push('檢查日期不可晚於今日'); if (dt && dt<c.birth) errs.push('檢查日期不可早於出生日'); growthRange(errs, g('i-h'), g('i-w'), g('i-hc')); if (dt && (dt<it.start || dt>addDays(it.end,1))) errs.push('檢查日期超過本次適用月齡區間（'+fd(it.start)+' ~ '+fd(it.end)+'），此次數不得使用'); };
+  } else if (it.kind==='dev') {
+    const scales = DEV_M[it.no-1][2];
+    body = '<div class="form-grid">'+dField+fld('量表','<input disabled value="'+esc(scales)+'">')+'</div>'+fld('篩檢結果',rad('i-dr',['通過','持續追蹤、衛教','需轉介'],'通過'),true)+fld('疑似異常面向（結果為「需轉介」時必填）',chk('i-dom',['粗大動作','精細動作','語言認知','社會發展']))+fld('備註','<textarea id="i-note"></textarea>');
+    check = function(errs){ const dt=parseIn(g('i-date')); if (dt && dt>TODAY) errs.push('檢查日期不可晚於今日'); if (val('i-dr')==='需轉介' && !vals('i-dom').length) errs.push('結果為「需轉介」時，至少選一個疑似異常面向'); };
+  } else if (it.kind==='nb') {
+    body = '<div class="form-grid">'+dField+fld('結果',sel('i-nb',['無異常','異常','拒篩 / 未篩']),true)+'</div>'+fld('備註','<textarea id="i-note"></textarea>');
+    check = function(errs){ const dt=parseIn(g('i-date')); if (dt && dt>TODAY) errs.push('檢查日期不可晚於今日'); };
+  } else if (it.id==='GBSC') { return gbsConfirm(c); }
+  else if (it.id==='HBIG') { return toast('HBIG 完成與否由 VAC 查詢；VAC 無資料時可在上方手動登錄接種時間'); }
+  else if (it.id==='HBV12') { return hbvTest(c); }
+  else if (it.id==='HBVUNK') { return toast('請於母親個案頁（或下方轄區外母親欄位）補登 HBsAg，系統會自動完成本項'); }
+  else if (it.cat==='轉介') { return refUpd(c, it.id.replace('REF','')); }
+  else if (it.kind==='link') {
+    body = fld('完成日期（VAC 紀錄，原型以手動標示）', inp('i-date', toInputDate(TODAY), 'date'), true);
+    check = function(){};
+  } else {
+    body = '<div class="form-grid">'+dField+'</div>'+fld('結果摘要','<textarea id="i-note"></textarea>');
+    check = function(errs){ const dt=parseIn(g('i-date')); if (dt && dt>TODAY) errs.push('檢查日期不可晚於今日'); if (dt && dt<lmpOf(c)) errs.push('檢查日期不可早於 LMP'); };
+  }
+  openModal('登錄：'+it.name, body, function(){
+    const errs=[], warns=[];
+    ['i-h','i-w','i-wt','i-bp'].forEach(function(id){ if (document.getElementById(id) && !g(id).trim() && (it.kind==='pv'||it.kind==='pp'||it.kind==='cpv')) errs.push('請輸入'+({'i-h':'身高 / 身長','i-w':'體重','i-wt':'體重','i-bp':'血壓'}[id])); });
+    if (!parseIn(g('i-date'))) errs.push('請輸入日期');
+    if (it.kind==='cpv' && it.no<=7 && !g('i-hc').trim()) errs.push('請輸入頭圍（第 1~7 次必填）');
+    check(errs, warns);
+    if (errs.length || (warns.length && !modalSave.confirmed)) { showMsg(errs, errs.length?[]:warns.concat(['再按一次「儲存」確認。'])); if (!errs.length) modalSave.confirmed=true; return; }
+    const dt = parseIn(g('i-date')); const data = {};
+    if (it.kind==='pv') { data['體重']=g('i-wt')+' kg'; data['血壓']=g('i-bp'); data['胎心音']=g('i-fhr'); data['尿蛋白 / 尿糖']=g('i-up')+' / '+g('i-ug'); data['追蹤處置']=vals('i-flag').join('、')||'無'; if (warns.length) data['孕週']='不在建議區間（已標示異常）'; }
+    if (it.kind==='pp') { data['身高 / 體重']=g('i-h')+' cm / '+g('i-w')+' kg'; data['諮詢轉介']=vals('i-pp').join('、')||'無'; data['愛丁堡']=document.getElementById('i-noself').checked?'個案未自評':('總分 '+g('i-eds')+'，第 10 題 '+g('i-eds10')+'，轉介：'+val('i-edref')); }
+    if (it.kind==='cpv') { data['身長 / 體重 / 頭圍']=g('i-h')+' cm / '+g('i-w')+' kg / '+(g('i-hc')||'--')+' cm'; data['健康評估']=g('i-hr'); data['身體檢查建議']=g('i-br'); addGrowth(c,{date:dt, len:parseFloat(g('i-h')), wt:parseFloat(g('i-w')), head:g('i-hc')===''?null:parseFloat(g('i-hc')), src:'兒童預防保健第 '+it.no+' 次'}); }
+    if (it.kind==='dev') { data['結果']=val('i-dr'); data['疑似異常面向']=vals('i-dom'); }
+    if (it.kind==='nb') data['結果']=g('i-nb');
+    c.res[it.id] = {state:'done', date:dt, data:data};
+    let extra = '';
+    if (it.kind==='pv' && vals('i-flag').indexOf('需追蹤')>=0) { c.risks.push({reason:'第 '+it.no+' 次產檢標示需追蹤（待確認）', from:dt, status:'待確認'}); extra = '，並建立高風險標記（待確認）'; }
+    if (it.kind==='pp' && val('i-edref')==='是') extra = '，愛丁堡量表轉介已列入追蹤';
+    if (it.kind==='dev' && val('i-dr')==='需轉介') { c.referrals.push({id:'R'+(++S.nid), reason:'發展篩檢第 '+it.no+' 次需轉介', domains:vals('i-dom'), unit:'', status:'待轉介', date:dt, note:''}); extra = '，並自動建立轉介紀錄（待轉介）'; }
+    closeModal(); toast('已儲存'+extra); render();
+  });
+  if (it.kind==='pv') { const f=function(){ const dt=parseIn(g('i-date')); if(dt){ const w=weeksOf(c,dt); $('#i-wk').value = w.w+' 週 '+w.d+' 天'; } }; document.getElementById('i-date').addEventListener('input', f); f(); }
+  if (it.kind==='cpv') bindPreview(c,'i-date',['i-h','i-w','i-hc'],'i-pct');
+  if (it.kind==='pp') { const f=function(){ const dt=parseIn(g('i-date')); if(dt) $('#i-pd').value = dayDiff(dt, c.delivery.dt)+' 天'; const h=parseFloat(g('i-h')), w=parseFloat(g('i-w')); $('#i-bmi').value = h>0&&w>0 ? (w/((h/100)*(h/100))).toFixed(1) : ''; }; ['i-date','i-h','i-w'].forEach(id=>document.getElementById(id).addEventListener('input', f)); f(); }
+}
+function gbsConfirm(c){
+  const mr = motherRisk(c);
+  if (!mr || mr.gbs==null) { toast('母親 GBS 結果未登錄，無法確認'); return; }
+  c.gbsConfirmedAt = TODAY; c.gbsBy = '林護理師'; audit(c,'確認母親 GBS 結果'); toast('已確認母親 GBS 結果'); render();
+}
+function hbvTest(c){
+  openModal('登錄 12 個月追驗結果（HBsAg / anti-HBs）', '<div class="form-grid">'+fld('檢驗日期',inp('t-date',toInputDate(TODAY),'date'),true)+fld('HBsAg',sel('t-hbs',[['','請選擇'],['+','+'],['-','-']]),true)+fld('anti-HBs',sel('t-anti',[['','請選擇'],['+','+'],['-','-']]),true)+fld('檢驗院所',inp('t-hosp'))+'</div><div class="banner banner--info">系統依手冊建議顯示處置，需由醫師確認後才產生後續項目；系統不自動下醫囑。</div>'+'<label style="font-size:14px"><input type="checkbox" id="t-doc"> 醫師已確認處置</label>',
+  function(){
+    const errs=[]; if (!g('t-hbs')||!g('t-anti')) errs.push('HBsAg 與 anti-HBs 兩項都須填寫'); if (!parseIn(g('t-date'))) errs.push('請輸入檢驗日期');
+    if (errs.length) return showMsg(errs);
+    const hbs=g('t-hbs'), anti=g('t-anti'); let plan='';
+    if (anti==='+' && hbs==='-') plan='結案，無需再接種';
+    else if (hbs==='+') plan='建立轉介紀錄（待轉介），不產生追加劑項目';
+    else plan='依手冊建議：追加 1 劑，追加後 1 個月再驗抗體';
+    if (!document.getElementById('t-doc').checked && hbs!=='' && !(anti==='+'&&hbs==='-')) return showMsg(['依手冊建議的處置（'+plan+'）須由醫師確認，請勾選「醫師已確認處置」後再儲存']);
+    c.hbvTests = c.hbvTests||[]; c.hbvTests.push({date:parseIn(g('t-date')), hbsag:hbs, anti:anti, plan:plan});
+    if (hbs==='+') { c.referrals.push({id:'R'+(++S.nid), reason:'幼兒 B 肝追驗 HBsAg 陽性', domains:[], unit:'', status:'待轉介', date:parseIn(g('t-date')), note:''}); }
+    else if (anti==='-') { c.hbvFollow = c.hbvFollow||[]; const t0=parseIn(g('t-date')); c.hbvFollow.push({id:'BOOST',name:'B 肝追加劑 1 劑（完成判定看 VAC）',start:t0,end:addDays(t0,30),done:false}); }
+    closeModal(); toast('已儲存追驗結果；'+plan); render();
+  }, '儲存');
+}
+function refUpd(c, rid){
+  const r = c.referrals.find(x=>x.id===rid); if (!r) return;
+  openModal('更新轉介狀態：'+r.reason, '<div class="form-grid">'+fld('狀態',sel('r-st',['待轉介','已轉介','已結案'],r.status),true)+fld('轉介單位',inp('r-unit',r.unit))+fld('轉介日期',inp('r-date',toInputDate(TODAY),'date'))+'</div>'+fld('追蹤備註 / 結果（結案必填）','<textarea id="r-note">'+esc(r.note||'')+'</textarea>'),
+  function(){
+    const errs=[]; if (g('r-st')==='已轉介' && !g('r-unit').trim()) errs.push('已轉介須填寫轉介單位'); if (g('r-st')==='已結案' && !g('r-note').trim()) errs.push('結案須填寫結果備註');
+    if (errs.length) return showMsg(errs);
+    r.status=g('r-st'); r.unit=g('r-unit'); r.note=g('r-note'); closeModal(); toast('已更新轉介狀態'); render();
+  });
+}
+
+/* ================= 頁面：生產結果登錄 ================= */
+let DL = {pid:'P05', dt:'2026-10-18T06:20', weeks:39, days:5, method:'VAG', count:1, hosp:'示意醫院', fetus:[], fail:false, summary:null, match:null};
+function fetusDefault(i){ return {outcome:'LIVE', sex:'F', dt:DL.dt, wt:'3050', len:'50', head:'33', a1:'9', a5:'10'}; }
+function pageDelivery(){
+  const preg = S.cases.filter(c=>c.type==='preg' && !c.delivery);
+  while (DL.fetus.length < DL.count) DL.fetus.push(fetusDefault(DL.fetus.length));
+  DL.fetus.length = DL.count;
+  if (DL.summary) return '<h2 class="page-title">生產結果登錄<small>US-14 / US-15</small></h2><div class="card"><div class="card-h"><span>登錄完成（單一交易已提交）</span></div><div class="card-b">'+DL.summary+'<div class="btn-row" style="margin-top:12px"><button class="x-btn x-btn--md x-btn--tertiary" data-act="dlreset">再登錄一筆</button></div></div></div>';
+  const m = byId(DL.pid);
+  return '<h2 class="page-title">生產結果登錄<small>US-14 / US-15 / 流程 3.4</small></h2>'
+  + '<div class="proto-note">一次交易：更新孕期檔、依胎數展開、比對既有兒童個案（連結或新建）、產生兒童時程與母子串接項目；任何一步失敗整筆 rollback。預設帶入「劉芷涵」，名冊中已有匯入的新生兒（母身分證、出生日、胎序相同），可看到比對連結。</div>'
+  + '<div class="card"><div class="card-h"><span>孕期層級資料</span></div><div class="card-b"><div class="form-grid">'
+  + fld('孕產婦（未生產）', sel('d-pid', preg.map(c=>[c.id,c.name+'（預產期 '+fd(c.edd)+'）']), DL.pid), true)
+  + fld('生產日期時間', inp('d-dt', DL.dt, 'datetime-local'), true) + fld('妊娠週數', inp('d-wk', DL.weeks, 'number'), true) + fld('妊娠天數 (0~6)', inp('d-dy', DL.days, 'number'))
+  + fld('生產方式', sel('d-me', [['VAG','陰道生產'],['FORCEPS','產鉗'],['VACUUM','真空吸引'],['CS','剖腹產'],['OTHER','其他']], DL.method), true) + fld('胎數 (1~9)', inp('d-ct', DL.count, 'number'), true) + fld('生產院所', inp('d-ho', DL.hosp))
+  + '</div></div></div>'
+  + DL.fetus.map((f,i) => '<div class="fetus"><h4>第 '+(i+1)+' 胎</h4><div class="form-grid">'
+    + fld('結局', sel('f'+i+'-oc',[['LIVE','活產'],['STILL','死產']],f.outcome), true) + fld('性別', sel('f'+i+'-sx',[['F','女'],['M','男'],['U','未知']],f.sex)) + fld('出生時間', inp('f'+i+'-dt', f.dt, 'datetime-local'), true)
+    + fld('出生體重 (g)', inp('f'+i+'-wt', f.wt, 'number'), true) + fld('身長 (cm)', inp('f'+i+'-ln', f.len, 'number')) + fld('頭圍 (cm)', inp('f'+i+'-hd', f.head, 'number')) + fld('Apgar 1 分', inp('f'+i+'-a1', f.a1, 'number')) + fld('Apgar 5 分', inp('f'+i+'-a5', f.a5, 'number'))
+    + '</div></div>').join('')
+  + '<div class="bar"><label><input type="checkbox" id="d-fail"'+(DL.fail?' checked':'')+'> 模擬第 2 胎建立失敗（驗證整筆 rollback）</label><span class="grow"></span><button class="x-btn x-btn--md x-btn--tertiary" data-act="dlmatch">預覽比對結果</button><button class="x-btn x-btn--md x-btn--primary" data-act="dlsave">確認登錄</button></div>'
+  + '<div id="d-msg">'+(DL.match||'')+'</div>';
+}
+function readDL(){
+  DL.pid=g('d-pid')||DL.pid; DL.dt=g('d-dt'); DL.weeks=g('d-wk'); DL.days=g('d-dy'); DL.method=g('d-me'); DL.count=Math.max(1,Math.min(9,parseInt(g('d-ct'))||1)); DL.hosp=g('d-ho'); DL.fail=document.getElementById('d-fail')&&document.getElementById('d-fail').checked;
+  for (let i=0;i<DL.fetus.length;i++) { const f=DL.fetus[i]; if (!document.getElementById('f'+i+'-oc')) continue; f.outcome=g('f'+i+'-oc'); f.sex=g('f'+i+'-sx'); f.dt=g('f'+i+'-dt'); f.wt=g('f'+i+'-wt'); f.len=g('f'+i+'-ln'); f.head=g('f'+i+'-hd'); f.a1=g('f'+i+'-a1'); f.a5=g('f'+i+'-a5'); }
+}
+function matchFetus(m, f, i){
+  const bd = parseIn(f.dt); const order = i+1;
+  const same = S.cases.filter(c => c.type==='child' && !c.pregId && c.motherPid===m.pid && bd && dayDiff(c.birth, bd)===0);
+  if (!same.length) return {kind:'new'};
+  const exact = same.filter(c => c.birthOrder===order);
+  if (exact.length===1) return {kind:'link', c:exact[0]};
+  if (exact.length>1) return {kind:'multi', n:exact.length};
+  if (same.some(c => c.birthOrder==null)) return {kind:'manual', c:same[0]};
+  return {kind:'new'};
+}
+function matchText(m){
+  return DL.fetus.map((f,i) => { if (f.outcome==='STILL') return '第 '+(i+1)+' 胎：死產，只記錄於孕期檔，不建立兒童個案'; const r = matchFetus(m,f,i); return '第 '+(i+1)+' 胎：'+({new:'未命中，將新建兒童個案',link:'命中既有個案「'+(r.c&&r.c.name)+'」（母身分證 + 出生日 + 胎序相同，優先序 2），將連結並補齊 PREG_ID 與胎序',multi:'命中多筆（'+r.n+'），交易中止，請使用者選擇',manual:'母身分證 + 出生日相同但胎序缺漏，列入「待人工確認」，交易中止'}[r.kind]); }).map(x=>'<li>'+esc(x)+'</li>').join('');
+}
+function saveDelivery(){
+  readDL(); const m = byId(DL.pid); const errs=[];
+  if (!m) errs.push('請選擇孕產婦'); const dt = parseIn(DL.dt);
+  if (!dt) errs.push('請輸入生產日期時間'); else { if (dt > TODAY) errs.push('生產日期時間不可晚於現在'); if (m && dt < lmpOf(m)) errs.push('生產日期時間不可早於 LMP'); }
+  const wk = parseInt(DL.weeks); if (!(wk>=20 && wk<=45)) errs.push('妊娠週數須介於 20~45 週');
+  DL.fetus.forEach((f,i) => { if (f.outcome==='LIVE') { const bd=parseIn(f.dt); if (!bd) errs.push('第 '+(i+1)+' 胎請輸入出生時間'); else if (bd>TODAY) errs.push('第 '+(i+1)+' 胎出生時間不可晚於現在'); const w=parseInt(f.wt); if (!(w>=300&&w<=6000)) errs.push('第 '+(i+1)+' 胎出生體重須介於 300~6000 g'); } });
+  if (errs.length) { $('#d-msg').innerHTML = '<div class="errs">無法登錄，請修正：<ul>'+errs.map(e=>'<li>'+esc(e)+'</li>').join('')+'</ul></div>'; return; }
+  const plan = DL.fetus.map((f,i)=> f.outcome==='LIVE' ? matchFetus(m,f,i) : {kind:'still'});
+  const bad = plan.find(p=>p.kind==='multi'||p.kind==='manual');
+  if (bad) { $('#d-msg').innerHTML = '<div class="errs">交易中止（整筆未寫入）：<ul>'+matchText(m)+'</ul></div>'; return; }
+  if (DL.fail && DL.fetus.length>=2 && plan[1].kind!=='still') { $('#d-msg').innerHTML = '<div class="errs">第 2 胎建立失敗，整筆交易 rollback：孕期檔生產欄位未更新，沒有任何兒童個案被建立。</div>'; return; }
+  /* commit */
+  const made=[], linked=[], fet=[];
+  plan.forEach((p,i) => { const f=DL.fetus[i];
+    if (p.kind==='still') { fet.push({no:i+1,outcome:'STILL'}); return; }
+    let c;
+    if (p.kind==='link') { c=p.c; c.pregId=m.id; c.birthOrder=i+1; c.imported=false; c.pid=c.pid||''; linked.push(c); }
+    else { c={id:'C'+(++S.nid), type:'child', name:m.name+'之'+(f.sex==='M'?'子':'女')+(DL.fetus.length>1?'（第 '+(i+1)+' 胎）':''), pid:'', phone:m.phone, nurse:m.nurse, birth:parseIn(f.dt), sex:f.sex, pregId:m.id, birthOrder:i+1, special:false, hbigAt:null, res:{}, pvDone:0, devDone:0, nbDone:[], referrals:[]}; S.cases.push(c); made.push(c); }
+    c.birthWeight=f.wt; addGrowth(c,{date:parseIn(f.dt), wt:(parseFloat(f.wt)||0)/1000, len:parseFloat(f.len)||null, head:parseFloat(f.head)||null, src:'出生（生產結果登錄）'}); fet.push({no:i+1,outcome:'LIVE',childId:c.id}); });
+  m.delivery = {dt:dt, weeks:wk, days:parseInt(DL.days)||0, method:DL.method, count:DL.count, hosp:DL.hosp, fetus:fet};
+  audit(m,'登錄生產結果');
+  const kids = made.concat(linked);
+  DL.summary = '<div class="banner banner--info">孕產婦：'+esc(m.name)+'；活產 '+kids.length+' 位（新建 '+made.length+'、連結既有 '+linked.length+'），死產 '+plan.filter(p=>p.kind==='still').length+' 位。孕期檔未完成的產檢項目已改為免做，並產生產後健康照護 2 次。</div>'
+    + kids.map(k => { const its = genItems(k).filter(i=>i.cat==='母子串接'); return '<div style="margin-bottom:8px"><a class="link" data-act="case" data-id="'+k.id+'"><b>'+esc(k.name)+'</b></a>　已產生母子串接項目：'+(its.length?its.map(i=>tag(i.name.replace(/（.*）/,''),i.pri==='URGENT'?'urgent':'info')).join(' '):'無')+'</div>'; }).join('');
+  toast('生產結果已登錄'); render();
+}
+
+/* ================= 頁面：訪視紀錄 ================= */
+function pageVisit(){
+  const sug = [];
+  S.cases.filter(c => c.type===S.dom).forEach(c => {
+    if (c.type==='child' && dayDiff(TODAY,c.birth)<=30 && !S.visits.some(v=>v.caseId===c.id&&v.type==='新生兒訪視')) sug.push({c:c,t:'新生兒訪視',why:'出生 '+dayDiff(TODAY,c.birth)+' 天，尚無訪視紀錄'});
+    if (c.type==='preg' && c.delivery && !S.visits.some(v=>v.caseId===c.id&&v.type==='產後訪視')) sug.push({c:c,t:'產後訪視',why:'產後 '+dayDiff(TODAY,c.delivery.dt)+' 天，尚無訪視紀錄'});
+    if (c.type==='preg' && (c.risks||[]).some(r=>r.status==='追蹤中')) sug.push({c:c,t:'高風險追蹤',why:'高風險：'+c.risks.filter(r=>r.status==='追蹤中').map(r=>r.reason).join('、')});
+  });
+  const cur = (sug[0]&&sug[0].c.id) || S.cases.find(c=>c.type===S.dom).id; const vts = S.dom==='preg' ? ['產後訪視','高風險追蹤','逾期催檢'] : ['新生兒訪視','逾期催檢']; const vc0 = (byId(S.vc) && byId(S.vc).type===S.dom) ? S.vc : cur; const vt0 = vts.indexOf(S.vt)>=0 ? S.vt : vts[0];
+  return '<h2 class="page-title">'+(S.dom==='preg'?'產後 / 高風險訪視':'新生兒訪視')+' — '+DOMN[S.dom]+'<small>Phase 4 公衛外訪</small></h2><div class="split"><div>'
+  + '<div class="card"><div class="card-h"><span>建議訪視名單</span><small>依產後 / 新生兒 / 高風險自動產生</small></div><div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>個案</th><th>訪視類型</th><th>原因</th><th>操作</th></tr></thead><tbody>'
+  + (sug.length ? sug.map(s=>'<tr><td><a class="link" data-act="case" data-id="'+s.c.id+'">'+esc(s.c.name)+'</a></td><td>'+tag(s.t,'info')+'</td><td>'+esc(s.why)+'</td><td><button class="x-btn x-btn--sm x-btn--tertiary" data-act="vpick" data-id="'+s.c.id+'" data-t="'+s.t+'">登錄訪視</button></td></tr>').join('') : '<tr><td colspan="4" class="muted">目前沒有建議訪視名單</td></tr>')
+  + '</tbody></table></div></div>'
+  + '<div class="card"><div class="card-h"><span>歷次訪視紀錄</span></div><div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>日期</th><th>個案</th><th>類型</th><th>對象狀況</th><th>處置</th><th>下次訪視</th></tr></thead><tbody>'
+  + S.visits.filter(v=>{ const cc=byId(v.caseId); return cc && cc.type===S.dom; }).slice().reverse().map(v=>{ const c=byId(v.caseId); return '<tr><td>'+fd(v.date)+'</td><td>'+esc(c?c.name:v.caseId)+'</td><td>'+esc(v.type)+'</td><td>'+esc(v.cond)+'</td><td>'+esc(v.act)+'</td><td>'+fd(v.next)+(v.next&&v.next<=TODAY?' '+tag('已到期','warn'):'')+'</td></tr>'; }).join('')
+  + '</tbody></table></div></div></div>'
+  + '<div class="card"><div class="card-h"><span>登錄訪視（US-10）</span></div><div class="card-b">'
+  + fld('個案', sel('v-c', S.cases.filter(c=>c.type===S.dom).map(c=>[c.id,c.name]), vc0), true)
+  + fld('訪視類型', sel('v-t', vts, vt0), true, 'v-t')
+  + fld('訪視日期', inp('v-d', toInputDate(TODAY), 'date'), true, 'v-d')
+  + fld('對象狀況', '<textarea id="v-cond"></textarea>') + fld('處置', '<textarea id="v-act"></textarea>') + fld('下次訪視日', inp('v-n','','date'))
+  + '<div id="v-msg"></div><button class="x-btn x-btn--md x-btn--primary" data-act="vsave">儲存訪視紀錄</button></div></div></div>';
+}
+
+/* ================= 頁面：報表 ================= */
+function pageReport(){
+  const f = S.dom; const W = allWork().filter(x=>!f || x.c.type===f);
+  const cats = {}; W.forEach(x => { if (['future','void','skip','unk'].indexOf(x.st.k)>=0) return; const k=x.it.cat; cats[k]=cats[k]||{due:0,done:0,over:0,soon:0}; cats[k].due++; if (x.st.k==='done') cats[k].done++; if (x.st.k==='over') cats[k].over++; if (x.st.k==='soon') cats[k].soon++; });
+  const rows = Object.keys(cats);
+  return '<h2 class="page-title">完成率與逾期統計 — '+DOMN[S.dom]+'<small>US-11 / Phase 4</small></h2><div class="bar"><span class="grow"></span><span class="muted">應做 = 已進入建議區間的項目（排除未到期、作廢、免做）</span></div>'
+  + '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>項目類別</th><th>應做</th><th>已完成</th><th>即將逾期</th><th>已逾期</th><th style="width:240px">完成率</th></tr></thead><tbody>'
+  + rows.map(k=>{ const a=cats[k], p=a.due?Math.round(a.done*100/a.due):0; return '<tr><td>'+esc(k)+'</td><td>'+a.due+'</td><td>'+a.done+'</td><td>'+a.soon+'</td><td>'+(a.over?'<b style="color:var(--xv-status--error)">'+a.over+'</b>':0)+'</td><td><div style="display:flex;align-items:center;gap:8px"><div class="hbar"><i style="width:'+p+'%"></i></div>'+p+'%</div></td></tr>'; }).join('')
+  + '</tbody></table></div><div class="muted" style="margin-top:8px">報表資料取自已手動登錄的結果，完成度取決於登錄是否確實。匯出格式待確認。</div>';
+}
+
+/* ================= 頁面：規則表 / 稽核 ================= */
+function pageRules(){
+  return '<h2 class="page-title">規則表維護 — '+DOMN[S.dom]+'<small>US-12</small></h2><div class="banner banner--info">規則以生效日管理，新舊版本並存；修改只影響生效日後建立的項目，不回溯既有個案已產生的項目。</div>'
+  + '<div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>規則代碼</th><th>名稱</th><th>對象</th><th>基準</th><th>區間起</th><th>區間迄</th><th>補助（元）</th><th>生效日</th><th>狀態</th><th>操作</th></tr></thead><tbody>'
+  + S.rules.map((r,i)=>r.target!==DOMN[S.dom]?'':'<tr><td>'+esc(r.code)+'</td><td>'+esc(r.name)+'</td><td>'+esc(r.target)+'</td><td>'+esc(r.base)+'</td><td>'+esc(r.from)+'</td><td>'+esc(r.to)+'</td><td>'+esc(r.amt)+'</td><td>'+esc(r.eff)+'</td><td>'+tag(r.stat,'ok')+'</td><td><button class="x-btn x-btn--sm x-btn--tertiary" data-act="ruleedit" data-i="'+i+'">編輯</button></td></tr>').join('')
+  + '</tbody></table></div>';
+}
+function ruleEdit(i){
+  const r = S.rules[i];
+  openModal('編輯規則：'+r.name, '<div class="form-grid">'+fld('區間起（數值）',inp('ru-f','0','number'),true)+fld('區間迄（數值）',inp('ru-t','14','number'),true)+fld('單位',sel('ru-u',['天','週','個月']))+fld('新版生效日',inp('ru-e',toInputDate(addDays(TODAY,1)),'date'),true)+'</div><div class="muted">原型僅示範驗證：區間起不可大於區間迄；生效日不可早於今日。</div>',
+  function(){ const errs=[]; if (parseFloat(g('ru-f'))>parseFloat(g('ru-t'))) errs.push('區間起不可大於區間迄'); const e=parseIn(g('ru-e')); if (!e || e<=TODAY) errs.push('新版生效日須晚於今日'); if (errs.length) return showMsg(errs); S.rules[i].eff = fd(e)+'（新版）'; closeModal(); toast('已建立新版規則，生效日 '+fd(e)+'；既有個案項目不受影響'); render(); });
+}
+function pageAudit(){
+  return '<h2 class="page-title">操作稽核紀錄<small>US-13 / US-22</small></h2><div class="x-table-wrap tbl-scroll"><table class="x-table-native"><thead><tr><th>時間</th><th>使用者</th><th>個案</th><th>動作</th></tr></thead><tbody>'
+  + S.audit.slice().reverse().map(a=>{ const c=byId(a.cid); return '<tr><td>'+fdt(a.t)+'</td><td>'+esc(a.who)+'</td><td>'+esc(c?c.name:a.cid)+'</td><td>'+esc(a.act)+'</td></tr>'; }).join('')+'</tbody></table></div>';
+}
+
+/* ================= 事件 ================= */
+function contactModal(c){
+  openModal('記錄聯絡：'+c.name, '<div class="form-grid">'+fld('聯絡方式',sel('k-m',['電話','簡訊','家訪']),true)+fld('結果',sel('k-r',['已聯絡','未接','空號 / 無法聯絡']),true)+'</div>'+fld('備註','<textarea id="k-n"></textarea>'),
+  function(){ S.contacts[c.id]=S.contacts[c.id]||[]; S.contacts[c.id].push({date:TODAY, result:g('k-r')}); closeModal(); toast('已記錄聯絡'); render(); });
+}
+document.addEventListener('click', function(e){
+  const a = e.target.closest('[data-act]'); if (!a) return; const act = a.getAttribute('data-act'), id = a.getAttribute('data-id');
+  if (a.tagName==='INPUT' && a.type==='checkbox' && act==='vacfail') { S.vac[id] = a.checked; return render(); }
+  if (act==='dom') { S.dom=a.getAttribute('data-v'); if (S.page==='case' || (S.page==='delivery' && S.dom==='child')) S.page='overdue'; return render(); }
+  if (act==='go') { const p=a.getAttribute('data-p'); if (p==='delivery' && S.dom==='child') toast('生產結果登錄屬孕產婦模組，已切換'); return go(p); }
+  if (act==='case') { const c=byId(id); S.dom=c.type; audit(c, '開啟個案'+(motherRisk(c)?'（含母親檢驗欄位）':'')); return go('case', id); }
+  if (act==='qf') { const k=a.getAttribute('data-k'); if (k==='clear') S.f={type:'',state:'',nurse:'',kw:'',pri:''}; else { S.f[k]= S.f[k]===a.getAttribute('data-v') ? '' : a.getAttribute('data-v'); } return render(); }
+  if (act==='contact') return contactModal(byId(id));
+  if (act==='newcase') return newCaseModal();
+  if (act==='item') return itemModal(byId(id), a.getAttribute('data-it'));
+  if (act==='void') { const c=byId(id), it=a.getAttribute('data-it'); c.res[it]={state:'void', reason:'超過適用月齡（人工標示）'}; toast('已標示作廢'); return render(); }
+  if (act==='mclose') return closeModal();
+  if (act==='msave') return modalSave && modalSave();
+  if (act==='savemother') { const c=byId(id); const before=JSON.stringify(c.hbsag)+JSON.stringify(c.gbs); c.hbsag=g('m-hbsag')||null; c.hbeag=g('m-hbeag')||null; c.viral=g('m-viral')?parseFloat(g('m-viral')):null; const ng=g('m-gbs')||null; const gd=g('m-gbsd'); if (gd) { const d=parseIn(gd); if (d>TODAY) return toast('GBS 檢查日期不可晚於今日'); if (d<lmpOf(c)) return toast('GBS 檢查日期不可早於 LMP'); c.gbsDate=d; }
+    let note=''; if (ng!==c.gbs) { c.gbs=ng; S.cases.filter(k=>k.pregId===c.id&&k.gbsConfirmedAt).forEach(k=>{ k.gbsConfirmedAt=null; note+='；已清除寶寶「'+k.name+'」的 GBS 確認並重新產生項目'; }); }
+    audit(c,'更新母親檢驗結果'); toast('已儲存母親檢驗結果，並重算已連結寶寶的追蹤項目'+note); return render(); }
+  if (act==='addrisk') { const c=byId(id); return openModal('新增高風險標記', fld('風險原因',sel('rk-r',['妊娠糖尿病','妊娠高血壓 / 子癲前症','早產徵兆','前置胎盤','34 歲以上高齡','其他']),true)+fld('備註','<textarea id="rk-n"></textarea>'), function(){ c.risks.push({reason:g('rk-r'),from:TODAY,status:'追蹤中'}); closeModal(); toast('已新增高風險標記'); render(); }); }
+  if (act==='closerisk') { const c=byId(id), i=parseInt(a.getAttribute('data-i')); return openModal('高風險結案', fld('結案原因（必填）','<textarea id="rc-n"></textarea>',true), function(){ if (!g('rc-n').trim()) return showMsg(['結案前須填寫結案原因']); c.risks[i].status='已結案'; closeModal(); toast('已結案'); render(); }); }
+  if (act==='godelivery') { DL.pid=id; DL.summary=null; return go('delivery'); }
+  if (act==='gbsconfirm') return gbsConfirm(byId(id));
+  if (act==='hbigmanual') { const c=byId(id), v=g('x-hbig'); if (!v) return toast('請輸入 HBIG 接種時間'); const d=parseIn(v); if (d<c.birth) return toast('接種時間不可早於出生時間'); c.hbigAt=d; audit(c,'手動登錄 HBIG 接種時間'); return render(); }
+  if (act==='hbvtest') return hbvTest(byId(id));
+  if (act==='refupd') return refUpd(byId(id), a.getAttribute('data-r'));
+  if (act==='saveext') { const c=byId(id); c.ext.pid=g('x-mpid'); c.ext.hbsag=g('x-hbsag')||null; c.ext.gbs=g('x-gbs')||null; toast('已儲存轄區外母親資料，條件規則已重新評估'); return render(); }
+  if (act==='dlmatch') { readDL(); $('#d-msg').innerHTML='<div class="banner banner--info">比對預覽（3.6 優先序）：<ul>'+matchText(byId(DL.pid))+'</ul></div>'; return; }
+  if (act==='dlsave') return saveDelivery();
+  if (act==='dlreset') { DL.summary=null; DL.fetus=[]; DL.pid=(S.cases.find(c=>c.type==='preg'&&!c.delivery)||{}).id; return render(); }
+  if (act==='vpick') { S.vc=id; S.vt=a.getAttribute('data-t'); return render(); }
+  if (act==='vsave') { const errs=[]; if (!parseIn(g('v-d'))) errs.push('請輸入訪視日期'); if (parseIn(g('v-d'))>TODAY) errs.push('訪視日期不可晚於今日'); if (errs.length) { $('#v-msg').innerHTML='<div class="errs">'+errs.join('、')+'</div>'; return; } const nx=g('v-n')?parseIn(g('v-n')):null; S.visits.push({id:'V'+(++S.nid), caseId:g('v-c'), type:g('v-t'), date:parseIn(g('v-d')), cond:g('v-cond')||'--', act:g('v-act')||'--', next:nx}); S.vc=null; toast('已儲存訪視紀錄'+(nx?'，下次訪視日已加入提醒':'')); return render(); }
+  if (act==='gm') { S.gm=a.getAttribute('data-v'); return render(); }
+  if (act==='gr') { S.gr=a.getAttribute('data-v'); return render(); }
+  if (act==='addgrowth') return growthModal(byId(id));
+  if (act==='ruleedit') return ruleEdit(parseInt(a.getAttribute('data-i')));
+});
+document.addEventListener('change', function(e){
+  const t = e.target, id = t.id;
+  if (id==='f-type') { S.f.type=t.value; render(); } else if (id==='f-state') { S.f.state=t.value; render(); } else if (id==='f-nurse') { S.f.nurse=t.value; render(); }
+  else if (id==='r-type') { S.rf.type=t.value; render(); } else if (id==='r-risk') { S.rf.risk=t.checked; render(); }
+  else if (id==='rp-type') { S.rpt=t.value; render(); }
+  else if (id==='d-ct' || id==='d-pid') { readDL(); render(); }
+  else if (id==='v-c') { S.vc=t.value; }
+});
+document.addEventListener('input', function(e){
+  const id = e.target.id;
+  if (id==='f-kw' || id==='r-kw') { const pos=e.target.selectionStart; if (id==='f-kw') S.f.kw=e.target.value; else S.rf.kw=e.target.value; render(); const n=document.getElementById(id); if (n) { n.focus(); n.setSelectionRange(pos,pos); } }
+});
+
+function render(){
+  nav();
+  const P = {overdue:pageOverdue, roster:pageRoster, case:pageCase, delivery:pageDelivery, visit:pageVisit, report:pageReport, rules:pageRules, audit:pageAudit};
+  $('#main').innerHTML = (P[S.page]||pageOverdue)() + (S.page==='case' ? '<div style="margin-top:8px"><button class="x-btn x-btn--md x-btn--tertiary" data-act="go" data-p="roster">返回個案名冊</button></div>' : '');
+}
+(function(){ const h = location.hash.slice(1); if (h) { const a = h.split('='); if (a[0]==='case' && byId(a[1])) { S.page='case'; S.caseId=a[1]; S.dom=byId(a[1]).type; } else if (['overdue','roster','delivery','visit','report','rules','audit'].indexOf(a[0])>=0) { S.page=a[0]; if (a[1]==='child') S.dom='child'; if (a[0]==='delivery') S.dom='preg'; } } })();
+render();
+})();
+</script>
+</body>
+</html>
