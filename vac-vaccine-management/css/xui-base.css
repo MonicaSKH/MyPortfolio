@@ -1,0 +1,876 @@
+/*
+ * xUI Base CSS for WinForms Preview
+ * Extracted & adapted from xhis-xui Vue component library
+ * This file is embedded in generated HTML previews.
+ * Source: references/xhis-xui/src/
+ */
+
+/* ============================================
+   1. CSS VARIABLES (from base-light.css + font.css)
+   ============================================ */
+:root {
+  /* Container */
+  --xv-container--background: rgb(217, 217, 219);
+  --xv-container--surface: rgb(242, 242, 242);
+  --xv-container--tinted-surface: rgb(242, 242, 242);
+  --xv-container--surface-hovered: rgba(26, 26, 26, 0.12);
+  --xv-container--surface-pressed: rgba(26, 26, 26, 0.2);
+  --xv-container--surface-active: rgba(109, 174, 237, 0.5);
+  --xv-container--surface-active-hovered: rgba(109, 174, 237, 0.7);
+  --xv-container--surface-active-pressed: rgba(109, 174, 237, 0.86);
+  --xv-container--area: rgba(26, 26, 26, 0.16);
+  --xv-container--area-hovered: rgba(26, 26, 26, 0.22);
+  --xv-container--area-pressed: rgba(26, 26, 26, 0.3);
+  --xv-container--area-active: rgba(109, 174, 237, 0.6);
+  --xv-container--disabled-background: rgba(26, 26, 26, 0.09);
+  --xv-container--mask: rgba(26, 26, 26, 0.35);
+
+  /* Text */
+  --xv-text--high-emphasis-text: rgb(26, 26, 26);
+  --xv-text--medium-emphasis-text: rgba(26, 26, 26, 0.7);
+  --xv-text--low-emphasis-text: rgba(26, 26, 26, 0.55);
+  --xv-text--placeholder-text: rgba(26, 26, 26, 0.45);
+  --xv-text--disabled-text: rgba(26, 26, 26, 0.35);
+  --xv-text--dividing-line: rgba(26, 26, 26, 0.3);
+  --xv-text--on-background-text: rgb(242, 242, 242);
+
+  /* Status */
+  --xv-status--primary: rgb(0, 103, 204);
+  --xv-status--primary-on-surface: rgb(0, 87, 173);
+  --xv-status--error: rgb(191, 46, 58);
+  --xv-status--warning: rgb(168, 84, 0);
+  --xv-status--success: rgb(9, 122, 31);
+
+  /* Primary palette (from base-light.css) */
+  --xv-primary--50: rgb(222, 237, 252);
+  --xv-primary--100: rgb(181, 214, 247);
+  --xv-primary--200: rgb(139, 193, 247);
+  --xv-primary--300: rgb(109, 174, 237);
+  --xv-primary--400: rgb(47, 143, 235);
+  --xv-primary--500: rgb(22, 121, 217);
+  --xv-primary--600: rgb(0, 103, 204);
+  --xv-primary--700: rgb(0, 87, 173);
+  --xv-primary--800: rgb(0, 63, 125);
+  --xv-primary--900: rgb(3, 34, 65);
+
+  /* Red palette (from base-light.css) */
+  --xv-red--50: rgb(250, 227, 229);
+  --xv-red--100: rgb(250, 200, 204);
+  --xv-red--200: rgb(245, 149, 157);
+  --xv-red--300: rgb(245, 120, 130);
+  --xv-red--400: rgb(232, 86, 98);
+  --xv-red--500: rgb(212, 63, 76);
+  --xv-red--600: rgb(191, 46, 58);
+  --xv-red--700: rgb(181, 24, 37);
+  --xv-red--800: rgb(135, 16, 26);
+  --xv-red--900: rgb(71, 0, 5);
+
+  /* Orange palette */
+  --xv-orange--50: #FFF3E0;
+  --xv-orange--100: #FFDFB0;
+  --xv-orange--200: #FFCB80;
+  --xv-orange--300: #FFB750;
+  --xv-orange--400: #FFA320;
+  --xv-orange--500: #A85400;
+  --xv-orange--600: #8F4800;
+  --xv-orange--700: #763C00;
+  --xv-orange--800: #5D3000;
+  --xv-orange--900: #442400;
+
+  /* Neutral palette */
+  --xv-neutral--50: #F5F5F5;
+  --xv-neutral--100: #E0E0E0;
+  --xv-neutral--200: #CCCCCC;
+  --xv-neutral--300: #B8B8B8;
+  --xv-neutral--400: #A3A3A3;
+  --xv-neutral--500: #7A7A7A;
+  --xv-neutral--600: #666666;
+  --xv-neutral--700: #525252;
+  --xv-neutral--800: #3D3D3D;
+  --xv-neutral--900: #292929;
+
+  --xv-blackandwhite--white: #FFFFFF;
+  --xv-blackandwhite--black: #000000;
+
+  /* Typography */
+  --xv-font-size-delta: 0px;
+
+  --xv-headline--headline-lg--font-size: calc(36px + var(--xv-font-size-delta));
+  --xv-headline--headline-lg--font-weight: 700;
+  --xv-headline--headline-lg--line-height: 1.25;
+
+  --xv-title--title-lg--font-size: calc(24px + var(--xv-font-size-delta));
+  --xv-title--title-lg--font-weight: 600;
+  --xv-title--title-lg--line-height: 1.35;
+
+  --xv-title--title-md--font-size: calc(20px + var(--xv-font-size-delta));
+  --xv-title--title-md--font-weight: 600;
+  --xv-title--title-md--line-height: 1.4;
+
+  --xv-title--title-sm--font-size: calc(18px + var(--xv-font-size-delta));
+  --xv-title--title-sm--font-weight: 600;
+  --xv-title--title-sm--line-height: 1.45;
+
+  --xv-body--body-lg--font-size: calc(18px + var(--xv-font-size-delta));
+  --xv-body--body-lg--font-weight: 500;
+  --xv-body--body-lg--line-height: 1.5;
+
+  --xv-body--body-md--font-size: calc(16px + var(--xv-font-size-delta));
+  --xv-body--body-md--font-weight: 500;
+  --xv-body--body-md--line-height: 1.5;
+
+  --xv-body--body-sm--font-size: calc(14px + var(--xv-font-size-delta));
+  --xv-body--body-sm--font-weight: 500;
+  --xv-body--body-sm--line-height: 1.5;
+
+  --xv-label--label-lg--font-size: calc(18px + var(--xv-font-size-delta));
+  --xv-label--label-lg--font-weight: 600;
+  --xv-label--label-lg--line-height: 1.5;
+
+  --xv-label--label-md--font-size: calc(16px + var(--xv-font-size-delta));
+  --xv-label--label-md--font-weight: 600;
+  --xv-label--label-md--line-height: 1.5;
+
+  --xv-label--label-sm--font-size: calc(14px + var(--xv-font-size-delta));
+  --xv-label--label-sm--font-weight: 600;
+  --xv-label--label-sm--line-height: 1.5;
+}
+
+/* ============================================
+   2. GLOBAL RESET & BASE
+   ============================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', 'Noto Sans TC', -apple-system, 'Segoe UI', Roboto, sans-serif;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  line-height: var(--xv-body--body-md--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  background-color: var(--xv-container--background);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ============================================
+   3. PAGE LAYOUT (from XPageLayout.vue)
+   ============================================ */
+.x-page-layout {
+  display: grid;
+  grid-template-areas:
+    'header'
+    'body'
+    'footer';
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 100%;
+  height: 100vh;
+  width: 100%;
+  background-color: var(--xv-container--background);
+}
+
+.x-page-layout-header {
+  grid-area: header;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 72px;
+  padding: 16px 24px;
+  gap: 32px;
+  background-color: var(--xv-container--surface);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+.x-page-layout-header-title {
+  font-size: var(--xv-title--title-lg--font-size);
+  font-weight: var(--xv-title--title-lg--font-weight);
+  line-height: var(--xv-title--title-lg--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  white-space: nowrap;
+}
+
+.x-page-layout-header-item-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.x-page-layout-body {
+  grid-area: body;
+  width: 100%;
+  height: 100%;
+  padding: 16px 24px;
+  overflow: auto;
+}
+
+.x-page-layout-footer {
+  grid-area: footer;
+  padding: 16px 24px;
+  background-color: var(--xv-container--surface);
+  border-top: 1px solid var(--xv-text--dividing-line);
+}
+
+/* ============================================
+   4. CARD CONTAINER (from XCard.vue)
+   ============================================ */
+.x-card-container {
+  display: grid;
+  grid-template-areas:
+    'header'
+    'body'
+    'footer';
+  grid-template-rows: auto 1fr auto;
+  background-color: var(--xv-container--surface);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.x-card-header {
+  grid-area: header;
+  padding: 16px 24px;
+  font-size: var(--xv-title--title-sm--font-size);
+  font-weight: var(--xv-title--title-sm--font-weight);
+  line-height: var(--xv-title--title-sm--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+.x-card-body {
+  grid-area: body;
+  position: relative;
+  overflow: auto;
+  padding: 16px 24px;
+}
+
+.x-card-footer {
+  grid-area: footer;
+  padding: 16px 24px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 16px;
+}
+
+/* ============================================
+   5. DOCK LAYOUT SYSTEM (WinForms Dock → CSS)
+   ============================================ */
+.x-dock-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.x-dock-container--row {
+  flex-direction: row;
+}
+
+.x-dock-top {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.x-dock-bottom {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+.x-dock-left {
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.x-dock-right {
+  flex-shrink: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.x-dock-fill {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
+}
+
+.x-dock-middle {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ============================================
+   6. ABSOLUTE POSITIONED CONTAINER
+   ============================================ */
+.x-abs-container {
+  position: relative;
+  width: 100%;
+  background-color: var(--xv-container--surface);
+}
+
+/* ============================================
+   7. FORM ROW
+   ============================================ */
+.x-form-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 8px;
+}
+
+/* ============================================
+   8. LABEL (adapted from xUI text styles)
+   ============================================ */
+.x-label {
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  line-height: var(--xv-body--body-md--line-height);
+  color: var(--xv-text--high-emphasis-text);
+  white-space: nowrap;
+}
+
+.x-label--primary {
+  color: var(--xv-status--primary);
+}
+
+.x-label--danger {
+  color: var(--xv-status--error);
+}
+
+.x-label--warning {
+  color: var(--xv-status--warning);
+}
+
+.x-label--value {
+  color: var(--xv-text--medium-emphasis-text);
+}
+
+/* ============================================
+   9. BUTTON (from XButton.vue)
+   ============================================ */
+.x-btn {
+  --x-btn-h: 40px;
+  --x-btn-p-h: 24px;
+  --x-btn-color: var(--xv-text--high-emphasis-text);
+  --x-btn-bg: var(--xv-container--area);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: var(--x-btn-h);
+  padding: 0 var(--x-btn-p-h);
+  border: none;
+  border-radius: 8px;
+  background-color: var(--x-btn-bg);
+  color: var(--x-btn-color);
+  font-size: var(--xv-label--label-md--font-size);
+  font-weight: var(--xv-label--label-md--font-weight);
+  line-height: var(--xv-label--label-md--line-height);
+  font-family: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s, box-shadow 0.15s;
+  white-space: nowrap;
+}
+
+.x-btn:hover {
+  background-color: var(--xv-container--area-hovered);
+}
+
+.x-btn:active {
+  background-color: var(--xv-container--area-pressed);
+}
+
+.x-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(124, 124, 124, 0.47);
+}
+
+.x-btn--sm {
+  --x-btn-h: 32px;
+  --x-btn-p-h: 16px;
+  font-size: var(--xv-label--label-sm--font-size);
+}
+
+.x-btn--lg {
+  --x-btn-h: 48px;
+  --x-btn-p-h: 32px;
+  font-size: var(--xv-label--label-lg--font-size);
+}
+
+.x-btn--primary {
+  --x-btn-bg: var(--xv-status--primary);
+  --x-btn-color: var(--xv-text--on-background-text);
+}
+.x-btn--primary:hover {
+  background-color: var(--xv-primary--600);
+}
+.x-btn--primary:active {
+  background-color: var(--xv-primary--700);
+}
+
+.x-btn--danger {
+  --x-btn-bg: var(--xv-status--error);
+  --x-btn-color: var(--xv-text--on-background-text);
+}
+.x-btn--danger:hover {
+  background-color: var(--xv-red--600);
+}
+.x-btn--danger:active {
+  background-color: var(--xv-red--700);
+}
+
+.x-btn--warning {
+  --x-btn-bg: var(--xv-orange--500);
+  --x-btn-color: var(--xv-text--on-background-text);
+}
+.x-btn--warning:hover {
+  background-color: var(--xv-orange--600);
+}
+.x-btn--warning:active {
+  background-color: var(--xv-orange--700);
+}
+
+.x-btn--tertiary {
+  --x-btn-bg: var(--xv-container--area);
+  --x-btn-color: var(--xv-text--high-emphasis-text);
+}
+.x-btn--tertiary:hover {
+  background-color: var(--xv-container--area-hovered);
+}
+.x-btn--tertiary:active {
+  background-color: var(--xv-container--area-pressed);
+}
+
+.x-btn--outline {
+  background-color: transparent;
+  border: 1px solid var(--xv-text--dividing-line);
+}
+.x-btn--outline:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+
+.x-btn--disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ============================================
+   10. INPUT TEXT (from XInputText.vue)
+   ============================================ */
+.x-input {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.x-input--inline {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.x-input-label {
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  white-space: nowrap;
+}
+
+.x-input-text-container {
+  --x-input-height: 40px;
+  --x-input-bd-radius: 8px;
+
+  display: flex;
+  align-items: center;
+  min-height: var(--x-input-height);
+  padding: 0 8px;
+  border: solid 1px var(--xv-text--dividing-line);
+  border-radius: var(--x-input-bd-radius);
+  background-color: var(--xv-container--surface);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.x-input-text-container:hover {
+  border-color: var(--xv-text--placeholder-text);
+}
+
+.x-input-text-container:focus-within {
+  border-color: var(--xv-status--primary);
+  box-shadow: 0 0 1px 2px rgba(0, 103, 204, 0.2);
+}
+
+.x-input-text-container--standalone {
+  /* standalone: no wrapping x-input label */
+}
+
+.x-input-text-container--multiline {
+  align-items: flex-start;
+  padding: 8px;
+}
+
+.x-input-text-container--error {
+  border-color: var(--xv-status--error);
+}
+.x-input-text-container--error:focus-within {
+  box-shadow: 0 0 1px 2px rgba(191, 46, 58, 0.2);
+}
+
+.x-input-text-container--disabled {
+  background-color: var(--xv-container--disabled-background);
+  border-color: var(--xv-text--disabled-text);
+  pointer-events: none;
+}
+
+.x-input-text-container--sm {
+  --x-input-height: 32px;
+  --x-input-bd-radius: 6px;
+}
+
+.x-input-input {
+  width: 100%;
+  height: 100%;
+  min-height: calc(var(--x-input-height, 40px) - 2px);
+  border: none;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  caret-color: var(--xv-status--primary);
+}
+
+.x-input-input::placeholder {
+  color: var(--xv-text--placeholder-text);
+}
+
+textarea.x-input-input {
+  min-height: auto;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+/* ============================================
+   11. SELECT / COMBOBOX (native, styled as xUI)
+   ============================================ */
+.x-select-native {
+  --x-select-height: 40px;
+
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--x-select-height);
+  padding: 0 8px;
+  border: solid 1px var(--xv-text--dividing-line);
+  border-radius: 8px;
+  background-color: var(--xv-container--surface);
+  font-family: inherit;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  cursor: pointer;
+  transition: background-color 0.1s, border-color 0.15s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='rgba(26,26,26,0.7)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 32px;
+}
+
+.x-select-native:hover {
+  border-color: var(--xv-text--placeholder-text);
+}
+
+.x-select-native:focus {
+  outline: none;
+  border-color: var(--xv-status--primary);
+  box-shadow: 0 0 1px 2px rgba(0, 103, 204, 0.2);
+}
+
+.x-select-native--sm {
+  --x-select-height: 32px;
+  font-size: var(--xv-body--body-sm--font-size);
+  border-radius: 6px;
+}
+
+.x-select-native--md {
+  --x-select-height: 40px;
+}
+
+/* ============================================
+   12. CHECKBOX (from XCheckbox.vue)
+   ============================================ */
+.x-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+}
+
+.x-checkbox-input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  border: 2px solid var(--xv-text--medium-emphasis-text);
+  border-radius: 2px;
+  background-color: var(--xv-container--surface);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: background-color 0.1s, box-shadow 0.1s;
+  flex-shrink: 0;
+  position: relative;
+}
+
+.x-checkbox-input:checked {
+  background-color: var(--xv-status--primary);
+  border-color: var(--xv-status--primary);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 12px;
+}
+
+.x-checkbox-input:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+.x-checkbox-input:checked:hover {
+  background-color: var(--xv-primary--600);
+}
+
+.x-checkbox-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0px 2px white, 0 0 0px 4px rgba(0, 0, 0, 0.3);
+}
+
+.x-checkbox--disabled {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+/* ============================================
+   13. RADIO BUTTON (from XRadioButton.vue)
+   ============================================ */
+.x-radio-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+}
+
+.x-radio-input {
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 2px solid var(--xv-text--medium-emphasis-text);
+  border-radius: 50%;
+  background-color: var(--xv-container--surface);
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+  transition: background-color 0.1s, box-shadow 0.1s;
+  flex-shrink: 0;
+}
+
+.x-radio-input:checked {
+  border-color: var(--xv-status--primary);
+  background-color: var(--xv-status--primary);
+  box-shadow: inset 0 0 0 3px var(--xv-container--surface);
+}
+
+.x-radio-input:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+.x-radio-input:checked:hover {
+  background-color: var(--xv-primary--600);
+}
+
+.x-radio-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0px 2px white, 0 0 0px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+   14. TABLE (from XTable.scss)
+   ============================================ */
+.x-table-wrap {
+  width: 100%;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--xv-container--surface);
+  border-radius: 8px;
+}
+
+.x-table-native {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--xv-container--surface);
+  font-size: var(--xv-body--body-md--font-size);
+  font-weight: var(--xv-body--body-md--font-weight);
+  line-height: var(--xv-body--body-md--line-height);
+}
+
+.x-table-native thead th {
+  position: sticky;
+  top: 0;
+  height: 40px;
+  padding: 0 16px;
+  text-align: left;
+  font-weight: 500;
+  color: var(--xv-text--medium-emphasis-text);
+  background-color: var(--xv-container--surface);
+  border-bottom: solid 1px var(--xv-text--dividing-line);
+  white-space: nowrap;
+}
+
+.x-table-native thead th:first-child {
+  padding-left: 8px;
+}
+
+.x-table-native tbody td {
+  height: 56px;
+  padding: 0 16px;
+  border-bottom: solid 1px var(--xv-text--dividing-line);
+  color: var(--xv-text--high-emphasis-text);
+  vertical-align: middle;
+}
+
+.x-table-native tbody td:first-child {
+  padding-left: 8px;
+}
+
+.x-table-native tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.x-table-native tbody tr:hover td {
+  background-color: var(--xv-container--surface-hovered);
+}
+
+.x-table-native tbody tr.x-table-row--selected td {
+  background-color: var(--xv-container--surface-active);
+}
+
+/* ============================================
+   15. PANEL (plain container)
+   ============================================ */
+.x-panel {
+  background-color: var(--xv-container--surface);
+  border-radius: 8px;
+}
+
+/* ============================================
+   16. TOOLBAR
+   ============================================ */
+.x-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px 16px;
+  background-color: var(--xv-container--surface);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+/* ============================================
+   17. MENU STRIP
+   ============================================ */
+.x-menu-strip {
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 8px;
+  gap: 0;
+  background-color: var(--xv-container--surface);
+  border-bottom: 1px solid var(--xv-text--dividing-line);
+}
+
+.x-menu-item {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 12px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: var(--xv-body--body-sm--font-size);
+  font-weight: var(--xv-body--body-sm--font-weight);
+  color: var(--xv-text--high-emphasis-text);
+  cursor: pointer;
+}
+
+.x-menu-item:hover {
+  background-color: var(--xv-container--surface-hovered);
+}
+
+/* ============================================
+   18. SCROLLBAR (from xhis-xui shared)
+   ============================================ */
+.x-scroll-bar::-webkit-scrollbar,
+.x-page-layout-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.x-scroll-bar::-webkit-scrollbar-thumb,
+.x-page-layout-body::-webkit-scrollbar-thumb {
+  background-color: rgba(26, 26, 26, 0.25);
+  border-radius: 3px;
+}
+
+.x-scroll-bar::-webkit-scrollbar-track,
+.x-page-layout-body::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============================================
+   19. UTILITY: POSITIONING HELPERS
+   ============================================ */
+
+/* For absolutely positioned controls within a relative container */
+.x-abs-control {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Inline label + input pair (within absolute container) */
+.x-inline-pair {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* ============================================
+   20. DATE INPUT (for DateTimePicker)
+   ============================================ */
+.x-input-input--date {
+  min-height: 38px;
+  padding: 0 8px;
+  border: solid 1px var(--xv-text--dividing-line);
+  border-radius: 8px;
+  background-color: var(--xv-container--surface);
+  font-family: inherit;
+  font-size: var(--xv-body--body-md--font-size);
+  color: var(--xv-text--high-emphasis-text);
+}
+
+.x-input-input--date:focus {
+  outline: none;
+  border-color: var(--xv-status--primary);
+  box-shadow: 0 0 1px 2px rgba(0, 103, 204, 0.2);
+}
