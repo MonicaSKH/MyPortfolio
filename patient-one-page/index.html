@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Patient One Page 科別版</title>
+<style>
+:root{--bg:#eceef1;--card:#fff;--line:#e1e4e8;--ink:#1d2430;--mute:#6b7380;--pri:#0b63ce;
+--crit:#c0261d;--crit-bg:#fde4e2;--warn:#9a6700;--warn-bg:#fff0c2;--ok:#17803d;--ok-bg:#dcf3e4;--gray:#e8eaee;
+--mn:#0b7a75;--mn-bg:#d4f0ee;--er:#b54708;--er-bg:#fde8d3;--ip:#6538b8;--ip-bg:#e8defa}
+@media (prefers-color-scheme:dark){:root{--bg:#14171c;--card:#1f242c;--line:#323945;--ink:#e8ebf0;--mute:#98a2b3;--pri:#6aa8ff;
+--crit:#ff8a80;--crit-bg:#4a1d1a;--warn:#f5c451;--warn-bg:#443511;--ok:#6fd592;--ok-bg:#183a27;--gray:#2b313b;
+--mn:#5fd4cc;--mn-bg:#143c3a;--er:#ffb069;--er-bg:#4a2e12;--ip:#b9a0f5;--ip-bg:#35285a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Noto Sans TC","PingFang TC","Microsoft JhengHei",system-ui,sans-serif}
+.wrap{max-width:1320px;margin:0 auto;padding:16px}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:12px}
+header h1{font-size:22px;margin:0}
+header .m{color:var(--mute)}
+header .sp{flex:1}
+label{font-size:12px;color:var(--mute)}
+.demo{font-size:11px;background:var(--warn-bg);color:var(--warn);padding:2px 8px;border-radius:6px;font-weight:600}
+
+/* 今日重點 */
+.alerts{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px;margin-bottom:14px}
+.al{border-radius:12px;padding:10px 14px;font-weight:700;font-size:16px;line-height:1.35}
+.al small{display:block;font-weight:500;font-size:13px;opacity:.9}
+.al.crit{background:var(--crit-bg);color:var(--crit)}
+.al.warn{background:var(--warn-bg);color:var(--warn)}
+.al.ok{background:var(--ok-bg);color:var(--ok)}
+
+/* 卡片 */
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;align-items:start}
+.col{display:flex;flex-direction:column;gap:12px}
+.card{background:var(--card);border-radius:14px;padding:14px 16px}
+.card h2{margin:0 0 8px;font-size:14px;color:var(--mute);font-weight:600}
+.row{display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid var(--line)}
+.row:first-of-type{border-top:0}
+.row .k{color:var(--mute);width:3.2em;flex:none;font-size:13px}
+.row .v{flex:1}
+.big{font-size:26px;font-weight:700;line-height:1.1}
+.big small{font-size:13px;color:var(--mute);font-weight:500}
+.bad{color:var(--crit)}
+.t{display:inline-block;padding:0 8px;border-radius:999px;font-size:12px;font-weight:700}
+.t.mn{background:var(--mn-bg);color:var(--mn)} .t.er{background:var(--er-bg);color:var(--er)} .t.ip{background:var(--ip-bg);color:var(--ip)}
+.t.ok{background:var(--ok-bg);color:var(--ok)} .t.gray{background:var(--gray);color:var(--mute)} .t.warn{background:var(--warn-bg);color:var(--warn)} .t.crit{background:var(--crit-bg);color:var(--crit)}
+.mute{color:var(--mute);font-size:13px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+details{margin-top:8px}
+summary{cursor:pointer;color:var(--pri);font-size:13px;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:" ›"}
+details[open] summary::after{content:" ˅"}
+details .more{margin-top:6px;font-size:13px;color:var(--mute)}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{background:var(--gray);border-radius:8px;padding:2px 9px;font-size:13px}
+.abn{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-top:1px solid var(--line)}
+.abn:first-of-type{border-top:0}
+.abn b.h{color:var(--crit)} .abn b.l{color:var(--pri)}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{border:0;background:var(--card);color:var(--mute);padding:7px 18px;border-radius:999px;font:inherit;font-weight:700;cursor:pointer}
+.tabs button.on{background:var(--pri);color:#fff}
+.pill.rel{background:color-mix(in srgb,var(--pri) 16%,transparent);color:var(--pri);font-weight:600}
+.cy{display:grid;grid-template-columns:2.6em 1fr auto;gap:2px 10px;padding:7px 0;border-top:1px solid var(--line)}
+.cy:first-of-type{border-top:0}
+.cy .c{font-weight:800;color:var(--pri)}
+.cy .s{grid-column:2/4;font-size:13px;color:var(--mute)}
+.cy.next{background:var(--warn-bg);border-radius:10px;padding:7px 8px;margin-bottom:4px}
+.tn{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0}
+.tn div{background:var(--gray);border-radius:10px;padding:6px 4px;text-align:center}
+.tn b{display:block;font-size:22px;line-height:1.2}
+.tn span{font-size:11px;color:var(--mute)}
+.stg{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.stg .st{font-size:24px;font-weight:800;color:var(--er)}
+.sec{margin:8px 0 2px;font-size:12px;color:var(--mute)}
+svg{display:block;width:100%;height:46px;margin-top:6px}
+.chemo{outline:2px solid var(--er);outline-offset:-2px}
+@media print{@page{size:A4 landscape;margin:8mm}body{background:#fff}details .more{display:block}.demo,label{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1 id="nm"></h1><span class="m" id="meta"></span><span class="sp"></span>
+  <span class="demo">示意資料</span>
+</header>
+<div class="tabs" id="tabs"></div>
+<div class="alerts" id="alerts"></div>
+<div class="grid">
+  <div class="col">
+    <section class="card"><h2>個案管理</h2><div id="cm"></div></section>
+    <section class="card"><h2>過敏・住院</h2><div id="ax"></div></section>
+    <section class="card" id="bodyCard"><h2 id="bodyT">身體數據</h2><div id="body"></div></section>
+  </div>
+  <div class="col">
+    <section class="card" id="chemoCard" style="display:none"><h2>化療紀錄 <span class="mute">FOLFOX・術後輔助</span></h2><div id="chemo"></div></section>
+    <section class="card"><h2>最近就醫 <span class="mute">（本科優先）</span></h2><div id="visits"></div></section>
+    <section class="card"><h2>目前用藥</h2><div id="meds"></div></section>
+  </div>
+  <div class="col">
+    <section class="card" id="tnmCard" style="display:none"><h2>腫瘤分期 <span class="mute">AJCC 8th</span></h2><div id="tnm"></div></section>
+    <section class="card"><h2 id="repT">重點報告</h2><div id="reports"></div></section>
+    <section class="card"><h2 id="hxT">病史</h2><div id="hx"></div></section>
+  </div>
+</div>
+</div>
+<script>
+const P={name:"蕭承澤",chart:"00592142",sex:"男",age:63};
+const ALLERGY="Avodart（Dutasteride）・嚴重";
+const ADMIT={permit:true,date:"115-10-22",checkedIn:false};
+const CM=[["糖尿病試辦計畫","收案中","ok"],["戒菸個管","已結案","gray"]];
+const VISITS=[ // type, date, dept, dx, note
+ ["急","115-09-02","急診","胸痛","心電圖、Troponin 正常"],
+ ["門","115-08-20","心臟內科","胸悶追蹤","心臟超音波 LVEF 62%"],
+ ["門","115-06-10","眼科","糖尿病視網膜病變追蹤","眼底、OCT"],
+ ["住","115-03-02","一般外科","膽結石","腹腔鏡膽囊切除"],
+ ["門","114-12-12","家醫科","高血壓",""],
+ ["門","114-11-05","眼科","右眼白內障","超音波乳化＋人工水晶體"]];
+const MEDS=[["Metformin 500mg BID","fam,onc"],["Amlodipine 5mg QD","fam,card"],["Atorvastatin 20mg QN","fam,card"],["人工淚液 0.1% QID（雙眼）","eye"]];
+const wtN=[70.4,69.8,69.5], wtC=[70.4,69.6,68.1,66.2,64.9];
+
+const DEPT={
+fam:{name:"家醫科",dept:"家醫科",
+ alerts:[["crit","嚴重過敏",ALLERGY],["crit","血糖偏低","Glucose AC 60 mg/dL（即）"],["warn","血壓偏高","152/94、148/92；今日未量"],["warn","預防保健待辦","足部檢查逾期（113-05）、今年未接種流感疫苗"]],
+ tiles:[["血壓（最近）","148/92","10-20 ・今日未量",1],["體重","69.5 kg","BMI 23.5",0],["脈搏","72 /分","",0],["身高","172 cm","",0]],spark:["體重趨勢",wtN],
+ rT:"慢性病重點指標",rep:[["HbA1c","8.4 %","h"],["Glucose AC（即）","60 mg/dL","l"],["eGFR","54（前次 62）","l"],["UACR","82 mg/g","h"],["LDL-C","118 mg/dL","h"]],
+ more:[["糖尿病年檢","眼底 115-06 ✓｜足部 113-05 逾期｜尿蛋白 ✓"],["癌篩","大腸癌篩檢 114-03 ✓"]],mT:"年檢與癌篩",
+ hxT:"病史",hx:{初診:"2 年前健檢發現血糖高，確診第 2 型糖尿病；高血壓約 5 年",菸:"20 包‧年，已戒（113-12）",檳榔:"無",家族:"父：糖尿病、高血壓；母：腦中風"}},
+card:{name:"心臟內科",dept:"心臟內科",
+ alerts:[["crit","嚴重過敏",ALLERGY],["warn","血壓未達標","152/94、148/92；今日未量"],["warn","近期急診胸痛","115-09-02，Troponin 正常"],["warn","LDL-C 118 mg/dL","合併糖尿病、高血壓，未使用抗血小板"]],
+ tiles:[["血壓（最近）","148/92","10-20 ・今日未量",1],["脈搏","72 /分","",0],["LVEF","62 %","115-08-20",0],["eGFR","54","顯影劑腎病風險",1]],spark:null,
+ rT:"心臟相關報告",rep:[["Troponin I","正常（09-02）",""],["LDL-C","118 mg/dL","h"],["eGFR","54（前次 62）","l"],["K","4.4 mmol/L",""]],
+ more:[["心電圖 09-02","竇性心律 78，無 ST-T 變化"],["心臟超音波 08-20","LVEF 62%，輕度左心室肥厚"],["心導管 / 運動試驗","無紀錄"]],mT:"心電圖・超音波",
+ hxT:"心血管風險",hx:{危險因子:"糖尿病、高血壓、高血脂、曾吸菸 20 包‧年（已戒）",抗血栓:"無使用",家族:"母腦中風；無早發冠心病"}},
+eye:{name:"眼科",dept:"眼科",
+ alerts:[["crit","嚴重過敏",ALLERGY],["warn","糖尿病視網膜病變","輕度非增殖期（NPDR），雙眼"],["warn","血糖控制不佳","HbA1c 8.4%（前次 7.9）"],["ok","右眼白內障術後","114-11-05，人工水晶體"]],
+ tiles:[["視力 OD / OS","0.8 / 0.6","矯正，115-06-10",0],["眼壓 OD / OS","16 / 18","mmHg，正常",0],["黃斑厚度","268 / 281","μm，無水腫",0],["血糖 HbA1c","8.4 %","視網膜進展風險",1]],spark:null,
+ rT:"眼科檢查",rep:[["眼底","輕度 NPDR，無出血","w"],["OCT","無黃斑水腫",""],["HbA1c","8.4 %","h"],["血壓","148/92","h"]],
+ more:[["上次追蹤","115-06-10，建議 6 個月回診（約 115-12）"],["手術","114-11-05 右眼白內障超音波乳化術"]],mT:"追蹤與手術",
+ hxT:"眼科病史",hx:{屈光:"近視 −3.0D",青光眼:"無；家族無青光眼",糖尿病:"病程約 2 年",散瞳:"前房深度正常，無窄隅"}},
+onc:{name:"腫瘤科",dept:"腫瘤科",
+ alerts:[["crit","嚴重過敏",ALLERGY],["crit","化療期間體重下降","7.8%（70.4 → 64.9 kg）"],["warn","ANC 1.4 ×10³/μL","低於常見施打門檻 1.5，評估是否延後"],["warn","已開住院證・未辦入院","預計 115-10-22"]],
+ tiles:[["體重","64.9 kg","化療以來 −7.8%",1],["血壓（最近）","148/92","今日未量",0],["療程","C4 / FOLFOX","上次 115-10-01",0],["周邊神經","Grade 1","oxaliplatin",0]],spark:["體重趨勢（C1–C4）",wtC],
+ rT:"化療前檢驗",rep:[["ANC","1.4 ×10³/μL","l"],["WBC","3.8 ×10³/μL","l"],["Hb","10.2 g/dL","l"],["PLT","128 ×10³/μL","l"],["CEA","4.8（前次 12.1）",""]],
+ more:[["病理 115-05-12","乙狀結腸腺癌 pT3N1b（2/18），切緣陰性"],["手術 115-05-10","乙狀結腸切除，無併發症"],["肝腎","Cr 1.4 ↑；ALT 28"]],mT:"病理・手術",
+ chemo:{next:["C5","115-10-22（明日）","ANC 1.4，待確認是否施打"],cycles:[
+   ["C4","115-10-01","100%","ANC 2.1・體重 66.2 kg","周邊神經 G1；噁心 G1",""],
+   ["C3","115-09-01","oxaliplatin 減量 85%","ANC 1.8・體重 67.5 kg","周邊神經 G1","減量"],
+   ["C2","115-08-01","100%","ANC 2.4・體重 68.1 kg","口腔黏膜炎 G1","延後 3 天"],
+   ["C1","115-07-01","100%","ANC 3.0・體重 69.6 kg","噁心 G1",""]]},
+ tnm:{dx:"乙狀結腸腺癌，中度分化（G2）",stage:"Stage IIIB",
+   p:["pT3","pN1b","M0"],pl:["侵犯漿膜下層","2/18 顆淋巴結陽性","無遠端轉移"],
+   c:"cT3 N1 M0（115-04 CT）",note:"診斷 115-04-20｜MSS｜KRAS/NRAS/BRAF 野生型",img:"最近影像 115-09-15 CT：無復發或轉移"}, 
+ hxT:"腫瘤病史",hx:{治療:"術後輔助 FOLFOX，已 4 週期",ECOG:"1",家族:"父：糖尿病；無腸癌家族史"}}
+};
+let cur="fam";
+const $=s=>document.querySelector(s), t=(x,c)=>`<span class="t ${c}">${x}</span>`, tc={門:"mn",急:"er",住:"ip"};
+const spark=a=>{const mn=Math.min(...a),mx=Math.max(...a),W=300,H=46,p=4;const q=a.map((v,i)=>[p+i*(W-2*p)/(a.length-1),H-p-(mx===mn?.5:(v-mn)/(mx-mn))*(H-2*p)]);return `<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none"><polyline fill="none" stroke="#e8890c" stroke-width="2.5" points="${q.map(x=>x.join(",")).join(" ")}"/>${q.map(x=>`<circle cx="${x[0]}" cy="${x[1]}" r="3" fill="#e8890c"/>`).join("")}</svg>`};
+
+function render(){
+ const d=DEPT[cur];
+ $("#nm").textContent=P.name;
+ $("#meta").textContent=`${P.chart}　${P.sex}・${P.age} 歲　今日門診：${d.dept}`;
+ $("#tabs").innerHTML=Object.entries(DEPT).map(([k,v])=>`<button data-k="${k}" class="${k===cur?"on":""}">${v.name}</button>`).join("");
+ $("#tabs").querySelectorAll("button").forEach(b=>b.onclick=()=>{cur=b.dataset.k;render()});
+ $("#alerts").innerHTML=d.alerts.map(a=>`<div class="al ${a[0]}">${a[1]}<small>${a[2]}</small></div>`).join("");
+ $("#cm").innerHTML=CM.map(c=>`<div class="row"><span class="v">${c[0]}</span>${t(c[1],c[2])}</div>`).join("");
+ $("#ax").innerHTML=`<div class="row"><span class="k">過敏</span><span class="v bad"><b>${ALLERGY}</b></span></div><div class="row"><span class="k">住院</span><span class="v">${ADMIT.permit?"許可證已開立　"+t(ADMIT.checkedIn?"已辦理":"尚未辦理","warn"):"未開立"}</span></div>`;
+ $("#bodyT").textContent=cur==="eye"?"眼科數據":"身體數據";
+ $("#body").innerHTML=`<div class="stats">${d.tiles.map(x=>`<div><div class="mute">${x[0]}</div><div class="big ${x[3]?"bad":""}" style="font-size:22px">${x[1]}</div><div class="mute">${x[2]}</div></div>`).join("")}</div>`+(d.spark?`<div class="sec">${d.spark[0]}</div>`+spark(d.spark[1]):"");
+ $("#chemoCard").style.display=d.chemo?"":"none";
+ if(d.chemo){const c=d.chemo;$("#chemo").innerHTML=`<div class="cy next"><span class="c">${c.next[0]}</span><b>${c.next[1]}</b><span class="t warn">預計</span><span class="s" style="color:var(--warn)">${c.next[2]}</span></div>`+c.cycles.map(x=>`<div class="cy"><span class="c">${x[0]}</span><span><b>${x[1].slice(4)}</b>　${x[2]}</span><span>${x[5]?`<span class="t warn">${x[5]}</span>`:""}</span><span class="s">${x[3]}　｜　${x[4]}</span></div>`).join("");}
+ $("#tnmCard").style.display=d.tnm?"":"none";
+ if(d.tnm){const n=d.tnm;$("#tnm").innerHTML=`<div class="stg"><span class="st">${n.stage}</span><span>${n.dx}</span></div><div class="tn">${n.p.map((x,i)=>`<div><b>${x}</b><span>${n.pl[i]}</span></div>`).join("")}</div><div class="mute">臨床分期：${n.c}</div><div class="mute">${n.note}</div><div class="mute">${n.img}</div>`;}
+ $("#bodyCard").classList.toggle("chemo",cur==="onc");
+ const today=["門","今日",d.dept,"本日看診",""];
+ const own=VISITS.filter(v=>v[2]===d.dept), rest=VISITS.filter(v=>v[2]!==d.dept);
+ const list=[today,...own,...rest].slice(0,5);
+ $("#visits").innerHTML=list.map(v=>`<div class="row"><span>${t(v[0],tc[v[0]])}</span><span class="v"><b>${v[1].slice(v[1]==="今日"?0:4)}</b> ${v[2]}${v[2]===d.dept&&v[1]!=="今日"?" "+t("本科","gray"):""}<br><span class="mute">${v[3]}${v[4]?"・"+v[4]:""}</span></span></div>`).join("");
+ const key={fam:"fam",card:"card",eye:"eye",onc:"onc"}[cur];
+ $("#meds").innerHTML=`<div class="pills">${MEDS.map(m=>`<span class="pill ${m[1].includes(key)?"rel":""}">${m[0]}</span>`).join("")}</div><div class="mute" style="margin-top:8px">藍色為與${d.name}較相關；無過敏成分</div>`;
+ $("#repT").textContent=d.rT;
+ $("#reports").innerHTML=d.rep.map(a=>`<div class="abn"><span>${a[0]}</span><b class="${a[2]==="h"?"h":a[2]==="l"?"l":""}" ${a[2]==="w"?'style="color:var(--warn)"':""}>${a[1]}${a[2]==="h"?" ▲":a[2]==="l"?" ▼":""}</b></div>`).join("")+`<details><summary>${d.mT}</summary><div class="more">${d.more.map(o=>`<div class="abn"><span>${o[0]}</span><span>${o[1]}</span></div>`).join("")}</div></details>`;
+ $("#hxT").textContent=d.hxT;
+ $("#hx").innerHTML=Object.entries(d.hx).map(([k,v])=>`<div class="row"><span class="k" style="width:4em">${k}</span><span class="v">${v}</span></div>`).join("");
+}
+render();
+</script>
+</body>
+</html>
