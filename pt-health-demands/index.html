@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>屏東縣衛生所需求盤點・案卷比對室</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Noto+Sans+TC:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#eae7db;
+  --paper-deep:#e0dccb;
+  --line:#c9c2a8;
+  --ink:#232a25;
+  --ink-soft:#5c6259;
+  --seal:#a63a2e;
+  --seal-soft:#a63a2e22;
+  --health:#1f6f5c;
+  --health-deep:#123c30;
+  --highlight:#e8c468;
+  --card-bg:#f4f2e8;
+  --shadow: 2px 3px 0 rgba(35,42,37,0.08);
+}
+*{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0;
+  background:var(--paper);
+  background-image:
+    repeating-linear-gradient(0deg, transparent, transparent 27px, var(--line) 27px, var(--line) 28px);
+  color:var(--ink);
+  font-family:'Noto Sans TC', sans-serif;
+  padding-bottom:120px;
+}
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+
+/* ---------- Header / dossier cover ---------- */
+header.dossier{
+  position:relative;
+  padding:56px 24px 40px;
+  border-bottom:3px double var(--ink);
+  margin-bottom:8px;
+}
+header.dossier .wrap{position:relative;}
+.eyebrow{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12.5px;
+  letter-spacing:.12em;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+}
+h1{
+  font-family:'Noto Serif TC', serif;
+  font-weight:900;
+  font-size:clamp(28px,4vw,46px);
+  margin:8px 0 6px;
+  letter-spacing:.02em;
+}
+h1 .accent{color:var(--health-deep);}
+.subtitle{
+  font-size:15px;
+  color:var(--ink-soft);
+  max-width:640px;
+  line-height:1.7;
+}
+.stamp{
+  position:absolute;
+  top:40px; right:24px;
+  width:118px; height:118px;
+  border:3px solid var(--seal);
+  border-radius:50%;
+  color:var(--seal);
+  display:flex; align-items:center; justify-content:center;
+  text-align:center;
+  transform:rotate(-11deg);
+  font-family:'Noto Serif TC',serif;
+  font-weight:900;
+  font-size:15px;
+  line-height:1.35;
+  opacity:.85;
+  mix-blend-mode:multiply;
+  pointer-events:none;
+}
+.stamp small{display:block; font-family:'IBM Plex Mono',monospace; font-weight:500; font-size:9.5px; letter-spacing:.06em; margin-top:2px;}
+@media (max-width:640px){.stamp{display:none;}}
+
+.meta-strip{
+  display:flex; gap:22px; flex-wrap:wrap; margin-top:20px;
+  font-family:'IBM Plex Mono', monospace; font-size:12.5px; color:var(--ink-soft);
+}
+.meta-strip b{color:var(--ink); font-weight:600;}
+
+/* ---------- Toolbar ---------- */
+.toolbar{
+  position:sticky; top:0; z-index:30;
+  background:var(--paper);
+  border-bottom:1px solid var(--line);
+  padding:14px 24px;
+  backdrop-filter:blur(2px);
+}
+.toolbar .wrap{display:flex; gap:14px; flex-wrap:wrap; align-items:center;}
+.search-slip{
+  flex:1 1 260px;
+  display:flex; align-items:center; gap:8px;
+  background:var(--card-bg);
+  border:1px solid var(--ink);
+  border-radius:3px;
+  padding:9px 14px;
+  box-shadow:var(--shadow);
+}
+.search-slip svg{flex:none; opacity:.6;}
+.search-slip input{
+  flex:1; border:none; background:none; outline:none;
+  font-family:'Noto Sans TC',sans-serif; font-size:14.5px; color:var(--ink);
+}
+.chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+.chip{
+  font-family:'IBM Plex Mono', monospace;
+  font-size:12px;
+  padding:7px 13px;
+  border:1px solid var(--ink);
+  border-radius:20px;
+  background:transparent;
+  color:var(--ink);
+  cursor:pointer;
+  transition:.15s;
+  white-space:nowrap;
+}
+.chip:hover{background:var(--paper-deep);}
+.chip.active{background:var(--health-deep); border-color:var(--health-deep); color:#f4f2e8;}
+.result-count{font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--ink-soft); white-space:nowrap;}
+
+/* ---------- Cards grid ---------- */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(258px,1fr));
+  gap:16px;
+  padding:26px 24px;
+}
+.card{
+  background:var(--card-bg);
+  border:1px solid var(--ink);
+  border-radius:2px;
+  box-shadow:var(--shadow);
+  padding:16px 16px 14px;
+  position:relative;
+  transition:.15s transform;
+  cursor:pointer;
+}
+.card:hover{transform:translateY(-2px);}
+.card.selected{
+  border-color:var(--health-deep);
+  outline:2px solid var(--health-deep);
+  outline-offset:2px;
+}
+.card .idno{
+  font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--ink-soft);
+  letter-spacing:.08em;
+}
+.card h3{
+  font-family:'Noto Serif TC',serif; font-weight:700; font-size:19px;
+  margin:4px 0 8px;
+}
+.badge-row{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+.badge{
+  font-size:11px; padding:3px 9px; border-radius:12px;
+  font-family:'IBM Plex Mono',monospace;
+  border:1px solid var(--line);
+  color:var(--ink-soft);
+  background:var(--paper);
+}
+.badge.mtn{border-color:var(--health-deep); color:var(--health-deep);}
+.badge.off{border-color:var(--seal); color:var(--seal);}
+.card p.snippet{
+  font-size:12.5px; color:var(--ink-soft); line-height:1.6;
+  margin:0 0 10px;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.add-btn{
+  width:100%;
+  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.04em;
+  padding:8px 0;
+  border:1px solid var(--ink);
+  background:transparent;
+  cursor:pointer;
+  border-radius:2px;
+}
+.card.selected .add-btn{background:var(--health-deep); color:#f4f2e8; border-color:var(--health-deep);}
+
+/* ---------- Compare tray ---------- */
+.tray{
+  position:fixed; left:0; right:0; bottom:0; z-index:40;
+  background:var(--health-deep);
+  color:#f4f2e8;
+  border-top:3px double var(--highlight);
+  box-shadow:0 -6px 18px rgba(0,0,0,.25);
+}
+.tray .wrap{display:flex; align-items:center; gap:14px; padding:12px 24px; flex-wrap:wrap;}
+.tray-label{font-family:'IBM Plex Mono',monospace; font-size:12px; opacity:.85; white-space:nowrap;}
+.tray-chips{display:flex; gap:8px; flex-wrap:wrap; flex:1;}
+.tray-chip{
+  display:flex; align-items:center; gap:6px;
+  background:#ffffff14; border:1px solid #ffffff55; border-radius:16px;
+  padding:5px 6px 5px 12px; font-size:13px;
+}
+.tray-chip button{
+  background:none; border:none; color:#f4f2e8; cursor:pointer; font-size:14px;
+  width:20px; height:20px; border-radius:50%; opacity:.75;
+}
+.tray-chip button:hover{background:#ffffff30; opacity:1;}
+.tray-actions{display:flex; gap:10px;}
+.btn-primary{
+  background:var(--seal); color:#fff; border:none; border-radius:3px;
+  padding:10px 18px; font-family:'Noto Sans TC',sans-serif; font-weight:700; font-size:14px;
+  cursor:pointer;
+}
+.btn-ghost{
+  background:none; border:1px solid #ffffff66; color:#f4f2e8; border-radius:3px;
+  padding:10px 14px; font-size:13px; cursor:pointer;
+}
+.tray.empty .tray-actions .btn-primary{opacity:.4; pointer-events:none;}
+
+/* ---------- Comparison ledger ---------- */
+#compare-section{padding:10px 24px 60px;}
+.ledger-head{
+  display:flex; align-items:baseline; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  margin:34px 0 14px;
+}
+.ledger-head h2{
+  font-family:'Noto Serif TC',serif; font-size:24px; margin:0;
+}
+.ledger-head h2 .n{color:var(--seal);}
+.toggle-diff{
+  font-family:'IBM Plex Mono',monospace; font-size:12px;
+  display:flex; align-items:center; gap:6px; cursor:pointer; color:var(--ink-soft);
+}
+.ledger-wrap{
+  overflow-x:auto;
+  border:1px solid var(--ink);
+  background:var(--card-bg);
+  box-shadow:var(--shadow);
+}
+table.ledger{border-collapse:collapse; width:100%; min-width:640px;}
+table.ledger th, table.ledger td{
+  border-bottom:1px solid var(--line);
+  border-right:1px solid var(--line);
+  padding:12px 14px;
+  vertical-align:top;
+  font-size:13px;
+  line-height:1.65;
+}
+table.ledger th{text-align:left;}
+table.ledger th.rowlabel{
+  width:150px; min-width:150px;
+  background:var(--paper-deep);
+  font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+  color:var(--ink-soft);
+  position:sticky; left:0;
+}
+table.ledger thead th{
+  background:var(--health-deep); color:#f4f2e8;
+  font-family:'Noto Serif TC',serif; font-size:15px; font-weight:700;
+  position:sticky; top:0; z-index:5;
+}
+table.ledger thead th.rowlabel{background:var(--health-deep);}
+table.ledger tr.diff td, table.ledger tr.diff th.rowlabel{background:#f7ecea;}
+table.ledger tr.diff th.rowlabel{border-left:4px solid var(--seal);}
+table.ledger tr.diff th.rowlabel::after{
+  content:'異'; font-family:'Noto Serif TC',serif; color:var(--seal);
+  border:1.5px solid var(--seal); border-radius:50%;
+  width:18px; height:18px; display:inline-flex; align-items:center; justify-content:center;
+  font-size:10px; margin-left:6px; transform:rotate(-8deg);
+}
+.pill{
+  display:inline-block; font-size:11px; padding:2px 8px; border-radius:10px;
+  border:1px solid var(--line); color:var(--ink-soft); margin:2px 4px 2px 0;
+  font-family:'IBM Plex Mono',monospace;
+}
+.pill.uniq{border-color:var(--seal); color:var(--seal); background:var(--seal-soft);}
+.pill.common{border-color:var(--health); color:var(--health-deep);}
+.empty-hint{
+  padding:40px 24px; text-align:center; color:var(--ink-soft); font-size:14px;
+  border:1px dashed var(--line); background:var(--card-bg);
+}
+mark{background:var(--highlight); padding:0 2px; border-radius:2px;}
+
+/* ---------- Tabs ---------- */
+.tabs{
+  border-bottom:3px double var(--ink);
+  background:var(--paper);
+}
+.tabs .wrap{display:flex; gap:4px; padding-top:6px;}
+.tab-btn{
+  font-family:'Noto Serif TC',serif; font-weight:700; font-size:15px;
+  padding:12px 22px 14px;
+  background:none; border:none; cursor:pointer;
+  color:var(--ink-soft);
+  border-bottom:3px solid transparent;
+  margin-bottom:-3px;
+  transition:.15s;
+}
+.tab-btn:hover{color:var(--ink);}
+.tab-btn.active{color:var(--health-deep); border-bottom-color:var(--seal);}
+.view{display:none;}
+.view.active{display:block;}
+
+/* ---------- List view ---------- */
+.list-toolbar{padding:18px 24px 0;}
+.list-body{
+  display:grid;
+  grid-template-columns:300px 1fr;
+  gap:0;
+  padding:18px 24px 60px;
+  align-items:start;
+}
+@media (max-width:800px){.list-body{grid-template-columns:1fr;}}
+.station-list{
+  border:1px solid var(--ink);
+  background:var(--card-bg);
+  box-shadow:var(--shadow);
+  max-height:70vh;
+  overflow-y:auto;
+}
+.station-list-item{
+  display:flex; justify-content:space-between; align-items:center; gap:8px;
+  padding:12px 16px;
+  border-bottom:1px solid var(--line);
+  cursor:pointer;
+  font-size:14px;
+}
+.station-list-item:last-child{border-bottom:none;}
+.station-list-item:hover{background:var(--paper-deep);}
+.station-list-item.active{background:var(--health-deep); color:#f4f2e8;}
+.station-list-item .idno{font-family:'IBM Plex Mono',monospace; font-size:10.5px; opacity:.65;}
+.detail-panel{
+  border:1px solid var(--ink);
+  border-left:none;
+  background:var(--card-bg);
+  box-shadow:var(--shadow);
+  padding:26px 28px 32px;
+  min-height:70vh;
+}
+@media (max-width:800px){.detail-panel{border-left:1px solid var(--ink); margin-top:14px;}}
+.detail-panel h2{
+  font-family:'Noto Serif TC',serif; font-size:24px; margin:0 0 4px;
+}
+.detail-vendor{font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--ink-soft); margin-bottom:14px;}
+.detail-field{
+  border-top:1px solid var(--line);
+  padding:13px 0;
+}
+.detail-field .lbl{
+  font-family:'IBM Plex Mono',monospace; font-size:11.5px; letter-spacing:.04em;
+  color:var(--health-deep); text-transform:uppercase; margin-bottom:5px; font-weight:600;
+}
+.detail-field .val{font-size:14px; line-height:1.75;}
+
+footer{
+  text-align:center; padding:30px 24px 10px; font-size:12px; color:var(--ink-soft);
+  font-family:'IBM Plex Mono',monospace;
+}
+</style>
+</head>
+<body>
+
+<header class="dossier">
+  <div class="wrap">
+    <div class="eyebrow">CASE FILE No. PT-HIS-2026 · 內部案卷</div>
+    <h1>屏東縣衛生所<br><span class="accent">需求盤點比對室</span></h1>
+    <p class="subtitle">36 份問卷、33 所衛生所的原始回覆，整理成可搜尋、可勾選比較的案卷卡。點選任意 2–4 所，下方會展開逐項對照表，差異處會蓋上「異」章。</p>
+    <div class="meta-strip">
+      <span>資料來源：<b>屏東縣衛生所需求盤點(1-36).xlsx</b></span>
+      <span>回覆數：<b>36 筆</b>（潮州、里港、萬丹各 2 筆已合併）</span>
+      <span>整理日期：<b>2026-07-20</b></span>
+    </div>
+    <div class="stamp">PTH<br>需求<br>盤點<small>VERIFIED 2026</small></div>
+  </div>
+</header>
+
+<div class="tabs">
+  <div class="wrap">
+    <button class="tab-btn active" data-tab="compare">案卷比對</button>
+    <button class="tab-btn" data-tab="list">衛生所列表</button>
+  </div>
+</div>
+
+<div id="view-compare" class="view active">
+  <div class="toolbar">
+    <div class="wrap">
+      <div class="search-slip">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input id="search" placeholder="搜尋衛生所名稱、廠商、痛點關鍵字…（例如：麟洛、九如、讀卡衝突）">
+      </div>
+      <div class="chip-row" id="chips"></div>
+      <div class="result-count" id="resultCount"></div>
+    </div>
+  </div>
+
+  <div class="grid" id="grid"></div>
+
+  <div id="compare-section" class="wrap"></div>
+
+  <div class="tray empty" id="tray">
+    <div class="wrap">
+      <span class="tray-label">比較卡匣（最多 4 所）</span>
+      <div class="tray-chips" id="trayChips"></div>
+      <div class="tray-actions">
+        <button class="btn-ghost" id="clearBtn">清空</button>
+        <button class="btn-primary" id="goCompareBtn">看比較表 ↓</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="view-list" class="view">
+  <div class="list-toolbar wrap">
+    <div class="search-slip">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="listSearch" placeholder="搜尋衛生所名稱、廠商、關鍵字…（例如：麟洛、讀卡衝突、離線）">
+    </div>
+  </div>
+  <div class="list-body wrap">
+    <div class="station-list" id="stationList"></div>
+    <div class="detail-panel" id="detailPanel"></div>
+  </div>
+</div>
+
+<footer>屏東縣衛生所需求盤點分析報告 · 資料整理自問卷原始回覆，文字經摘錄與合併，如需逐字核對請回查原始 xlsx</footer>
+
+<script>
+/* ============ 資料 ============ */
+const STATIONS = [
+{id:1,name:"春日衛生所",vendor:"大同",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","批價系統","櫃檯掛號系統","門診申報系統","病歷系統"],
+ integ:["健保IC卡每日上傳"],
+ pharm:"未填寫",hw:"未填寫",vac:"未填寫",lab:"未填寫",inf:"未填寫",vacMgmt:"未填寫",
+ offlineText:"未填寫",exempt:"未填寫",pain:"未填寫",expect:"未填寫",other:"未填寫"},
+
+{id:2,name:"內埔鄉衛生所",vendor:"國際厚生數位科技",mtn:false,offline:false,
+ his:["門診醫令系統","批價系統","門診申報系統"],
+ integ:["健保IC卡每日上傳","雲端藥歷查詢系統（非健保署網頁）"],
+ pharm:"無藥局",hw:"委託精華維修工作室",vac:"院外使用筆電至當地 Wi-Fi 連線",
+ lab:"檢驗委外辦理",inf:"無法在 HIS 完成通報",vacMgmt:"施打庫存連動",
+ offlineText:"無使用",exempt:"以健保卡查詢判定",pain:"未填寫",expect:"未填寫",other:"未填寫"},
+
+{id:3,name:"南州鄉衛生所",vendor:"PHIS",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","批價系統","門診申報系統","檢驗系統(不含送檢)","病歷系統","個案管理系統","電子病歷系統","電子處方箋系統","轉診系統(非政府)"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","雲端藥歷查詢系統（非健保署網頁）","藥包機介接","檢驗報告介接"],
+ pharm:"自行調劑，無收外院處方箋",hw:"未填寫",vac:"跨區接種（學校、社區、機構）",
+ lab:"委外代檢，僅血糖值自行檢驗",inf:"使用法傳系統",vacMgmt:"以上皆有需求",
+ offlineText:"社區接種需要離線掛號需求",exempt:"無",pain:"無",expect:"建議新增預約回診功能",other:"無"},
+
+{id:4,name:"鹽埔鄉衛生所",vendor:"PHIS",mtn:false,offline:true,
+ his:["藥局系統","門診醫令系統"],
+ integ:["健保IC卡每日上傳","NIIS疫苗注射系統"],
+ pharm:"藥局自行調劑",hw:"聯絡簽約維護廠商",vac:"跨域場景全部都有",
+ lab:"委外代檢",inf:"無法在 HIS 通報",vacMgmt:"都需要疫苗管理功能",
+ offlineText:"本所無此需求",exempt:"迫切需要優免判定",pain:"迫切",expect:"迫切",other:"無"},
+
+{id:5,name:"麟洛鄉衛生所",vendor:"PHIS",mtn:false,offline:false,
+ his:["衛教系統","門診醫令系統","批價系統","門診申報系統"],
+ integ:["健保IC卡每日上傳","NIIS疫苗注射系統"],
+ pharm:"處方箋釋出，今年將建置藥局由藥師調劑，目前不自行調劑",
+ hw:"委外廠商處理",vac:"相關接種帶筆電外出使用，業務單位負責運用，事前做測試檢驗",
+ lab:"本所檢體皆委外代檢",inf:"直接上傳染病系統通報（HIS 未介接）",
+ vacMgmt:"插健保 IC 卡查詢，疫苗由業務單位承辦控管",
+ offlineText:"本所無此項需求",exempt:"依健保收費標準收費，一般所規則無特殊優免",
+ pain:"希望有一個作業系統能統一查詢到個案的所有相關報告資料（病歷、檢驗、處方等）",
+ expect:"無特定期待", other:"無"},
+
+{id:6,name:"獅子鄉衛生所",vendor:"大同",mtn:true,offline:true,
+ his:["門診醫令系統","藥局系統","網路掛號系統","櫃檯掛號系統","批價系統","門診申報系統","病歷系統","檢驗系統(不含送檢)"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳"],
+ pharm:"自行調劑",hw:"由總務回覆處理",vac:"由疫苗承辦人員負責",
+ lab:"委外代檢",inf:"獨立通報系統",vacMgmt:"由疫苗承辦人員回覆",
+ offlineText:"是的，很需要離線功能",exempt:"皆有病歷建檔資料維護作身分判別",
+ pain:"醫療系統網路服務太慢，找不到窗口負責，整個作業一直無法順利完成",
+ expect:"是",other:"未填寫"},
+
+{id:7,name:"長治鄉衛生所",vendor:"PHIS",mtn:false,offline:false,
+ his:["門診醫令系統","批價系統","網路掛號系統","門診申報系統","檢驗系統(不含送檢)","病歷系統","電子病歷系統","轉診系統(非政府)","電子處方箋系統","個案管理系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","NIIS疫苗注射系統","雲端藥歷查詢系統（非健保署網頁）","看診進度查詢","檢驗報告介接","衛福部國健署通報介接","衛福部健保署通報介接","衛福部疾管署通報介接"],
+ pharm:"交付處方簽",hw:"由精華電腦工程師陳慶智處理",
+ vac:"學校接種大部分外包給醫院；社區/機構接種攜帶筆電連線；所內常規施打與 NIS 系統一致，3 月起僅掛 NIS 系統即可",
+ lab:"自行採檢、委外送驗，由局端企畫科對外招標",
+ inf:"無法直接於 HIS 通報，需用獨立傳染病通報網站系統，帳號需申請",
+ vacMgmt:"疫苗承辦人透過 NIS 預注系統管理種類、支數、批號、結存",
+ offlineText:"本所無離線需求",
+ exempt:"無收掛號費；低收/榮民(眷) 健保卡自動帶出部分負擔 0 元，一般身分收 50 元",
+ pain:"1. 讀卡成功才能跳下一步，掛號流程慢 2. 健保申報需跑 5-1-1→5-1-4→5-1-19→再跑 5-5-1，流程繁瑣 3. 希望有單純檢驗的申報檔可核對",
+ expect:"可以簡化流程",other:"無"},
+
+{id:8,name:"新埤鄉衛生所",vendor:"厚生國際",mtn:false,offline:false,
+ his:["櫃檯掛號系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","NIIS疫苗注射系統"],
+ pharm:"無藥局設置",hw:"由電腦資訊廠商協助",vac:"無特殊需求",
+ lab:"僅委外代檢",inf:"可獨立通報",vacMgmt:"核對 NIIS 系統，按衛生局規範執行",
+ offlineText:"目前無巡迴醫療",
+ exempt:"免收掛號費，僅收部分負擔 50 元；低收/榮民(遺眷)/重大傷病免部分負擔",
+ pain:"目前無",expect:"無",other:"無"},
+
+{id:9,name:"車城鄉衛生所",vendor:"厚生資訊公司",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","復健管理系統","營養管理系統","護理站管理系統","衛教系統","網路掛號系統","櫃檯掛號系統","批價系統","門診申報系統","檢查室管理系統","檢驗系統(不含送檢)","病理切片系統","病歷系統","個案管理系統","電子病歷系統","電子處方箋系統","轉診系統(非政府)","傳染病通報系統(非政府)","死亡通報系統(非政府)"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","NIIS疫苗注射系統","雲端藥歷查詢系統（非健保署網頁）","語音掛號","自動掛號機","藥包機介接","看診進度查詢","檢驗報告介接","影像報告介接","電子病歷影像系統介接","簡訊平台介接","衛福部疾管署通報介接","衛福部健保署通報介接","衛福部國健署通報介接"],
+ pharm:"藥局自行調劑，未接受外院處方",hw:"找當地廠商處理",
+ vac:"未填寫",lab:"未填寫",inf:"未填寫",vacMgmt:"未填寫",
+ offlineText:"未填寫",exempt:"未填寫",pain:"未填寫",expect:"未填寫",
+ other:"全屏東系統模組覆蓋率最高的衛生所，可作為進階功能參考範本"},
+
+{id:10,name:"竹田鄉衛生所",vendor:"國際厚生",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","衛教系統","櫃檯掛號系統","批價系統","門診申報系統","病歷系統","電子病歷系統","電子處方箋系統"],
+ integ:["健保IC卡每日上傳","NIIS疫苗注射系統","檢驗報告介接"],
+ pharm:"有自己的藥局可發藥",hw:"精華電腦陳慶智／中華電信技成科技負責防火牆",
+ vac:"學校每年10-11月固定施打；社區機構亦於此期間；所內門診與 NIIS 一致；局端每週查庫存",
+ lab:"委外優品/立人醫事檢驗所；X光巡檢異常個案轉診；每年社區整合篩檢",
+ inf:"以疾管署傳染病通報系統為主",
+ vacMgmt:"公費判定依疾管科規定；先進先出；每週重跑庫存查詢；效期日確認報廢量",
+ offlineText:"未知",
+ exempt:"優免一致；PHIS 多數能自動識別",
+ pain:"護理業務繁重卻承擔過多行政業務；PHIS 定期改密碼不便",
+ expect:"若能有相關數據參酌，業務推動較便利",
+ other:"太多照護系統都要 key 資料，整合可省人力"},
+
+{id:11,name:"瑪家鄉衛生所",vendor:"大同醫護",mtn:true,offline:false,
+ his:["門診醫令系統","藥局系統","網路掛號系統","櫃檯掛號系統","批價系統","門診申報系統","病歷系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳"],
+ pharm:"自行調劑占大部分，也有交付處方",hw:"廠商定期維護",
+ vac:"到外點施打疫苗以網卡攜帶筆電連線輸入資料",
+ lab:"皆委外給合約檢驗所",inf:"無法在 HIS 完成通報",
+ vacMgmt:"皆使用 NIIS 系統管理疫苗及個案登打",
+ offlineText:"巡迴醫療點皆有網路，僅使用線上版，無離線版",
+ exempt:"山地離島皆免掛號費及部分負擔",
+ pain:"太多作業系統，希望整合方便接手人員作業",
+ expect:"醫療系統與健保 VPN 資料傳輸整合（如個案照護）",
+ other:"太多照護系統要逐一 key 資料，整合最能省時間"},
+
+{id:12,name:"恆春鎮衛生所",vendor:"厚生國際",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","病理切片系統","電子病歷系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","藥包機介接","看診進度查詢","檢驗報告介接"],
+ pharm:"本所有自己的藥局可發藥",hw:"固定工程師協助",
+ vac:"未詳述（勾選題）",lab:"未詳述（勾選題）",inf:"無法直接與系統完成通報",
+ vacMgmt:"未詳述（勾選題）",offlineText:"有社區掛號離線功能",
+ exempt:"未詳述（勾選題）",pain:"PHIS 系統無法連國健署與 VPN",
+ expect:"是",other:"未填寫"},
+
+{id:13,name:"佳冬衛生所",vendor:"PHIS",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","電子病歷系統","電子處方箋系統","病歷系統","轉診系統(非政府)","個案管理系統"],
+ integ:["健保IC卡每日上傳","NIIS疫苗注射系統","檢驗檢查報告24hr上傳","雲端藥歷查詢系統（非健保署網頁）","影像報告介接","檢驗報告介接"],
+ pharm:"有藥局",hw:"評估硬體年限、耐用度、系統效能、網路、印表機狀況",
+ vac:"學校：Wi-Fi 不穩、同步上傳困難；社區：地點不固定；機構：批次名單管理；所內門診一致；局端庫存一致",
+ lab:"委外代檢比例 1:1；自行測血糖；依業務辦公衛篩檢",
+ inf:"自行於疾管署傳染病通報系統通報",
+ vacMgmt:"公費資格判定用健保卡/NIIS；庫存效期管理；NIIS 核對施打與盤點",
+ offlineText:"有單機掛號系統，但不常使用",
+ exempt:"統一免掛號費，系統自動辨別身分別；低收入戶特殊政策",
+ pain:"PHIS 與 NIIS 讀卡元件衝突須分 2 台電腦操作；所內外 PHIS 網站不同須切換",
+ expect:"X 光系統未接健保局，影像無法上傳",other:"無"},
+
+{id:14,name:"林邊鄉衛生所",vendor:"國際厚生",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","轉診系統(非政府)"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","雲端藥歷查詢系統（非健保署網頁）","檢驗報告介接"],
+ pharm:"有自己藥局可發藥，但不收外院處方箋",hw:"電腦維護廠商（伊昕工作室）",
+ vac:"學校依環境訊號好壞；社區地點不固定；機構整批施打名單；所內門診與局端一致",
+ lab:"委外代檢機制 100%；僅指尖血糖自行",
+ inf:"直接上傳傳染病通報系統",
+ vacMgmt:"公費資格判定用健保卡；庫存依到期日排序；施打前後盤點",
+ offlineText:"雖非山區離島，仍需離線掛號與看診功能（社區設站時）",
+ exempt:"優免規則一致，健保局註記自動判別",
+ pain:"新政策推行時望增加對執行機關的說明；筆電 PHIS 與 NIIS 會衝突",
+ expect:"無",other:"無"},
+
+{id:15,name:"九如鄉衛生所",vendor:"厚生醫療作業系統",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","電子病歷系統","電子處方箋系統"],
+ integ:["健保IC卡每日上傳"],
+ pharm:"醫師開立處方若所內有藥，由本所自行調劑",
+ hw:"有合約電腦維護工程師協助處理硬體",
+ vac:"學校及機構設站先造冊再帶筆電至現場；社區帶筆電以 NIIS 登入查詢資格",
+ lab:"均委託合約檢驗所檢驗，但仍須人工將 Excel 匯入醫療系統，部分需人工登入數值",
+ inf:"無介接，未使用 HIS 通報",
+ vacMgmt:"無，均由疫苗承辦同仁以 NIIS 系統管控",
+ offlineText:"無巡迴醫療",
+ exempt:"健保卡有註記即可得知",
+ pain:"成健/BC肝/腸篩/胃篩資格無法即時得知，需另查系統後再掛號；成健報告的身高體重腰圍視力需紙本寫入後再人工輸入國健署系統；希望收案階段能防呆，避免因收案不符而在健保/國健署勾稽異常後重新申報，影響進度",
+ expect:"減少人工作業",
+ other:"人員兼任數個業務，希望門診系統優化以減少人工作業與錯誤，減輕業務壓力"},
+
+{id:16,name:"里港鄉衛生所",vendor:"精華電腦公司 / PHISS",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","網路掛號系統","櫃檯掛號系統","批價系統","門診申報系統","病歷系統","個案管理系統","電子處方箋系統","電子病歷系統","轉診系統(非政府)"],
+ integ:["檢驗檢查報告24hr上傳","健保IC卡每日上傳","NIIS疫苗注射系統","雲端藥歷查詢系統（非健保署網頁）","自動掛號機","藥包機介接","看診進度查詢","檢驗報告介接","影像報告介接","簡訊平台介接"],
+ pharm:"無藥局設置（兩份回覆皆填「無」）",
+ hw:"電腦公司人員處理／中華電信承接 VPN 防火牆",
+ vac:"社區接種電腦可正常連線；所內門診與 NIIS 系統一致",
+ lab:"委外代檢，所內採樣、檢體外送",
+ inf:"目前無操作過／無法直接於 PHIS 完成通報並上傳中央系統",
+ vacMgmt:"目前無處理此部份",
+ offlineText:"兩份回覆不一致（一填「無」，一填「是」），需再確認",
+ exempt:"目前無收掛號費，無此狀況",
+ pain:"無",expect:"目前無迫切需求／是",other:"無"},
+
+{id:17,name:"潮州鎮衛生所",vendor:"國際厚生數位科技（PHIS）",mtn:false,offline:false,
+ his:["門診醫令系統","門診申報系統"],
+ integ:["健保IC卡每日上傳"],
+ pharm:"無藥局",hw:"請廠商協助設定",
+ vac:"疫苗接種作業自 2026 年 3 月起已不需掛號／不需經由 PHIS 上傳",
+ lab:"所內檢驗皆委外；專案篩檢如 IGRA 委託屏東基督教醫院",
+ inf:"未使用 HIS 通報功能",
+ vacMgmt:"公費資格判定用人工或 NIIS 輔助；無藥品庫存，疫苗以 NIIS 控管；施打後人工+NIIS 核對",
+ offlineText:"本所無使用離線功能",
+ exempt:"優免規則：低收及榮民免部分負擔；身分自動判別由 PHIS 協助",
+ pain:"無",expect:"是（有期待但未詳述）",other:"無"},
+
+{id:18,name:"屏東縣萬巒鄉衛生所",vendor:"國際厚生",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","護理站管理系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","個案管理系統","電子處方箋系統","轉診系統(非政府)"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","雲端藥歷查詢系統（非健保署網頁）","藥包機介接","兒健/兒篩紀錄介接婦幼系統"],
+ pharm:"自行調劑，不可接受外院處方箋",
+ hw:"精華電腦工程師維護硬體及 VPN；中華電信設定防火牆",
+ vac:"學校大規模接種委由醫院；本所僅 HPV 入國中、流感入幼兒園；社區/機構接種需查 NIIS，網路不佳時耗時",
+ lab:"血糖自行測；其餘委外；不便前來者開釋出檢驗單；公衛篩檢社區設站或所內執行",
+ inf:"HIS 無法通報，需另進入傳染病通報系統",
+ vacMgmt:"施打前用 NIIS 確認公費資格；庫存依效期擺放並留意 NIIS 警示；立即登錄施打並於當日領用",
+ offlineText:"無離線需求",
+ exempt:"低收及 65 歲以上一致給予免掛號費；身障者無此優免；重大傷病卡有部分負擔減免",
+ pain:"未填寫",expect:"未填寫",other:"未填寫"},
+
+{id:19,name:"滿州鄉衛生所",vendor:"大同",mtn:true,offline:false,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","病歷系統","個案管理系統"],
+ integ:["健保IC卡每日上傳","藥包機介接"],
+ pharm:"有藥局",hw:"聯繫合作電腦廠商",
+ vac:"2026/3/1 起接種疫苗不需掛號，故不需門診系統",
+ lab:"皆委外代檢，不具自行化驗能力；每月配合恆春醫院篩檢",
+ inf:"不會使用 HIS 系統通報",vacMgmt:"由 NIIS 系統專門管理",
+ offlineText:"無巡迴醫療與離線需求",
+ exempt:"掛號費標準統一；系統自動識別身分，民眾也會自行提供",
+ pain:"近期篩檢身分及步驟需留意",
+ expect:"原住民身分自動識別",other:"無"},
+
+{id:20,name:"東港鎮衛生所",vendor:"PHIS",mtn:false,offline:false,
+ his:["櫃檯掛號系統","門診申報系統","門診醫令系統"],
+ integ:["健保IC卡每日上傳","雲端藥歷查詢系統（非健保署網頁）","檢驗報告介接"],
+ pharm:"無，本所處方箋釋出",hw:"委外慈暉電腦公司",
+ vac:"學校接種委外醫院承包，HPV 表單匯入 NIIS；社區無巡迴醫療；機構/所內門診直接以 NIIS 登入查詢",
+ lab:"全部委外辦理",
+ inf:"由承辦人於傳染病通報系統直接完成通報",
+ vacMgmt:"統一由 NIIS 查詢確認資格並登打；每日盤點庫存及效期",
+ offlineText:"本所無巡迴醫療",
+ exempt:"掛號系統依健保卡註記判讀身份別",
+ pain:"無",expect:"需要",other:"無"},
+
+{id:21,name:"枋山鄉衛生所",vendor:"PHIS",mtn:true,offline:true,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","檢查室管理系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","衛福部健保署通報介接","衛福部國健署通報介接"],
+ pharm:"偏遠地區由醫師自行調劑藥物",hw:"不定期由精華電腦工作室維修",
+ vac:"流感疫苗 3 次/年，連線不穩定常無法查詢；機構接種無；所內門診一致",
+ lab:"委外代檢約 40%；不具自行化驗能力；配合醫院公衛篩檢",
+ inf:"未使用 HIS 通報",
+ vacMgmt:"透過 NIIS 系統查詢公費資格；依主辦人公告控管庫存；當日完成領用並核對；報廢依規定送回局端",
+ offlineText:"外出巡診可使用 PHIS 單機版掛號，但無法使用看診功能",
+ exempt:"依健保卡插卡系統顯示身分，標準全縣統一；無特殊政策判斷",
+ pain:"已上皆無明顯痛點",
+ expect:"戶政系統串接更新民眾資訊，有利預防保健服務",other:"否"},
+
+{id:22,name:"三地門鄉衛生所",vendor:"大同醫護",mtn:true,offline:true,
+ his:["門診醫令系統","藥局系統","批價系統","櫃檯掛號系統","門診申報系統","病歷系統","檢驗系統(不含送檢)"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳"],
+ pharm:"不收外院處方箋；可自行調劑本所開立的慢性連續處方箋第2、3次",
+ hw:"HIS 主機由合約廠商處理；防火牆 VPN 由衛福部與縣府合約廠商處理；診間電腦同仁自行維護",
+ vac:"學校約每年一次，網路依村況；社區/機構/所內門診依現場接種評估單為準",
+ lab:"主要委外生化檢驗；指尖血糖自行；社區大規模篩檢",
+ inf:"目前沒有系統介接，須另到傳染病通報系統通報",
+ vacMgmt:"依身份別掛號設定年齡層；依 NIIS 系統維護；醫療系統僅登錄消耗量，結存以 NIIS 為準",
+ offlineText:"特定電腦需能在同一台完成掛號及看診（供停電或網路中斷時使用）",
+ exempt:"山地離島就醫皆免部分負擔，需於「負擔」欄位標記 007",
+ pain:"成人健檢系統能產生 2 階未完成名單；雲端藥歷開啟容易失敗，需多步驟操作，常需重開安全模組或瀏覽器；期待能與衛生所福祉系統介接",
+ expect:"國健署、健保局等機關 API 都要能夠介接",other:"未填寫"},
+
+{id:23,name:"屏東縣萬丹鄉衛生所",vendor:"厚生 / 厚生國際",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","轉診系統(非政府，護理長另回報)"],
+ integ:["健保IC卡每日上傳","雲端藥歷查詢系統（非健保署網頁）"],
+ pharm:"自行調劑，不接收外院交付處方箋",
+ hw:"有資訊工程廠商／委託簽約廠商設定維護",
+ vac:"所內門診",lab:"委外代檢制",
+ inf:"否，無法在 HIS 完成通報",
+ vacMgmt:"公費資格判定（NIIS）",
+ offlineText:"兩份回覆皆填「是」，明確有離線需求",
+ exempt:"兩份皆提出「優免規則一致性」— 盼全縣統一標準",
+ pain:"藥師：政策推動阻礙；護理長：行政作業瓶頸",
+ expect:"兩份皆填「是」（有期待但未詳述）",other:"無"},
+
+{id:24,name:"屏東縣新園鄉衛生所",vendor:"Phis",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","NIIS疫苗注射系統"],
+ pharm:"自己有藥局",hw:"有配合的工程師",
+ vac:"以上情況均可正常使用",lab:"以上項目均有",
+ inf:"未使用此方式進行通報",
+ vacMgmt:"掛號系統查詢年齡；疫苗先進先出；開立處方即時扣減；門診結束盤點",
+ offlineText:"有時網路不順暢，需要新增離線作業需求",
+ exempt:"現場與民眾確認身份",pain:"無",expect:"無",other:"無"},
+
+{id:25,name:"崁頂鄉衛生所",vendor:"Phis",mtn:false,offline:false,
+ his:["門診醫令系統","門診申報系統","批價系統","櫃檯掛號系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳"],
+ pharm:"藥師剛報到，目前暫時維持交付處方",hw:"未填寫",
+ vac:"未填寫",lab:"委外代檢，全部為所內採樣、檢體外送化驗",
+ inf:"未填寫",vacMgmt:"未填寫",offlineText:"未填寫",
+ exempt:"所內全為免掛號，PHIS 系統掛號時自動跳出身份別",
+ pain:"1. 盼無紙化，整合病歷、檢驗結果、影像報告 2. 藥物資料查詢與健保規定的防呆機制",
+ expect:"期待全縣衛生所門診系統能統一，以利交流無礙",other:"未填寫"},
+
+{id:26,name:"屏東縣霧臺鄉衛生所",vendor:"大同醫療系統",mtn:true,offline:true,
+ his:["門診醫令系統","藥局系統","放射系統","櫃檯掛號系統","批價系統","門診申報系統","檢查室管理系統","檢驗系統(不含送檢)","病歷系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","檢驗報告介接","影像報告介接","電子病歷影像系統介接","衛福部疾管署通報介接","衛福部國健署通報介接","衛福部健保署通報介接"],
+ pharm:"有藥師及藥局可自行發藥；未收外院處方箋，但收本所開立之慢性處方箋",
+ hw:"委外資訊廠商、醫療系統維護廠商、防火牆 VPN 廠商三方共同處理",
+ vac:"學校/社區：筆電連 VPN 查 NIIS 即可執行；機構未至；局端由衛生局統一管理",
+ lab:"衛生局統一委外辦理（腸篩由本所申報自付）；公衛檢驗另委外給醫院",
+ inf:"HIS 無此功能，需自行連結中央傳染病通報系統",
+ vacMgmt:"直接進入疾管署 NIIS 查詢；本所醫療系統無疫苗庫存管理，採人工管理",
+ offlineText:"主機設山區，巡迴醫療用 VPN 連回所內；離線看診可具備但非主要",
+ exempt:"未收掛號費；山地離島免部分負擔",
+ pain:"行政與操作問題有資訊人員及時協助；今年由中華電信得標大同系統，客服須留話電話，無法立即處理",
+ expect:"Web 醫療系統上線後，建議不要再換",
+ other:"有系統資訊人員可及時協助處理"},
+
+{id:27,name:"屏東縣高樹鄉衛生所",vendor:"國際厚生數位科技",mtn:false,offline:false,
+ his:["門診醫令系統","藥局系統","網路掛號系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","病歷系統","個案管理系統","轉診系統(非政府)","電子病歷系統","電子處方箋系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","雲端藥歷查詢系統（非健保署網頁）","看診進度查詢"],
+ pharm:"藥品自行調劑，不收外院處方箋",
+ hw:"與資訊公司簽約提供硬體維護保養及軟體設定",
+ vac:"8 成學校每年一次，網路尚可；每村約一年一次",
+ lab:"95% 送檢，僅指尖血糖及 X 光自行；因無戶政連線，聯絡方式常錯誤，催檢困難",
+ inf:"無法直接通報，須進入疾管署法傳通報系統",
+ vacMgmt:"PHIS 端已自動設定完成；僅用 NIIS 核對",
+ offlineText:"本所無此服務",
+ exempt:"PHIS 系統設定一致；身分自動判別由人工比對健保卡",
+ pain:"希望與戶政系統連線，掌握看診個案及死亡個案戶口現況",
+ expect:"很迫切，尤其戶政資料，其他若能串接更好",other:"未填寫"},
+
+{id:28,name:"來義鄉衛生所",vendor:"中華電信",mtn:true,offline:false,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","檢驗系統(不含送檢)","病歷系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳","NIIS疫苗注射系統","雲端藥歷查詢系統（非健保署網頁）"],
+ pharm:"有自己的藥局可發藥或釋出處方箋，但未收外院處方箋",
+ hw:"請簽約廠商協助",
+ vac:"學校、社區、機構、所內門診皆仰賴 NIIS，一筆筆查詢及鍵入接種資料",
+ lab:"委外代檢機制，所內採樣、檢體外送 100%",
+ inf:"獨立通報於傳染病系統，無法於 HIS 完成通報",
+ vacMgmt:"公費資格判定、庫存批號、施打連動、損耗盤點皆利用 NIIS",
+ offlineText:"未曾使用離線看診功能",
+ exempt:"門診醫療部分全免，暫無須身分判別；原住民就醫交通補助",
+ pain:"醫療系統網路不穩定，時快時慢會突然中斷；入口太少多人使用會互搶造成中斷；讀卡有時失敗需反覆認證或重開機",
+ expect:"1. 慢性病管理階段提醒（避免重複或疏漏） 2. 慢性病外院收案避免重複 3. 長照失能個案及居家醫療提醒機制",
+ other:"是屏東唯一使用中華電信 HIS 的衛生所"},
+
+{id:29,name:"泰武鄉衛生所",vendor:"His",mtn:true,offline:false,
+ his:["門診醫令系統","藥局系統","批價系統","門診申報系統","檢驗系統(不含送檢)","病歷系統"],
+ integ:["健保IC卡每日上傳","檢驗檢查報告24hr上傳"],
+ pharm:"自行調劑",hw:"陳慶智廠商",
+ vac:"學校及社區帶已設定好 NIS 環境的筆電查詢兼登錄；所內施打與 NIS 系統一致",
+ lab:"委外代檢",inf:"不能於 HIS 通報",
+ vacMgmt:"由 NIS 查詢資格，效期依序擺放，目前無殘劑，當日施打完抓報表核對",
+ offlineText:"沒有離線需求",
+ exempt:"偏鄉不收掛號費",
+ pain:"網路不穩、資訊設備不足；盼提示癌症篩檢及疫苗提示功能；強化慢病個管、逾期未領藥報表列印；成人健檢異常報表",
+ expect:"是",other:"目前沒有"},
+
+{id:30,name:"琉球鄉衛生所",vendor:"His",mtn:true,offline:false,
+ his:["藥局系統"],integ:[],
+ pharm:"衛生所有藥局",hw:"請廠商維護",
+ vac:"學校疫苗注射集院外設站，網路使用及取卡作業順暢",
+ lab:"委外檢驗比例佔 95% 以上",
+ inf:"是（可通報，細節未詳述）",
+ vacMgmt:"疫苗承辦以規範管理作業",
+ offlineText:"無巡迴醫療；院外設站作業功能都有",
+ exempt:"都符合標準收費",
+ pain:"系統使用者是醫療人員非資訊人員，遇問題常拖很久才請教大同醫護",
+ expect:"迫切",other:"未填寫"},
+
+{id:31,name:"屏東縣牡丹鄉衛生所",vendor:"大同醫護",mtn:true,offline:true,
+ his:["門診醫令系統","藥局系統","櫃檯掛號系統","批價系統","門診申報系統","病歷系統","個案管理系統","轉診系統(非政府)","檢驗系統(不含送檢)"],
+ integ:["健保IC卡每日上傳","雲端藥歷查詢系統（非健保署網頁）","檢驗報告介接"],
+ pharm:"自行調劑",hw:"防火牆 VPN 設定維護",
+ vac:"學校、社區、在宅、巡迴醫療皆有",lab:"委外代檢",
+ inf:"各系統獨立通報",vacMgmt:"未填寫",
+ offlineText:"需要，部份地區網路不穩情況下可持續執行醫療服務",
+ exempt:"需要優免自動判別",
+ pain:"速度慢、下載檔案格式有限、健保卡讀卡頻繁異常",
+ expect:"需要",other:"未填寫"},
+
+{id:32,name:"枋寮衛生所",vendor:"Phis",mtn:false,offline:true,
+ his:["門診醫令系統","藥局系統","門診申報系統","批價系統"],
+ integ:["健保IC卡每日上傳","NIIS疫苗注射系統"],
+ pharm:"衛生所藥局可發藥",hw:"有簽約外部工程師維護",
+ vac:"現接種已不需 PHIS 掛號",lab:"無委外資訊",
+ inf:"無介接",vacMgmt:"未在 PHIS 系統使用疫苗管理",
+ offlineText:"有離線需求",exempt:"系統可依健保卡身份自動判別",
+ pain:"無",expect:"無",other:"無"},
+
+{id:33,name:"屏東市衛生所",vendor:"厚生",mtn:false,offline:false,
+ his:["門診醫令系統"],integ:["健保IC卡每日上傳"],
+ pharm:"否，無自行調劑",hw:"如有問題電聯電腦公司維護",
+ vac:"僅服務學校接種、社區接種、所內門診",
+ lab:"檢體委外聯興醫事檢驗所",inf:"無",vacMgmt:"無",
+ offlineText:"本所無巡迴醫療",exempt:"本所無收取掛號費",
+ pain:"未填寫",expect:"未填寫",other:"未填寫"}
+];
+
+const FIELD_ROWS = [
+ ["vendor","目前 HIS 廠商"],
+ ["mtnLabel","是否屬山地離島衛生所"],
+ ["his","HIS 主體系統模組"],
+ ["integ","介接系統"],
+ ["pharm","藥局模式"],
+ ["hw","硬體／網路維護方式"],
+ ["vac","跨域疫苗接種場景"],
+ ["lab","檢驗作業場景"],
+ ["inf","傳染病通報模式"],
+ ["vacMgmt","疫苗管理作業"],
+ ["offlineText","巡迴醫療與離線需求"],
+ ["exempt","身分優免判定"],
+ ["pain","作業痛點與優化期待"],
+ ["expect","系統期待"],
+ ["other","其他說明"],
+];
+
+/* ============ 狀態 ============ */
+let selected = new Set([5,23,15]); // 預設：麟洛、萬丹、九如
+let onlyDiff = false;
+let query = "";
+let activeFilters = new Set();
+
+const FILTERS = [
+ {key:"mtn", label:"山地離島", test:s=>s.mtn},
+ {key:"phis", label:"PHIS／厚生用戶", test:s=>/phis|厚生/i.test(s.vendor)},
+ {key:"datong", label:"大同用戶", test:s=>/大同/.test(s.vendor)},
+ {key:"offline", label:"明確表達離線需求", test:s=>s.offline},
+];
+
+/* ============ 渲染 ============ */
+const grid = document.getElementById('grid');
+const chips = document.getElementById('chips');
+const resultCount = document.getElementById('resultCount');
+const tray = document.getElementById('tray');
+const trayChips = document.getElementById('trayChips');
+const compareSection = document.getElementById('compare-section');
+
+function snippet(s){
+  return `${s.pharm} · ${s.pain}`.slice(0,90) + '…';
+}
+
+function highlight(text){
+  if(!query) return text;
+  const re = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),'ig');
+  return String(text).replace(re, m=>`<mark>${m}</mark>`);
+}
+
+function matches(s){
+  const q = query.trim().toLowerCase();
+  let ok = true;
+  if(q){
+    const hay = [s.name,s.vendor,s.pain,s.expect,s.other,s.pharm,s.inf].join(' ').toLowerCase();
+    ok = hay.includes(q);
+  }
+  if(ok && activeFilters.size){
+    ok = [...activeFilters].every(k=>FILTERS.find(f=>f.key===k).test(s));
+  }
+  return ok;
+}
+
+function renderChips(){
+  chips.innerHTML = FILTERS.map(f=>`<button class="chip ${activeFilters.has(f.key)?'active':''}" data-key="${f.key}">${f.label}</button>`).join('');
+  chips.querySelectorAll('.chip').forEach(btn=>{
+    btn.onclick = ()=>{
+      const k = btn.dataset.key;
+      activeFilters.has(k) ? activeFilters.delete(k) : activeFilters.add(k);
+      renderAll();
+    };
+  });
+}
+
+function renderGrid(){
+  const list = STATIONS.filter(matches);
+  resultCount.textContent = `找到 ${list.length} / ${STATIONS.length} 所`;
+  grid.innerHTML = list.map(s=>`
+    <div class="card ${selected.has(s.id)?'selected':''}" data-id="${s.id}">
+      <div class="idno">CASE #${String(s.id).padStart(2,'0')} · ${s.vendor}</div>
+      <h3>${highlight(s.name)}</h3>
+      <div class="badge-row">
+        ${s.mtn?'<span class="badge mtn">山地離島</span>':''}
+        ${s.offline?'<span class="badge off">有離線需求</span>':''}
+        <span class="badge">${s.his.length} 項主體模組</span>
+      </div>
+      <p class="snippet">${highlight(snippet(s))}</p>
+      <button class="add-btn">${selected.has(s.id) ? '✓ 已加入比較' : '＋ 加入比較'}</button>
+    </div>
+  `).join('') || `<div class="empty-hint">沒有符合條件的衛生所，換個關鍵字或清除篩選試試。</div>`;
+
+  grid.querySelectorAll('.card').forEach(card=>{
+    card.onclick = ()=>{
+      const id = Number(card.dataset.id);
+      if(selected.has(id)) selected.delete(id);
+      else {
+        if(selected.size>=4){ alert('最多比較 4 所，請先移除一所再新增。'); return; }
+        selected.add(id);
+      }
+      renderAll();
+    };
+  });
+}
+
+function renderTray(){
+  const list = [...selected].map(id=>STATIONS.find(s=>s.id===id));
+  tray.classList.toggle('empty', list.length===0);
+  trayChips.innerHTML = list.map(s=>`
+    <span class="tray-chip">${s.name.replace('衛生所','')}<button data-id="${s.id}">×</button></span>
+  `).join('') || '<span style="opacity:.6;font-size:13px;">尚未選擇，點卡片下方「＋加入比較」開始</span>';
+  trayChips.querySelectorAll('button').forEach(b=>{
+    b.onclick = (e)=>{ e.stopPropagation(); selected.delete(Number(b.dataset.id)); renderAll(); };
+  });
+}
+
+function fieldEqual(a,b){
+  if(Array.isArray(a) && Array.isArray(b)){
+    return JSON.stringify([...a].sort())===JSON.stringify([...b].sort());
+  }
+  return String(a).trim()===String(b).trim();
+}
+
+function renderCompare(){
+  const list = [...selected].map(id=>STATIONS.find(s=>s.id===id));
+  if(list.length<2){
+    compareSection.innerHTML = `<div class="empty-hint">請至少選擇 2 所衛生所（例如麟洛、萬丹、九如）以展開對照表。</div>`;
+    return;
+  }
+  const rows = FIELD_ROWS.map(([key,label])=>{
+    const vals = list.map(s=> key==='mtnLabel' ? (s.mtn?'是（山地離島）':'否') : s[key]);
+    const allEqual = vals.every(v=>fieldEqual(v, vals[0]));
+    if(onlyDiff && allEqual) return '';
+    const cells = list.map((s,i)=>{
+      const v = vals[i];
+      if(Array.isArray(v)){
+        const others = list.filter((_,j)=>j!==i).map((_,j)=>vals[j]);
+        const commonSet = v.filter(item => list.every((_,j)=> vals[j].includes(item)));
+        return `<td>${v.map(item=>{
+          const isCommon = list.every((_,j)=> vals[j].includes(item));
+          return `<span class="pill ${isCommon?'common':'uniq'}">${item}</span>`;
+        }).join('')}</td>`;
+      }
+      return `<td>${highlight(v)}</td>`;
+    }).join('');
+    return `<tr class="${allEqual?'':'diff'}"><th class="rowlabel">${label}</th>${cells}</tr>`;
+  }).join('');
+
+  compareSection.innerHTML = `
+    <div class="ledger-head">
+      <h2>逐項對照 · <span class="n">${list.map(s=>s.name.replace('衛生所','')).join(' vs ')}</span></h2>
+      <label class="toggle-diff"><input type="checkbox" id="diffToggle" ${onlyDiff?'checked':''}> 只看有差異的項目</label>
+    </div>
+    <div class="ledger-wrap">
+      <table class="ledger">
+        <thead><tr><th class="rowlabel">比對項目</th>${list.map(s=>`<th>${s.name}</th>`).join('')}</tr></thead>
+        <tbody>${rows || '<tr><td colspan="99" style="padding:20px;color:var(--ink-soft);">目前條件下沒有差異項目</td></tr>'}</tbody>
+      </table>
+    </div>
+  `;
+  document.getElementById('diffToggle').onchange = (e)=>{ onlyDiff = e.target.checked; renderCompare(); };
+}
+
+function renderAll(){
+  renderChips();
+  renderGrid();
+  renderTray();
+  renderCompare();
+}
+
+document.getElementById('search').addEventListener('input', e=>{
+  query = e.target.value;
+  renderGrid();
+  renderCompare();
+});
+document.getElementById('clearBtn').onclick = ()=>{ selected.clear(); renderAll(); };
+document.getElementById('goCompareBtn').onclick = ()=>{
+  document.getElementById('compare-section').scrollIntoView({behavior:'smooth', block:'start'});
+};
+
+/* ============ 分頁：衛生所列表 ============ */
+let listQuery = "";
+let activeStationId = null;
+
+function stationMatchesList(s){
+  if(!listQuery.trim()) return true;
+  const q = listQuery.trim().toLowerCase();
+  const hay = [s.name,s.vendor,s.pharm,s.hw,s.vac,s.lab,s.inf,s.vacMgmt,s.offlineText,s.exempt,s.pain,s.expect,s.other, ...s.his, ...s.integ].join(' ').toLowerCase();
+  return hay.includes(q);
+}
+
+function renderStationList(){
+  const listEl = document.getElementById('stationList');
+  const filtered = STATIONS.filter(stationMatchesList);
+  if(!filtered.some(s=>s.id===activeStationId)){
+    activeStationId = filtered.length ? filtered[0].id : null;
+  }
+  listEl.innerHTML = filtered.map(s=>`
+    <div class="station-list-item ${s.id===activeStationId?'active':''}" data-id="${s.id}">
+      <span>${highlight(s.name)}</span>
+      <span class="idno">#${String(s.id).padStart(2,'0')}</span>
+    </div>
+  `).join('') || `<div style="padding:16px;font-size:13px;color:var(--ink-soft);">查無符合的衛生所</div>`;
+  listEl.querySelectorAll('.station-list-item').forEach(item=>{
+    item.onclick = ()=>{ activeStationId = Number(item.dataset.id); renderStationList(); renderStationDetail(); };
+  });
+}
+
+function renderStationDetail(){
+  const panel = document.getElementById('detailPanel');
+  const s = STATIONS.find(x=>x.id===activeStationId);
+  if(!s){ panel.innerHTML = `<div class="empty-hint">請從左側清單選擇一所衛生所</div>`; return; }
+  const fieldsHtml = FIELD_ROWS.map(([key,label])=>{
+    const v = key==='mtnLabel' ? (s.mtn?'是（山地離島）':'否') : s[key];
+    const valHtml = Array.isArray(v)
+      ? (v.length ? v.map(item=>`<span class="pill common">${highlight(item)}</span>`).join('') : '（未填寫）')
+      : highlight(v);
+    return `<div class="detail-field"><div class="lbl">${label}</div><div class="val">${valHtml}</div></div>`;
+  }).join('');
+  panel.innerHTML = `
+    <h2>${s.name}</h2>
+    <div class="detail-vendor">CASE #${String(s.id).padStart(2,'0')} · HIS 廠商：${s.vendor}${s.mtn?' · 山地離島':''}${s.offline?' · 明確表達離線需求':''}</div>
+    ${fieldsHtml}
+  `;
+}
+
+document.getElementById('listSearch').addEventListener('input', e=>{
+  listQuery = e.target.value;
+  renderStationList();
+  renderStationDetail();
+});
+
+document.querySelectorAll('.tab-btn').forEach(btn=>{
+  btn.onclick = ()=>{
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const tab = btn.dataset.tab;
+    document.getElementById('view-compare').classList.toggle('active', tab==='compare');
+    document.getElementById('view-list').classList.toggle('active', tab==='list');
+    tray.style.display = tab==='compare' ? '' : 'none';
+    if(tab==='list'){ renderStationList(); renderStationDetail(); }
+  };
+});
+
+renderAll();
+renderStationList();
+renderStationDetail();
+</script>
+</body>
+</html>
